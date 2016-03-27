@@ -36,7 +36,7 @@ exports.init = function () {
 
         debug('DB opened');
         // Авторизация
-        db.authenticate('shareview', '159753QwErT', function (err, result) {
+        db.authenticate('shareview', 'hwnd_des83', function (err, result) {
             if (err) {
                 throw new Error('Mongo error - ' + err.message);
             }
