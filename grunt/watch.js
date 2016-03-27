@@ -6,6 +6,7 @@ module.exports = {
             'server.js',
             'app.js',
             'db.js',
+            'model/**/*.js',
             'hosts/base/index.js',
             'hosts/base/controller/**/*.js',
             'hosts/base/model/**/*.js',

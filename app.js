@@ -36,11 +36,11 @@ if (cluster.isMaster) {
     server = require('./server');
 
 
-    // mongo.db.on('authenticated', function () {
+    mongo.db.on('authenticated', function () {
         // Запуск сервера
         server.start();
-    // });
+    });
 
     // Инициализация БД
-    // mongo.init();
+    mongo.init();
 }

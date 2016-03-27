@@ -17,7 +17,7 @@ var debug               = require('debug')('express:shareview:mongodb'),
     BSON                = mongo.BSONPure,
 
     // Объект БД
-    db = new Db('shareview', new Server('127.0.0.1', 27017), {safe: true});
+    db = new Db('shareview', new Server('ds059712.mlab.com', 59712), {safe: true});
 
 
 /**
@@ -36,7 +36,7 @@ exports.init = function () {
 
         debug('DB opened');
         // Авторизация
-        db.authenticate('shareview', '123', function (err, result) {
+        db.authenticate('shareview', '159753QwErT', function (err, result) {
             if (err) {
                 throw new Error('Mongo error - ' + err.message);
             }

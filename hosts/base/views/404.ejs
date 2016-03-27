@@ -1,9 +1,31 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+<% if (isDev) { %>
+    <link href="/css/common.css" rel="stylesheet" type="text/css" />
+    <link href="/css/simple.css" rel="stylesheet" type="text/css" />
+    <script data-main="/js/Simple" src="/lib/requirejs/require.js"></script>
+<% } else { %>
+    <link href="/build/simple.css" rel="stylesheet" type="text/css" />
+    <script src="/build/simple.js"></script>
+<% } %>
     <title>404 - Страница не найдена</title>
 </head>
 <body>
-    <h1>404 - Страница не найдена</h1>
+<% include inc/header %>
+    <section class="b-section">
+        <h1>404 - Страница не найдена</h1>
+        <article class="b-section__article">
+            <h2>Запрашиваемая Вами страница не найдена</h2>
+            <div class="codeblock" style="color: #e05d6f">Возможно Вы попытались загрузить несуществующую или удаленную страницу. Попробуйте перейти на другую страницу, используя навигацию наверху.</div>
+        </article>
+<% include inc/signup %>
+    </section>
+<% include inc/footer %>
+<% include inc/counter %>
 </body>
 </html>

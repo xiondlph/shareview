@@ -4,7 +4,7 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="keywords" content="" />
-    <meta name="description" content="" />
+    <meta name="description" content="Готовые отзывы о товарах для интернет магазина" />
 <% if (isDev) { %>
     <link href="/css/common.css" rel="stylesheet" type="text/css" />
     <link href="/css/index.css" rel="stylesheet" type="text/css" />
@@ -13,9 +13,19 @@
     <link href="/build/index.css" rel="stylesheet" type="text/css" />
     <script src="/build/index.js"></script>
 <% } %>
-    <title>Index</title>
+    <title>Готовые отзывы о товарах для интернет магазина</title>
 </head>
 <body>
-    <h1>Index</h1>
+<% include inc/header %>
+    <section class="b-section">
+        <h1>Готовые отзывы о товарах для<br />интернет магазина</h1>
+        <p>Shareview это надежный источник пользовательских отзывов о товарах для вашего интернет-магазина.<br>Мы собираем миллионы отзывов для десятков тысяч товаров, чтобы вы за пару минут могли опубликовать их на своем сайте. Для этого вам достаточно только зарегистрироватся.</p>
+<% if(user){%>
+        <br />
+        <a href="/admin/" class="f-btn f-btn_red f-btn_center">Панель управления</a>
+<% } %>
+    </section>
+<% include inc/footer %>
+<% include inc/counter %>
 </body>
 </html>

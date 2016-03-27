@@ -1,0 +1,31 @@
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: url('opensans-regular.eot');
+    src: local('Open Sans'),local('OpenSans'),url('opensans-regular.eot') format('embedded-opentype'),url('opensans-regular.woff') format('woff'),url('opensans-regular.ttf') format('truetype'),url('opensans-regular.svg') format('svg')
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 700;
+    src: url('opensans-bold.eot');
+    src: local('Open Sans Bold'),local('OpenSans-Bold'),url('opensans-bold.eot') format('embedded-opentype'),url('opensans-bold.woff') format('woff'),url('opensans-bold.ttf') format('truetype'),url('opensans-bold.svg') format('svg')
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 300;
+    src: url('opensans-light.eot');
+    src: local('Open Sans Light'),local('OpenSans-Light'),url('opensans-light.eot') format('embedded-opentype'),url('opensans-light.woff') format('woff'),url('opensans-light.ttf') format('truetype'),url('opensans-light.svg') format('svg')
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: italic;
+    font-weight: 400;
+    src: url('opensans-italic.eot');
+    src: local('Open Sans Italic'),local('OpenSans-Italic'),url('opensans-italic.eot') format('embedded-opentype'),url('opensans-italic.woff') format('woff'),url('opensans-italic.ttf') format('truetype'),url('opensans-italic.svg') format('svg')
+}

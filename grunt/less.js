@@ -9,5 +9,11 @@ module.exports = {
         files: {
             'hosts/base/static/css/index.css': 'hosts/base/static/less/index.less'
         }
+    },
+
+    simple: {
+        files: {
+            'hosts/base/static/css/simple.css': 'hosts/base/static/less/simple.less'
+        }
     }
 };

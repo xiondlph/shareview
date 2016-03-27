@@ -24,7 +24,8 @@ var express     = require('express'),
  * @type Object
  */
 var model = {
-
+    user:       require(__dirname + '/../../model/user'),
+    payment:    require(__dirname + '/../../model/payment')
 };
 
 
@@ -35,7 +36,11 @@ var model = {
  * @type Object
  */
 var controller = {
-    index:      require('./controller/index')
+    index:      require('./controller/index'),
+    secure:     require('./controller/secure'),
+    user:       require('./controller/user'),
+    profile:    require('./controller/profile'),
+    payment:    require('./controller/payment')
 };
 
 // Метод записи стека ошибки в лог файл
@@ -68,6 +73,10 @@ app.use(session({
 }));
 
 app.use(function (req, res, next) {
+    if (!req.secure) {
+        return res.redirect('https://' + req.headers.host + req.url);
+    }
+
     res.locals.isDev    = process.env.NODE_ENV !== 'prod';
     res.locals.user     = false;
 
@@ -76,11 +85,39 @@ app.use(function (req, res, next) {
     next();
 });
 
+app.all('*', model.user, controller.secure.user);
+
 // Главная стр.
 app.get('/', controller.index.index);
 
 // Sitemap.xml
 app.get('/Sitemap.xml', controller.index.sitemap);
+
+// Secure
+app.get('/user', controller.secure.index);
+app.post('/user/signin', controller.secure.signin);
+app.get('/user/signout', controller.secure.signout);
+
+// User
+app.post('/user/create', controller.user.create);
+app.post('/user/forgot', controller.user.forgot);
+
+// Admin dashboard
+app.get('/admin', controller.secure.auth, controller.user.index);
+
+// API
+app.all('/api/*', controller.secure.auth);
+
+// Profile (api)...
+app.get('/api/profile', controller.user.sync, controller.profile.get);
+app.put('/api/profile', controller.profile.set);
+app.post('/api/password', controller.profile.password);
+
+// Payment (api)...
+app.get('/api/payment', model.payment, controller.payment.list);
+
+// Обработка запроса уведовления от ЯД
+app.post('/ym_notification', model.payment, controller.payment.notification);
 
 // Стр. 404 (Not found)
 app.use(controller.index.notfound);

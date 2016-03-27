@@ -40,9 +40,9 @@ app.use(vhost('www.' + host + '.ru', baseHost.app));
  * @method start
  */
 exports.start = function () {
-    var port = process.env.PORT || 4000;
+    var port = process.env.PORT || 4001;
 
-    // Запуск web сервера на порту 3000/4000
+    // Запуск web сервера на порту 3001/4001
     app.listen(port,  function () {
         debug('Listening on port ' + port);
     });

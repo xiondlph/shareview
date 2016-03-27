@@ -1,0 +1,42 @@
+h1 {
+  margin: 20% 0 15px 0;
+}
+p {
+  text-align: justify;
+  max-width: 500px;
+  display: block;
+}
+p:not(:last-child) {
+  margin: 0 auto 15px auto;
+}
+.b-form__body_signup {
+  background-color: transparent;
+}
+.b-form__field__input_signup {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  -webkit-transition: background .7s linear;
+  -moz-transition: background .7s linear;
+  -o-transition: background .7s linear;
+  transition: background .7s linear;
+  /*background-image: url(../images/cat.gif);
+            background-position: 373px 15px;
+            background-repeat: no-repeat;
+            background-size: 30px;*/
+  padding: 16px 0 3px 0;
+  border-right: none;
+  border-left: none;
+  border-top: none;
+}
+.b-form__field:hover .b-form__field__input_signup,
+.b-form__field .b-form__field__input_signup:focus {
+  /*background-position: 340px 15px;
+            background-size: 30px;*/
+  border-right: none;
+  border-left: none;
+  border-top: none;
+}
+.b-form__field__label_signup {
+  padding: 0;
+}
