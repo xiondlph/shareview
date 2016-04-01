@@ -108,7 +108,7 @@ exports.create = function (req, res, next) {
                         service: 'Mail.ru',
                         auth: {
                             user: 'notification@shareview.ru',
-                            pass: '159753QwErT'
+                            pass: 'XtFyKBXeChHY'
                         }
                     });
 
@@ -184,7 +184,7 @@ exports.forgot = function (req, res, next) {
                 service: 'Mail.ru',
                 auth: {
                     user: 'notification@shareview.ru',
-                    pass: '159753QwErT'
+                    pass: 'XtFyKBXeChHY'
                 }
             });
 

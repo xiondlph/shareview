@@ -34,7 +34,7 @@ function notice(req, res, next, subject) {
             service: 'Mail.ru',
             auth: {
                 user: 'notification@shareview.ru',
-                pass: '159753QwErT'
+                pass: 'XtFyKBXeChHY'
             }
         });
 
