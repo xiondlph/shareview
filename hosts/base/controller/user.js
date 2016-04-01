@@ -88,7 +88,6 @@ exports.create = function (req, res, next) {
                 return;
             }
 
-            data._id = data._id.toString();
             req.store.user.create(data, function (err, user) {
                 if (err) {
                     next(err);
@@ -145,6 +144,8 @@ exports.create = function (req, res, next) {
  * @param {Object} res Объект ответа сервера
  */
 exports.forgot = function (req, res, next) {
+    var transporter,
+        password;
 
     // Если пользователь авторизован
     if (res.locals.user) {
@@ -156,70 +157,53 @@ exports.forgot = function (req, res, next) {
         throw new Error('Validate error - email is invalid');
     }
 
-    req.model.user.getUserByEmail(req.body.email, function (err, user) {
-        var transporter,
-            password;
+    password = generatePassword(12, false);
+
+    req.model.user.setPasswordByEmail(req.body.email, crypto.createHmac('sha256', password).digest('hex'), function (err, result) {
 
         if (err) {
             next(err);
             return;
         }
 
-        if (!user) {
+        if (!result.result.nModified) {
             res.send({success: false});
             return;
         }
 
-        password = generatePassword(12, false);
+        res.locals.password = password;
 
-        req.model.user.setPasswordByEmail(req.body.email, crypto.createHmac('sha256', password).digest('hex'), function (err, result) {
+        res.render('mail/forgot', function (err, text) {
 
             if (err) {
                 next(err);
                 return;
             }
 
-            req.store.user.setPasswordByEmail(req.body.email, crypto.createHmac('sha256', password).digest('hex'), function (err, result) {
+            transporter = nodemailer.createTransport({
+                service: 'Mail.ru',
+                auth: {
+                    user: 'notification@shareview.ru',
+                    pass: '159753QwErT'
+                }
+            });
+
+            transporter.sendMail({
+                from: 'SHAREVIEW <notification@shareview.ru>',
+                to: user.email,
+                subject: 'Востановления доступа к сервису SHAREVIEW',
+                text: text,
+                headers: {
+                    'X-Mailer': 'SHAREVIEW'
+                },
+                localAddress: '194.87.197.55'
+            }, function (err, response) {
                 if (err) {
                     next(err);
                     return;
                 }
 
-                res.locals.password = password;
-
-                res.render('mail/forgot', function (err, text) {
-
-                    if (err) {
-                        next(err);
-                        return;
-                    }
-
-                    transporter = nodemailer.createTransport({
-                        service: 'Mail.ru',
-                        auth: {
-                            user: 'notification@shareview.ru',
-                            pass: '159753QwErT'
-                        }
-                    });
-
-                    transporter.sendMail({
-                        from: 'SHAREVIEW <notification@shareview.ru>',
-                        to: user.email,
-                        subject: 'Востановления доступа к сервису SHAREVIEW',
-                        text: text,
-                        headers: {
-                            'X-Mailer': 'SHAREVIEW'
-                        },
-                        localAddress: '194.87.197.55'
-                    }, function (err, response) {
-                        if (err) {
-                            next(err);
-                            return;
-                        }
-
-                        res.send({success: true});
-                    });
-                });
+                res.send({success: true});
             });
         });
     });

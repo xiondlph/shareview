@@ -48,48 +48,6 @@ module.exports = function (req, res, next) {
 
 
         /**
-         * Получения пользователя по индексу сессии
-         *
-         * @method getUserBySession
-         * @param {String} index
-         * @param {Function} accept
-         */
-        getUserBySession: function (index, accept) {
-            usersStore.findOne({'sid': index}, function (err, user) {
-                if (err) {
-                    accept(new Error('NeDB error - ' + err.message));
-                    return;
-                }
-
-                if (typeof accept === 'function') {
-                    accept(null, user);
-                }
-            });
-        },
-
-
-        /**
-         * Получения пользователя по Email
-         *
-         * @method getUserByEmail
-         * @param {String} email
-         * @param {Function} accept
-         */
-        getUserByEmail: function (email, accept) {
-            usersStore.findOne({'email': email}, function (err, user) {
-                if (err) {
-                    accept(new Error('NeDB error - ' + err.message));
-                    return;
-                }
-
-                if (typeof accept === 'function') {
-                    accept(null, user);
-                }
-            });
-        },
-
-
-        /**
          * Получения пользователя по ключу
          *
          * @method getUserByKey
@@ -132,27 +90,6 @@ module.exports = function (req, res, next) {
 
 
         /**
-         * Проверка уникальности по Email
-         *
-         * @method isExistByEmail
-         * @param {String} email
-         * @param {Function} accept 
-         */
-        isExistByEmail: function (email, accept) {
-            usersStore.count({'email': email}, function (err, count) {
-                if (err) {
-                    accept(new Error('NeDB error - ' + err.message));
-                    return;
-                }
-
-                if (typeof accept === 'function') {
-                    accept(null, count);
-                }
-            });
-        },
-
-
-        /**
          * Создание нового пользователя
          *
          * @method create
@@ -160,7 +97,15 @@ module.exports = function (req, res, next) {
          * @param {Function} accept
          */
         create: function (user, accept) {
-            usersStore.insert(user, function (err, user) {
+            var data = {
+                '_id':      user._id.toString(),
+                'salt':     user.salt,
+                'email':    user.email,
+                'address':  user.address,
+                'period':   user.period
+            };
+
+            usersStore.insert(data, function (err, user) {
                 if (err) {
                     accept(new Error('NeDB error - ' + err.message));
                     return;
@@ -175,121 +120,7 @@ module.exports = function (req, res, next) {
 
 
         /**
-         * Обновление данных пользователя
-         *
-         * @method update
-         * @param {Number} id
-         * @param {Object} data
-         * @param {Function} accept 
-         */
-        update: function (id, data, accept) {
-            usersStore.update({'_id': id.toString()}, {$set: data}, function (err, result) {
-                if (err) {
-                    accept(new Error('NeDB error - ' + err.message));
-                    return;
-                }
-
-                usersStore.loadDatabase();
-                if (typeof accept === 'function') {
-                    accept(null, result);
-                }
-            });
-        },
-
-
-        /**
-         * Установка хеша текущей сессии для пользователя
-         *
-         * @method setSession
-         * @param {Number} id
-         * @param {String} index
-         * @param {Function} accept 
-         */
-        setSession: function (id, index, accept) {
-            usersStore.update({'_id': id.toString()}, {$set: {'sid': index}}, function (err, result) {
-                if (err) {
-                    accept(new Error('NeDB error - ' + err.message));
-                    return;
-                }
-
-                usersStore.loadDatabase();
-                if (typeof accept === 'function') {
-                    accept(null, result);
-                }
-            });
-        },
-
-
-        /**
-         * Удаление хеша текущей сессии для пользователя
-         *
-         * @method unsetSession
-         * @param {Number} id
-         * @param {Function} accept
-         */
-        unsetSession: function (id, accept) {
-            usersStore.update({'_id': id.toString()}, {$unset: {'sid': true}}, function (err, result) {
-                if (err) {
-                    accept(new Error('NeDB error - ' + err.message));
-                    return;
-                }
-
-                usersStore.loadDatabase();
-                if (typeof accept === 'function') {
-                    accept(null, result);
-                }
-            });
-        },
-
-
-        /**
-         * Установка нового пароля для пользователя
-         *
-         * @method setPassword
-         * @param {Number} id
-         * @param {String} password
-         * @param {Function} accept
-         */
-        setPassword: function (id, password, accept) {
-            usersStore.update({'_id': id.toString()}, {$set: {'password': password}}, function (err, result) {
-                if (err) {
-                    accept(new Error('NeDB error - ' + err.message));
-                    return;
-                }
-
-                usersStore.loadDatabase();
-                if (typeof accept === 'function') {
-                    accept(null, result);
-                }
-            });
-        },
-
-
-        /**
-         * Установка нового пароля для пользователя по Email
-         *
-         * @method setPasswordByEmail
-         * @param {String} email
-         * @param {String} password
-         * @param {Function} accept
-         */
-        setPasswordByEmail: function (email, password, accept) {
-            usersStore.update({'email': email}, {$set: {'password': password}}, function (err, result) {
-                if (err) {
-                    accept(new Error('NeDB error - ' + err.message));
-                    return;
-                }
-
-                usersStore.loadDatabase();
-                if (typeof accept === 'function') {
-                    accept(null, result);
-                }
-            });
-        },
-
-
-        /**
-         * Обновление периода действия аккаунта по Email
+         * Обновление периода действия аккаунта по id
          *
          * @method updatePeriod
          * @param {Number} id
@@ -312,7 +143,7 @@ module.exports = function (req, res, next) {
 
 
         /**
-         * Синхронизация данных пользователя в NeDB с MongoDB
+         * Синхронизация данных пользователя в MongoDB с NeDB
          *
          * @method sync
          * @param {Nubber} id
@@ -359,6 +190,34 @@ module.exports = function (req, res, next) {
      * @type Object
      */
     req.model.user = {
+
+
+        /**
+         * Получения пользователя по id
+         *
+         * @method getUserById
+         * @param {Number} id
+         * @param {Function} accept
+         */
+        getUserById: function (id, accept) {
+            mongo.db.collection('users', function (err, collection) {
+                if (err) {
+                    accept(new Error('Mongo error - ' + err.message));
+                    return;
+                }
+
+                collection.findOne({'_id': id}, function (err, user) {
+                    if (err) {
+                        accept(new Error('Mongo error - ' + err.message));
+                        return;
+                    }
+
+                    if (typeof accept === 'function') {
+                        accept(null, user);
+                    }
+                });
+            });
+        },
 
 
         /**
@@ -560,14 +419,14 @@ module.exports = function (req, res, next) {
 
 
         /**
-         * Установка хеша текущей сессии для пользователя
+         * Установка хеша текущей сессии для пользователя по id
          *
-         * @method setSession
+         * @method setSessionById
          * @param {Number} id
          * @param {String} sid
          * @param {Function} accept 
          */
-        setSession: function (id, sid, accept) {
+        setSessionById: function (id, sid, accept) {
             mongo.db.collection('users', function (err, collection) {
                 if (err) {
                     accept(new Error('Mongo error - ' + err.message));
@@ -589,13 +448,13 @@ module.exports = function (req, res, next) {
 
 
         /**
-         * Удаление хеша текущей сессии для пользователя
+         * Удаление хеша текущей сессии для пользователя по id
          *
-         * @method unsetSession
+         * @method unsetSessionById
          * @param {Number} id
          * @param {Function} accept
          */
-        unsetSession: function (id, accept) {
+        unsetSessionById: function (id, accept) {
             mongo.db.collection('users', function (err, collection) {
                 if (err) {
                     accept(new Error('Mongo error - ' + err.message));
@@ -617,14 +476,14 @@ module.exports = function (req, res, next) {
 
 
         /**
-         * Установка нового пароля для пользователя
+         * Установка нового пароля для пользователя по id
          *
-         * @method setPassword
+         * @method setPasswordId
          * @param {Number} id
          * @param {String} password
          * @param {Function} accept
          */
-        setPassword: function (id, password, accept) {
+        setPasswordId: function (id, password, accept) {
             mongo.db.collection('users', function (err, collection) {
                 if (err) {
                     accept(new Error('Mongo error - ' + err.message));
@@ -698,6 +557,47 @@ module.exports = function (req, res, next) {
                     if (typeof accept === 'function') {
                         accept(null, result);
                     }
+                });
+            });
+        }
+
+
+        /**
+         * Синхронизация данных пользователя в NeDB с MongoDB
+         *
+         * @method sync
+         * @param {Number} id
+         * @param {Function} accept
+         */
+        sync: function (id, accept) {
+            mongo.db.collection('users', function (err, collection) {
+                if (err) {
+                    accept(new Error('Mongo error - ' + err.message));
+                    return;
+                }
+
+                collection.findOne({'_id': id}, function (err, user) {
+                    if (err) {
+                        accept(new Error('Mongo error - ' + err.message));
+                        return;
+                    }
+
+                    usersStore.update({'_id': id.toString()}, {$set: {
+                        'salt':     user.salt,
+                        'email':    user.email,
+                        'address':  user.address,
+                        'period':   user.period
+                    }}, {}, function (err, result) {
+                        if (err) {
+                            accept(new Error('Store error - ' + err.message));
+                            return;
+                        }
+
+                        usersStore.loadDatabase();
+                        if (typeof accept === 'function') {
+                            accept(null, result);
+                        }
+                    });
                 });
             });
         }

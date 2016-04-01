@@ -124,14 +124,7 @@ exports.signin = function (req, res, next) {
                 return;
             }
 
-            req.store.user.setSession(user._id, req.session.id, function (err, result) {
-                if (err) {
-                    next(err);
-                    return;
-                }
-
-                res.send({success: true});
-            });
+            res.send({success: true});
         });
     });
 };
@@ -151,13 +144,6 @@ exports.signout = function (req, res, next) {
             return;
         }
 
-        req.store.user.unsetSession(res.locals.user._id, function (err, result) {
-            if (err) {
-                next(err);
-                return;
-            }
-
-            res.redirect('/user');
-        });
+        res.redirect('/user');
     });
 };

@@ -96,58 +96,70 @@ exports.notification = function (req, res, next) {
         hash;
 
     // Логирование уведомления
-    // logPayment(req.body);
+    logPayment(req.body);
 
 
     //Уведомление о платеже по email
-    // notice(req, res, next, 'Входящий платеж');
+    notice(req, res, next, 'Входящий платеж');
 
-    // hash = req.body.notification_type + '&' + req.body.operation_id + '&' + req.body.amount + '&' + req.body.currency + '&' + req.body.datetime + '&' + req.body.sender + '&' + req.body.codepro + '&DCb7b4n2+RsQEuk5Mw+V3xOx&' + req.body.label;
-    // hash = crypto.createHash('sha1').update(hash).digest('hex');
+    hash = req.body.notification_type + '&' + req.body.operation_id + '&' + req.body.amount + '&' + req.body.currency + '&' + req.body.datetime + '&' + req.body.sender + '&' + req.body.codepro + '&DCb7b4n2+RsQEuk5Mw+V3xOx&' + req.body.label;
+    hash = crypto.createHash('sha1').update(hash).digest('hex');
 
-    // if (req.body.sha1_hash === hash) {
+    if (req.body.sha1_hash !== hash || req.body.codepro !== 'false') {
+        res.end();
+        return;
+    }
 
-        if (req.body.codepro === 'false') {
-            req.model.user.getUserByEmail(req.body.label, function (err, user) {
+    req.model.user.getUserById(new req.model.ObjectID(req.body.label), function (err, user) {
+        if (err) {
+            next(err);
+            return;
+        }
+
+        if (!user) {
+            res.end();
+            return;
+        }
+
+        currentPeriod   = user.period;
+        newPeriod       = getPeriod(currentPeriod, req.body.datetime, req.body.withdraw_amount);
+
+        req.store.user.updatePeriod(user._id, newPeriod, function (err, result) {
+            if (err) {
+                next(err);
+                return;
+            }
+
+            if (!result) {
+                res.end();
+                return;
+            }
+
+            req.store.user.sync(user._id, function (err, result) {
                 if (err) {
                     next(err);
                     return;
                 }
 
-                if (user) {
-                    currentPeriod   = user.period;
-                    newPeriod       = getPeriod(currentPeriod, req.body.datetime, req.body.withdraw_amount);
 
-                    req.store.user.updatePeriod(user._id, newPeriod, function (err, result) {
-                        if (err) {
-                            next(err);
-                            return;
-                        }
-
-                        req.store.user.sync(user._id, function (err, result) {
-                            if (err) {
-                                next(err);
-                                return;
-                            }
-
-                            if (result.value) {
-                                req.body._user          = result.value._id;       
-                                req.body._lastPeriod    = currentPeriod;
-                                req.body._newPeriod     = newPeriod;
-
-                                req.model.payment.add(req.body);
-
-                                //Уведомление об успешном платеже по email
-                                notice(req, res, next, 'Успешный входящий платеж');
-                            }
-                        });
-                    });
+                if (!user.value) {
+                    res.end();
+                    return;
                 }
-            });
-        }
-    // }
 
-    res.end();
+                req.body._user          = result.value._id;       
+                req.body._lastPeriod    = currentPeriod;
+                req.body._newPeriod     = newPeriod;
+
+                req.model.payment.add(req.body);
+
+                //Уведомление об успешном платеже по email
+                notice(req, res, next, 'Успешный входящий платеж');
+
+                res.end();
+            });
+        });
+    });
 };
 
 

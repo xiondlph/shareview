@@ -22,7 +22,7 @@ function updateProfile(req, res, next, data) {
             return;
         }
 
-        req.store.user.update(res.locals.user._id, data, function (err, result) {
+        req.model.user.sync(res.locals.user._id, function (err, result) {
             if (err) {
                 next(err);
                 return;
@@ -132,21 +132,14 @@ exports.password = function (req, res, next) {
         next(new Error('Validate error - password is invalid'));
     }
 
-    req.model.user.setPassword(res.locals.user._id, crypto.createHmac('sha256', req.body.password).digest('hex'), function (err, result) {
+    req.model.user.setPasswordId(res.locals.user._id, crypto.createHmac('sha256', req.body.password).digest('hex'), function (err, result) {
         if (err) {
             next(err);
             return;
         }
 
-        req.store.user.setPassword(res.locals.user._id, crypto.createHmac('sha256', req.body.password).digest('hex'), function (err, result) {
-            if (err) {
-                next(err);
-                return;
-            }
-
-            res.send({
-                success: true
-            });
+        res.send({
+            success: true
         });
     });
 };
