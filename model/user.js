@@ -150,8 +150,6 @@ module.exports = function (req, res, next) {
          * @param {Function} accept
          */
         sync: function (id, accept) {
-            var period;
-
             usersStore.findOne({'_id': id.toString()}, function (err, user) {
                 if (err) {
                     accept(new Error('NeDB error - ' + err.message));
@@ -559,7 +557,7 @@ module.exports = function (req, res, next) {
                     }
                 });
             });
-        }
+        },
 
 
         /**

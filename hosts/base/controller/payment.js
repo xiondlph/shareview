@@ -147,7 +147,7 @@ exports.notification = function (req, res, next) {
                     return;
                 }
 
-                req.body._user          = result.value._id;       
+                req.body._user          = result.value._id;
                 req.body._lastPeriod    = currentPeriod;
                 req.body._newPeriod     = newPeriod;
 

@@ -190,7 +190,7 @@ exports.forgot = function (req, res, next) {
 
             transporter.sendMail({
                 from: 'SHAREVIEW <notification@shareview.ru>',
-                to: user.email,
+                to: req.body.email,
                 subject: 'Востановления доступа к сервису SHAREVIEW',
                 text: text,
                 headers: {

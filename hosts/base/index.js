@@ -40,7 +40,9 @@ var controller = {
     secure:     require('./controller/secure'),
     user:       require('./controller/user'),
     profile:    require('./controller/profile'),
-    payment:    require('./controller/payment')
+    payment:    require('./controller/payment'),
+    request:    require('./controller/request'),
+    review:     require('./controller/review')
 };
 
 // Метод записи стека ошибки в лог файл
@@ -85,7 +87,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.all('*', model.user, controller.secure.user);
+//app.all('*', model.user, controller.secure.user);
 
 // Главная стр.
 app.get('/', controller.index.index);
@@ -108,16 +110,19 @@ app.get('/admin', controller.secure.auth, controller.user.index);
 // API
 app.all('/api/*', controller.secure.auth);
 
+// Review
+app.get('/review', controller.request.api, controller.review.get);
+
 // Profile (api)...
 app.get('/api/profile', controller.user.sync, controller.profile.get);
 app.put('/api/profile', controller.profile.set);
 app.post('/api/password', controller.profile.password);
 
 // Payment (api)...
-app.get('/api/payment', model.payment, controller.payment.list);
+//app.get('/api/payment', model.payment, controller.payment.list);
 
 // Обработка запроса уведовления от ЯД
-app.post('/ym_notification', model.payment, controller.payment.notification);
+//app.post('/ym_notification', model.payment, controller.payment.notification);
 
 // Стр. 404 (Not found)
 app.use(controller.index.notfound);
