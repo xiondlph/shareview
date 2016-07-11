@@ -26,6 +26,9 @@ exports.get = function (req, res) {
         reviews,
         page = 1;
 
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
     if (!req.query.hasOwnProperty('text') || !req.query.text) {
         res.send([]);
         return;
