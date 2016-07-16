@@ -119,10 +119,10 @@ app.put('/api/profile', controller.profile.set);
 app.post('/api/password', controller.profile.password);
 
 // Payment (api)...
-//app.get('/api/payment', model.payment, controller.payment.list);
+app.get('/api/payment', model.payment, controller.payment.list);
 
 // Обработка запроса уведовления от ЯД
-//app.post('/ym_notification', model.payment, controller.payment.notification);
+app.post('/ym_notification', model.payment, controller.payment.notification);
 
 // Стр. 404 (Not found)
 app.use(controller.index.notfound);
