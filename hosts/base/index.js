@@ -87,7 +87,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-//app.all('*', model.user, controller.secure.user);
+app.all('*', model.user, controller.secure.user);
 
 // Главная стр.
 app.get('/', controller.index.index);
