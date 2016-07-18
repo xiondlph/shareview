@@ -118,7 +118,7 @@ exports.signin = function (req, res, next) {
             return;
         }
 
-        req.model.user.setSession(user._id, req.session.id, function (err, result) {
+        req.model.user.setSessionById(user._id, req.session.id, function (err, result) {
             if (err) {
                 next(err);
                 return;
