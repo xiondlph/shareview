@@ -138,7 +138,7 @@ exports.signin = function (req, res, next) {
  * @param {Object} res Объект ответа сервера
  */
 exports.signout = function (req, res, next) {
-    req.model.user.unsetSession(res.locals.user._id, function (err, result) {
+    req.model.user.unsetSessionById(res.locals.user._id, function (err, result) {
         if (err) {
             next(err);
             return;
