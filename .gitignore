@@ -8,5 +8,6 @@ lib-cov
 *.gz
 *.tgz
 
+.idea
 npm-debug.log
 node_modules
