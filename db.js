@@ -15,12 +15,11 @@ import mongo from 'mongodb';
 const
     logDB               = debug('shareview:mongodb'),
     Server              = mongo.Server,
-    ReplSet             = mongo.ReplSet,
     Db                  = mongo.Db,
     BSON                = mongo.BSONPure,
-    isDev               = process.env.NODE_ENV === 'development',
-    mongoHost           = isDev && 'localhost' || 'ds040888.mlab.com',
-    mongoPort           = isDev && 27017 || 40888,
+    mongoAuth           = process.env.DB_AUTH,
+    mongoHost           = process.env.DB_HOST || 'ds040888.mlab.com',
+    mongoPort           = process.env.DB_PORT || 40888,
 
     // Объект БД
     db = new Db('shareview', new Server(mongoHost, mongoPort), {safe: true});
@@ -31,27 +30,25 @@ const
  * @method init
  * @return {Object} db
  */
-let init = () => {
-    return new Promise((resolve) => {
-        // Соединение с БД
-        db.open((err, db) => {
+let init = new Promise((resolve) => {
+    // Соединение с БД
+    db.open((err, db) => {
+        if (err) {
+            throw new Error('Mongo error - ' + err.message);
+        }
+
+        logDB('DB opened');
+        // Авторизация
+        !mongoAuth && db.authenticate('shareview', 'XtFyKBXeChHY', (err) => {
             if (err) {
                 throw new Error('Mongo error - ' + err.message);
             }
 
-            logDB('DB opened');
-            // Авторизация
-            !isDev && db.authenticate('shareview', 'XtFyKBXeChHY', (err, result) => {
-                if (err) {
-                    throw new Error('Mongo error - ' + err.message);
-                }
-
-                logDB('DB authenticated');
-                resolve(db);
-            }) || resolve(db);
-        });
+            logDB('DB authenticated');
+            resolve(db);
+        }) || resolve(db);
     });
-};
+});
 
 
 /**

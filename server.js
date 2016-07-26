@@ -12,10 +12,12 @@ import debug from 'debug';
 import express from 'express';
 import bodyParser from 'body-parser';
 import session from 'express-session';
+import {init as db} from './db';
 
 const
     app         = express(),
-    logServer   = debug('shareview:server');
+    log         = debug('shareview:server'),
+    PORT        = +process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -28,15 +30,22 @@ app.use(session({
     name: 'shareview.sid',
     resave: false,
     saveUninitialized: true,
-    cookie: {secure: true}
+    cookie: {secure: false}
 }));
 
+app.use((req, res, next) => {
+    res.set('Server', 'Shareview');
+    res.set('X-Powered-By', 'ISMAX');
+    next();
+});
 
-let start = () => {
-    // Запуск web сервера на порту 3001/4001
-    app.listen(3001,  function () {
-        console.log('Listening on port ' + 3001);
+app.get('/', (req, res) => {
+    res.send('OK');
+});
+
+// Запуск web сервера на порту 3001/4001
+db.then(() => {
+    app.listen(PORT,  function () {
+        log('Listening on port ' + PORT);
     });
-};
-
-export default start;
+});
