@@ -8,42 +8,35 @@
 
 
 // Объявление модулей
-var express     = require('express'),
-    vhost       = require('vhost'),
-    debug       = require('debug')('express:shareview:server'),
-    exception   = require('./exception'),
+import debug from 'debug';
+import express from 'express';
+import bodyParser from 'body-parser';
+import session from 'express-session';
 
-    // Набор хостов
-    baseHost    = require('./hosts/base'),
-
+const
     app         = express(),
+    logServer   = debug('shareview:server');
 
-    /**
-     * @config host
-     * @type String
-     */
-    host;
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
-if (process.env.NODE_ENV !== 'prod') {
-    host = process.env.HOST || 'dev.shareview';
-    debug('host:%s', host);
-} else {
-    host = process.env.HOST || 'shareview';
-}
+app.set('trust proxy', 1);
 
-// Подкдючение хостов
-app.use(vhost('www.' + host + '.ru', baseHost.app));
+// Настройка сессии
+app.use(session({
+    secret: 'shareview.ismax',
+    name: 'shareview.sid',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {secure: true}
+}));
 
-/**
- * Метод запуска сервера
- *
- * @method start
- */
-exports.start = function () {
-    var port = process.env.PORT || 4001;
 
+let start = () => {
     // Запуск web сервера на порту 3001/4001
-    app.listen(port,  function () {
-        debug('Listening on port ' + port);
+    app.listen(3001,  function () {
+        console.log('Listening on port ' + 3001);
     });
 };
+
+export default start;

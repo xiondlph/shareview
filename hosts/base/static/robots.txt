@@ -1,4 +1,0 @@
-User-Agent: *
-Disallow:
-Host: www.shareview.ru
-Sitemap: http://www.shareview.ru/Sitemap.xml
