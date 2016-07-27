@@ -4,7 +4,7 @@
   "description": "Shareview review service",
   "main": "index.js",
   "scripts": {
-    "server": "better-npm-run server-dev"
+    "server": "better-npm-run server-dev-local-db"
   },
   "repository": {
     "type": "git",
@@ -12,13 +12,12 @@
   },
   "author": "ismax <shukhrat@ismax.ru>",
   "betterScripts": {
-    "server-dev": {
+    "server-dev-local-db": {
       "command": "node app",
       "env": {
         "NODE_ENV": "development",
-        "PORT": 3001,
-        "DB_HOST": "ds040888.mlab.com",
-        "DB_PORT": "40888",
+        "DB_HOST": "localhost",
+        "DB_PORT": 27017,
         "DB_AUTH": false,
         "DEBUG": [
           "shareview:app",
@@ -30,10 +29,15 @@
   },
   "dependencies": {
     "body-parser": "^1.15.2",
+    "crypto": "0.0.3",
     "debug": "^2.2.0",
     "express": "^4.14.0",
     "express-session": "^1.14.0",
-    "mongodb": "^2.2.4"
+    "mongodb": "^2.2.4",
+    "nedb": "^1.8.0",
+    "nodemailer": "^2.5.0",
+    "password-generator": "^2.0.2",
+    "validator": "^5.5.0"
   },
   "devDependencies": {
     "babel-core": "^6.11.4",

@@ -1,7 +1,3 @@
-/**
- * Created by s.m.ismailov on 26.07.2016.
- */
-
 const
     fs = require('fs'),
     babelrc = fs.readFileSync('./.babelrc');

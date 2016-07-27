@@ -8,7 +8,11 @@
 
 // Объявление модулей
 var cluster = require('cluster'),
-    log  = require('debug')('shareview:app');
+    log     = require('debug')('shareview:app'),
+    env     = require('./env');
+
+// Интеграция переменных окружения
+process.env = Object.assign(env, process.env);
 
 // Главный процесс
 if (cluster.isMaster) {

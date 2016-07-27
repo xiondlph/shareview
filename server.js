@@ -17,7 +17,33 @@ import {init as db} from './db';
 const
     app         = express(),
     log         = debug('shareview:server'),
-    PORT        = +process.env.PORT || 3000;
+    PORT        = +process.env.PORT || 3000,
+
+    /**
+     * Набор моделей
+     *
+     * @attribute model
+     * @type Object
+     */
+    model = {
+        user: require('./models/user'),
+        payment: require('./models/payment')
+    },
+
+    /**
+     * Нобор контроллеров
+     *
+     * @attribute controller
+     * @type Object
+     */
+    services = {
+        user: require('./services/user'),
+        secure: require('./services/secure'),
+    };
+
+// Настройка шаблонизатора
+app.set('views', __dirname + '/views/');
+app.set('view engine', 'ejs');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -38,6 +64,8 @@ app.use((req, res, next) => {
     res.set('X-Powered-By', 'ISMAX');
     next();
 });
+
+app.all('*', model.user, services.secure.user);
 
 app.get('/', (req, res) => {
     res.send('OK');
