@@ -104,8 +104,8 @@ const
                             text: text,
                             headers: {
                                 'X-Mailer': 'SHAREVIEW'
-                            },
-                            localAddress: '194.87.197.55'
+                            }
+                            //localAddress: '194.87.197.55'
                         }, function (err, response) {
                             if (err) {
                                 next(err);

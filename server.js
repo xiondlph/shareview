@@ -67,6 +67,8 @@ app.use((req, res, next) => {
 
 app.all('*', model.user, services.secure.user);
 
+app.post('/create', services.user.create);
+
 app.get('/', (req, res) => {
     res.send('OK');
 });
