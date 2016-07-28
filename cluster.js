@@ -1,14 +1,14 @@
 /**
- * Главный модуль приложения - точка входа
+ * Модуль запуска через кластеры - точка входа
  *
- * @module      Main
+ * @module      Сluster
  * @main        Shareview review service
  * @author      Ismax <shukhrat@ismax.ru>
  */
 
 // Объявление модулей
 var cluster = require('cluster'),
-    log     = require('debug')('shareview:app'),
+    log     = require('debug')('shareview:cluster'),
     env     = require('./env');
 
 // Интеграция переменных окружения

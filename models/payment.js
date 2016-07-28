@@ -2,7 +2,7 @@
  * Модель данных системы платежей
  *
  * @module      Model.Payment
- * @class       Model.Payment
+ * @namespace   Model
  * @main        Shareview review service
  * @author      Ismax <shukhrat@ismax.ru>
  */
@@ -10,95 +10,100 @@
 // Объявление модулей
 import db from '../db';
 
-/**
- * Экспорт методов модели данных системы безопастности
- *
- * @method payment
- * @param {Object} req Объект запроса сервера
- * @param {Object} res Объект ответа сервера
- * @param {Function} next
- */
-export default function (req, res, next) {
-
-
-    // Инициализация объекта модели
-    if (!req.hasOwnProperty('model')) {
-        req.model = {};
-    }
-
+const
     /**
-     * Объект модели данных
-     * интегрированный в объект запроса
+     * Экспорт методов модели данных системы безопастности
      *
-     * @attribute model.payment
-     * @type Object
+     * @method payment
+     * @param {Object} req Объект запроса сервера
+     * @param {Object} res Объект ответа сервера
+     * @param {Function} next
      */
-    req.model.payment = {
+    payment = (req, res, next) => {
 
+
+        // Инициализация объекта модели
+        if (!req.hasOwnProperty('model')) {
+            req.model = {};
+        }
 
         /**
-         * Добавление нового уведомления
+         * Объект модели данных
+         * интегрированный в объект запроса
          *
-         * @method add
-         * @param {Object} data
-         * @param {Function} accept
+         * @attribute model.payment
+         * @type Object
          */
-        add: function (data, accept) {
-            db.collection('payments', function (err, collection) {
-                if (err) {
-                    throw new Error('Mongo error - ' + err.message);
-                }
+        req.model.payment = {
 
-                collection.insert(data, function (err, payment) {
+
+            /**
+             * Добавление нового уведомления
+             *
+             * @method add
+             * @param {Object} data
+             * @param {Function} accept
+             */
+            add: function (data, accept) {
+                db.collection('payments', function (err, collection) {
                     if (err) {
                         throw new Error('Mongo error - ' + err.message);
                     }
 
-                    if (typeof accept === 'function') {
-                        accept(payment);
-                    }
+                    collection.insert(data, function (err, payment) {
+                        if (err) {
+                            throw new Error('Mongo error - ' + err.message);
+                        }
+
+                        if (typeof accept === 'function') {
+                            accept(payment);
+                        }
+                    });
                 });
-            });
-        },
+            },
 
 
-        /**
-         * Получение списка уведомлений пользователя по email
-         *
-         * @method listByEmail
-         * @param {Object} data
-         * @param {Function} accept
-         */
-        listByEmail: function (email, skip, limit, accept) {
-            skip  = skip  || 0;
-            limit = limit || 0;
+            /**
+             * Получение списка уведомлений пользователя по email
+             *
+             * @method listByEmail
+             * @param {Function} accept
+             * @param email
+             * @param skip
+             * @param limit
+             */
+            listByEmail: function (email, skip, limit, accept) {
+                skip  = skip  || 0;
+                limit = limit || 0;
 
-            db.collection('payments', function (err, collection) {
-                if (err) {
-                    accept(new Error('Mongo error - ' + err.message));
-                    return;
-                }
-
-                collection.find({label: email}, {sort: {_id: -1}}).count(function (err, count) {
+                db.collection('payments', function (err, collection) {
                     if (err) {
                         accept(new Error('Mongo error - ' + err.message));
                         return;
                     }
 
-                    collection.find({label: email}, {fields: {'datetime': 1, 'withdraw_amount': 1, '_lastPeriod': 1, '_newPeriod': 1}, sort: {_id: -1}, skip: skip, limit: limit}).toArray(function (err, payments) {
+                    collection.find({label: email}, {sort: {_id: -1}}).count(function (err, count) {
                         if (err) {
                             accept(new Error('Mongo error - ' + err.message));
                             return;
                         }
 
-                        if (typeof accept === 'function') {
-                            accept(null, payments, count);
-                        }
+                        collection.find({label: email}, {fields: {'datetime': 1, 'withdraw_amount': 1, '_lastPeriod': 1, '_newPeriod': 1}, sort: {_id: -1}, skip: skip, limit: limit}).toArray(function (err, payments) {
+                            if (err) {
+                                accept(new Error('Mongo error - ' + err.message));
+                                return;
+                            }
+
+                            if (typeof accept === 'function') {
+                                accept(null, payments, count);
+                            }
+                        });
                     });
                 });
-            });
-        }
+            }
+        };
+
+        next();
     };
 
-    next();
-};
+module.exports = payment;

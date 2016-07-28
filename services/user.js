@@ -2,7 +2,6 @@
  * User сервис
  *
  * @module      Service.User
- * @class       Service.User
  * @main        Shareview review service
  * @author      Ismax <shukhrat@ismax.ru>
  */

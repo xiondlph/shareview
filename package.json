@@ -4,7 +4,8 @@
   "description": "Shareview review service",
   "main": "index.js",
   "scripts": {
-    "server": "better-npm-run server-dev-local-db"
+    "server": "better-npm-run server-dev-local-db",
+    "jsdoc": "better-npm-run jsdoc"
   },
   "repository": {
     "type": "git",
@@ -20,11 +21,15 @@
         "DB_PORT": 27017,
         "DB_AUTH": false,
         "DEBUG": [
-          "shareview:app",
+          "shareview:cluster",
+          "shareview:index",
           "shareview:mongodb",
           "shareview:server"
         ]
       }
+    },
+    "jsdoc": {
+      "command": "jsdoc -c .jsdoc"
     }
   },
   "dependencies": {
