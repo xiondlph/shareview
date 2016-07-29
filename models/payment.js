@@ -2,7 +2,6 @@
  * Модель данных системы платежей
  *
  * @module      Model.Payment
- * @namespace   Model
  * @main        Shareview review service
  * @author      Ismax <shukhrat@ismax.ru>
  */

@@ -2,7 +2,6 @@
  * Модель данных пользователя
  *
  * @module      Model.User
- * @namespace   Model
  * @main        Shareview review service
  * @author      Ismax <shukhrat@ismax.ru>
  */
@@ -20,9 +19,9 @@ const
      * Экспорт методов модели данных системы безопастности
      *
      * @method User
-     * @param {Object} req Объект запроса сервера
-     * @param {Object} res Объект ответа сервера
-     * @param {Function} next Следующий слой обработки запроса
+     * @param {Object} req - Объект запроса сервера
+     * @param {Object} res - Объект ответа сервера
+     * @param {Function} next - Следующий слой обработки запроса
      */
     user = (req, res, next) => {
 
