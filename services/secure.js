@@ -2,7 +2,6 @@
  * Secure сервис
  *
  * @module      Service.Secure
- * @class       Service.Secure
  * @main        Shareview review service
  * @author      Ismax <shukhrat@ismax.ru>
  */
@@ -146,7 +145,7 @@ const
         });
     };
 
-export {
+export default {
     index,
     user,
     auth,

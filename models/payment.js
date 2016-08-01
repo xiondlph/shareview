@@ -105,4 +105,4 @@ const
         next();
     };
 
-module.exports = payment;
+export default payment;

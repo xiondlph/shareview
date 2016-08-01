@@ -603,4 +603,4 @@ const
         next();
     };
 
-module.exports = user;
+export default user;
