@@ -9,8 +9,14 @@
 // Объявление модулей
 import secure from './secure';
 import user from './user';
+import profile from './profile';
+import review from './review';
+import payment from './payment';
 
 export default {
     secure,
-    user
+    user,
+    profile,
+    review,
+    payment
 }

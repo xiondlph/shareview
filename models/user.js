@@ -155,7 +155,7 @@ const
                         return;
                     }
 
-                    mongo.db.collection('users', function (err, collection) {
+                    db.collection('users', function (err, collection) {
                         if (err) {
                             accept(new Error('Mongo error - ' + err.message));
                             return;

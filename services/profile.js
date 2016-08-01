@@ -141,3 +141,9 @@ const
             });
         });
     };
+
+export default {
+    get,
+    set,
+    password
+};

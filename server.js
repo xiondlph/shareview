@@ -15,6 +15,7 @@ import session from 'express-session';
 import {init as db} from './db';
 import models from './models';
 import services from './services';
+import utils from './utils';
 
 const
     app         = express(),
@@ -43,12 +44,30 @@ app.use((req, res, next) => {
 
 app.all('*', models.user, services.secure.user);
 
-app.post('/create', services.user.create);
+// Secure
+app.post('/user/signin', services.secure.signin);
+app.get('/user/signout', services.secure.signout);
 
-app.get('/', (req, res) => {
-    test();
-    res.send('OK');
-});
+// User
+app.post('/user/create', services.user.create);
+app.post('/user/forgot', services.user.forgot);
+
+// Review
+app.get('/review', utils.request.api, services.review.get);
+
+// API
+app.all('/api/*', services.secure.auth);
+
+// Profile (api)...
+app.get('/api/profile', services.user.sync, services.profile.get);
+app.put('/api/profile', services.profile.set);
+app.post('/api/password', services.profile.password);
+
+// Payment (api)...
+app.get('/api/payment', models.payment, services.payment.list);
+
+// Обработка запроса уведовления от ЯД
+app.post('/ym_notification', models.payment, services.payment.notification);
 
 // 404 (Not found)
 app.use((req, res) => {

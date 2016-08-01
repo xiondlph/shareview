@@ -39,7 +39,7 @@ let init = new Promise((resolve) => {
 
         logDB('DB opened');
         // Авторизация
-        !mongoAuth && db.authenticate('shareview', 'XtFyKBXeChHY', (err) => {
+        mongoAuth && db.authenticate('shareview', 'XtFyKBXeChHY', (err) => {
             if (err) {
                 throw new Error('Mongo error - ' + err.message);
             }

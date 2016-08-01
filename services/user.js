@@ -200,7 +200,7 @@ const
      * @param {Object} res Объект ответа сервера
      */
     sync = (req, res, next) => {
-        req.store.user.sync(res.locals.user._id, function (err, user) {
+        req.store.user.sync(res.locals.user._id, (err, user) => {
             if (err) {
                 next(err);
                 return;
@@ -212,5 +212,7 @@ const
     };
 
 export default {
-    create
+    create,
+    forgot,
+    sync
 };
