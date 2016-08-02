@@ -12,22 +12,6 @@ import crypto from 'crypto';
 import validator from 'validator';
 
 const
-    /**
-     * Страница контроллера
-     *
-     * @method index
-     * @param {Object} req Объект запроса сервера
-     * @param {Object} res Объект ответа сервера
-     */
-    index = (req, res) => {
-        if (res.locals.user) {
-            res.redirect('/admin');
-            return;
-        }
-
-        res.render('secure');
-    },
-
 
     /**
      * Получение пользователя
@@ -68,14 +52,7 @@ const
             return;
         }
 
-        if (req.xhr) {
-            res.status(403).send({
-                success: false
-            });
-            return;
-        }
-
-        res.redirect('/user');
+        res.status(403).send({errors: ["Forbidden resource"]});
     },
 
 
@@ -147,7 +124,6 @@ const
     };
 
 export default {
-    index,
     user,
     auth,
     signin,

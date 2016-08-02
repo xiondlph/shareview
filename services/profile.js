@@ -81,7 +81,7 @@ const
     set = (req, res, next) => {
         var data = {};
 
-        if (req.body.hasOwnProperty('address')) {
+        if (req.body.address) {
             if (!validator.isIP(req.body.address)) {
                 next(new Error('Validate error - address is invalid'));
                 return;
@@ -90,7 +90,7 @@ const
             data.address = req.body.address;
         }
 
-        if (req.body.hasOwnProperty('email')) {
+        if (req.body.email) {
             if (!validator.isEmail(req.body.email)) {
                 next(new Error('Validate error - email is invalid'));
                 return;

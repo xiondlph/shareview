@@ -17,7 +17,7 @@ const
     Server              = mongo.Server,
     Db                  = mongo.Db,
     BSON                = mongo.BSONPure,
-    mongoAuth           = process.env.DB_AUTH,
+    mongoAuth           = +process.env.DB_AUTH,
     mongoHost           = process.env.DB_HOST || 'ds040888.mlab.com',
     mongoPort           = process.env.DB_PORT || 40888,
 
