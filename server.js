@@ -48,13 +48,7 @@ app.all('*', models.user, services.secure.user);
 app.post('/user/signin', services.secure.signin);
 app.get('/user/signout', services.secure.signout);
 
-
-/**
- * Создание новго пользователя
- *
- * @method
- * @param email
- */
+// User
 app.post('/user/create', services.user.create);
 app.post('/user/forgot', services.user.forgot);
 
