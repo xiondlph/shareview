@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "server": "better-npm-run server-dev-local-db",
+    "test": "jest",
     "jsdoc": "better-npm-run jsdoc"
   },
   "repository": {
@@ -14,17 +15,18 @@
   "author": "ismax <shukhrat@ismax.ru>",
   "betterScripts": {
     "server-dev-local-db": {
-      "command": "node app",
+      "command": "node index",
       "env": {
         "NODE_ENV": "development",
         "DB_HOST": "localhost",
         "DB_PORT": 27017,
-        "DB_AUTH": false,
+        "DB_AUTH": 0,
         "DEBUG": [
           "shareview:cluster",
           "shareview:index",
           "shareview:mongodb",
-          "shareview:server"
+          "shareview:server",
+          "express:*"
         ]
       }
     },
@@ -49,6 +51,13 @@
     "babel-preset-es2015": "^6.9.0",
     "better-npm-run": "0.0.10",
     "docdash": "^0.4.0",
-    "jsdoc": "^3.4.0"
+    "eslint": "^3.2.2",
+    "eslint-config-airbnb": "^10.0.0",
+    "eslint-plugin-import": "^1.12.0",
+    "eslint-plugin-jsx-a11y": "^2.0.1",
+    "eslint-plugin-react": "^6.0.0",
+    "jest-cli": "^14.1.0",
+    "jsdoc": "^3.4.0",
+    "supertest": "^2.0.0"
   }
 }
