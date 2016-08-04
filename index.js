@@ -7,8 +7,9 @@
  */
 
 // Объявление модулей
-var log     = require('debug')('shareview:index'),
-    env     = require('./env');
+const
+    log = require('debug')('shareview:index'),
+    env = require('./env');
 
 // Интеграция переменных окружения
 process.env = Object.assign(env, process.env);
