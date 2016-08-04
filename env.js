@@ -11,5 +11,5 @@ module.exports = {
     PORT: 3001,
     DB_HOST: "ds040888.mlab.com",
     DB_PORT: 40888,
-    DB_AUTH: true,
+    DB_AUTH: 1,
 };

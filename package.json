@@ -4,8 +4,10 @@
   "description": "Shareview review service",
   "main": "index.js",
   "scripts": {
-    "server": "better-npm-run server-dev-local-db",
+    "server-dev-local-db": "better-npm-run server-dev-local-db",
+    "server-dev": "better-npm-run server-dev",
     "test": "jest",
+    "lint:js": "eslint",
     "jsdoc": "better-npm-run jsdoc"
   },
   "repository": {
@@ -30,9 +32,25 @@
         ]
       }
     },
+    "server-dev": {
+      "command": "node index",
+      "env": {
+        "NODE_ENV": "development",
+        "DEBUG": [
+          "shareview:cluster",
+          "shareview:index",
+          "shareview:mongodb",
+          "shareview:server",
+          "express:*"
+        ]
+      }
+    },
     "jsdoc": {
       "command": "node ./node_modules/jsdoc/jsdoc.js -c .jsdoc"
     }
+  },
+  "lint-staged": {
+    "*.js": "lint:js"
   },
   "dependencies": {
     "body-parser": "^1.15.2",
@@ -58,6 +76,7 @@
     "eslint-plugin-react": "^6.0.0",
     "jest-cli": "^14.1.0",
     "jsdoc": "^3.4.0",
+    "lint-staged": "^2.0.3",
     "supertest": "^2.0.0"
   }
 }

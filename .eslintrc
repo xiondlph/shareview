@@ -8,6 +8,7 @@
         "jest": true
     },
     "rules": {
+        "arrow-body-style": ["error", "always"],
         "indent": [
             2,
             4,

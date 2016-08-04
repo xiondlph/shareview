@@ -2,12 +2,11 @@ lib-cov
 *.seed
 *.log
 *.csv
-*.dat
 *.out
 *.pid
 *.gz
 *.tgz
 
-.idea/
-npm-debug.log
+.idea/*
 node_modules
+store/
