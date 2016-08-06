@@ -54,7 +54,10 @@
   "lint-staged": {
     "*.js": ["eslint:fix", "git:add"]
   },
-  "pre-commit": "lint-staged",
+  "pre-commit": [
+    "lint-staged",
+    "test"
+  ],
   "dependencies": {
     "body-parser": "^1.15.2",
     "crypto": "0.0.3",

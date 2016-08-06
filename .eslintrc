@@ -8,7 +8,10 @@
         "jest": true
     },
     "rules": {
+        "no-underscore-dangle": ["error", { "allow": ["_id"] }],
+        "no-param-reassign": ["error", { "props": false }],
         "arrow-body-style": ["error", "always"],
+        "no-shadow": ["error", { "allow": ["req", "res", "err"] }],
         "indent": [
             2,
             4,

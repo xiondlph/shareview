@@ -17,9 +17,9 @@ import services from './services';
 import utils from './utils';
 
 const
-    app         = express(),
-    log         = debug('shareview:server'),
-    PORT        = +process.env.PORT || 3000;
+    app = express(),
+    log = debug('shareview:server'),
+    PORT = +process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -32,7 +32,7 @@ app.use(session({
     name: 'shareview.sid',
     resave: false,
     saveUninitialized: true,
-    cookie: {secure: false}
+    cookie: { secure: false },
 }));
 
 app.use((req, res, next) => {
@@ -70,18 +70,18 @@ app.post('/ym_notification', models.payment, services.payment.notification);
 
 // 404 (Not found)
 app.use((req, res) => {
-    res.status(404).send({errors: ["Not found"]});
+    res.status(404).send({ errors: ['Not found'] });
 });
 
 // 500 (Internal server error)
-app.use((err, req, res, next) => {
-    res.status(500).send({errors: ["Internal server error"]});
+app.use((err, req, res) => {
+    res.status(500).send({ errors: ['Internal server error'] });
     log(err);
 });
 
 // Запуск web сервера на порту 3001/4001
 db.then(() => {
-    app.listen(PORT,  function () {
-        log('Listening on port ' + PORT);
+    app.listen(PORT, () => {
+        log(`Listening on port ${PORT}`);
     });
 });

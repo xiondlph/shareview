@@ -3,6 +3,7 @@ jest.unmock('supertest');
 var request = require('supertest'),
     agent = request.agent('http://localhost:3001');
 
+
 describe('Запросы к API - ', () => {
     it('Авторизация: /user/signin', () => {
         return new Promise((resolve, reject) => {

