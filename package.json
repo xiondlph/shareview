@@ -52,7 +52,10 @@
   "lint-staged": {
     "*.js": "eslint"
   },
-  "pre-commit": "lint-staged",
+  "pre-commit": [
+    "lint-staged",
+    "jest"
+  ],
   "dependencies": {
     "body-parser": "^1.15.2",
     "crypto": "0.0.3",

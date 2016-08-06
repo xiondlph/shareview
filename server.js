@@ -6,7 +6,6 @@
  * @author      Ismax <shukhrat@ismax.ru>
  */
 
-
 // Объявление модулей
 import debug from 'debug';
 import express from 'express';
