@@ -7,7 +7,7 @@
     "server-dev-local-db": "better-npm-run server-dev-local-db",
     "server-dev": "better-npm-run server-dev",
     "test": "jest",
-    "lint:js": "eslint --fix",
+    "lint": "lint-staged",
     "jsdoc": "better-npm-run jsdoc"
   },
   "repository": {
@@ -50,7 +50,7 @@
     }
   },
   "lint-staged": {
-    "*.js": "lint:js"
+    "*.js": "eslint"
   },
   "pre-commit": "lint-staged",
   "dependencies": {
@@ -79,6 +79,7 @@
     "jsdoc": "^3.4.0",
     "lint-staged": "^2.0.3",
     "pre-commit": "^1.1.3",
+    "superagent": "^2.1.0",
     "supertest": "^2.0.0"
   }
 }

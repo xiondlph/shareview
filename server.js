@@ -12,7 +12,7 @@ import debug from 'debug';
 import express from 'express';
 import bodyParser from 'body-parser';
 import session from 'express-session';
-import {init as db} from './db';
+import { init as db } from './db';
 import models from './models';
 import services from './services';
 import utils from './utils';
