@@ -7,8 +7,10 @@
     "server-dev-local-db": "better-npm-run server-dev-local-db",
     "server-dev": "better-npm-run server-dev",
     "test": "jest",
-    "lint": "lint-staged",
-    "jsdoc": "better-npm-run jsdoc"
+    "jsdoc": "better-npm-run jsdoc",
+    "lint-staged": "lint-staged",
+    "eslint:fix": "eslint --fix",
+    "git:add": "git add"
   },
   "repository": {
     "type": "git",
@@ -50,12 +52,9 @@
     }
   },
   "lint-staged": {
-    "*.js": "eslint"
+    "*.js": ["eslint:fix", "git:add"]
   },
-  "pre-commit": [
-    "lint-staged",
-    "jest"
-  ],
+  "pre-commit": "lint-staged",
   "dependencies": {
     "body-parser": "^1.15.2",
     "crypto": "0.0.3",
