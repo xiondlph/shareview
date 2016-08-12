@@ -123,6 +123,7 @@ const
      * @method forgot
      * @param {Object} req Объект запроса сервера
      * @param {Object} res Объект ответа сервера
+     * @param {Function} next
      */
     forgot = (req, res, next) => {
         var transporter,
@@ -196,6 +197,7 @@ const
      * @method sync
      * @param {Object} req Объект запроса сервера
      * @param {Object} res Объект ответа сервера
+     * @param {Function} next
      */
     sync = (req, res, next) => {
         req.store.user.sync(res.locals.user._id, (err, user) => {

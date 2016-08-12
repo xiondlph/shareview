@@ -57,6 +57,7 @@ const
      * @method get
      * @param {Object} req Объект запроса сервера
      * @param {Object} res Объект ответа сервера
+     * @param {Function} next
      */
     get = (req, res) => {
         res.send({
