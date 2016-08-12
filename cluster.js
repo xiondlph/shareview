@@ -8,8 +8,8 @@
 
 // Объявление модулей
 var cluster = require('cluster'),
-    log     = require('debug')('shareview:cluster'),
-    env     = require('./env');
+    log = require('debug')('shareview:cluster'),
+    env = require('./env');
 
 // Интеграция переменных окружения
 process.env = Object.assign(env, process.env);
@@ -34,8 +34,13 @@ if (cluster.isMaster) {
     log('%s - Start worker', (new Date()).toUTCString());
     log('Worker %s pid %s', cluster.worker && cluster.worker.id, process.pid);
 
-    require('./babel');
+    if (process.env.NODE_ENV === 'development') {
+        require('./babel');
 
-    // Модуль web-сервера
-    require('./server');
+        // Модуль web-сервера
+        require('./server');
+    } else {
+        // Модуль web-сервера (Скомпилированный)
+        require('./compile/server');
+    }
 }

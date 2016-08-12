@@ -9,4 +9,5 @@ lib-cov
 
 .idea/*
 node_modules
-store/
+store
+compile

@@ -12,29 +12,29 @@ import validator from 'validator';
 
 // Обновление данных профиля
 function updateProfile(req, res, next, data) {
-    req.model.user.update(res.locals.user._id, data, function (err, result) {
+    req.model.user.update(res.locals.user._id, data, (err) => {
         if (err) {
             next(err);
             return;
         }
 
-        req.model.user.sync(res.locals.user._id, function (err, result) {
+        req.model.user.sync(res.locals.user._id, (err) => {
             if (err) {
                 next(err);
                 return;
             }
 
             res.send({
-                success: true
+                success: true,
             });
         });
     });
-};
+}
 
 
-// Проверка дубликатов email
+// Проверка дубликатов mail
 function isExistByEmail(req, res, next, accept) {
-    req.model.user.isExistByEmail(req.body.email, function (err, count) {
+    req.model.user.isExistByEmail(req.body.email, (err, count) => {
         if (err) {
             next(err);
             return;
@@ -46,7 +46,7 @@ function isExistByEmail(req, res, next, accept) {
             accept(false); // Уникальный
         }
     });
-};
+}
 
 
 const
@@ -62,11 +62,11 @@ const
         res.send({
             success: true,
             profile: {
-                email:      res.locals.user.email,
-                address:    res.locals.user.address,
-                key:        res.locals.user.salt,
-                period:     res.locals.user.period
-            }
+                email: res.locals.user.email,
+                address: res.locals.user.address,
+                key: res.locals.user.salt,
+                period: res.locals.user.period,
+            },
         });
     },
 
@@ -77,6 +77,7 @@ const
      * @method set
      * @param {Object} req Объект запроса сервера
      * @param {Object} res Объект ответа сервера
+     * @param {Function} next
      */
     set = (req, res, next) => {
         var data = {};
@@ -92,17 +93,17 @@ const
 
         if (req.body.email) {
             if (!validator.isEmail(req.body.email)) {
-                next(new Error('Validate error - email is invalid'));
+                next(new Error('Validate error - mail is invalid'));
                 return;
             }
 
             data.email = req.body.email;
 
-            isExistByEmail(req, res, next, function (exist) {
+            isExistByEmail(req, res, next, (exist) => {
                 if (exist) {
                     res.send({
                         success: false,
-                        exist: true
+                        exist: true,
                     });
 
                     return;
@@ -117,27 +118,28 @@ const
     },
 
 
-
     /**
      * Смена текущего пароля
      *
      * @method password
      * @param {Object} req Объект запроса сервера
      * @param {Object} res Объект ответа сервера
+     * @param {Function} next
      */
     password = (req, res, next) => {
         if (!validator.isLength(req.body.password, 1, 255)) {
             next(new Error('Validate error - password is invalid'));
         }
 
-        req.model.user.setPasswordId(res.locals.user._id, crypto.createHmac('sha256', req.body.password).digest('hex'), function (err, result) {
+        const pwd = crypto.createHmac('sha256', req.body.password).digest('hex');
+        req.model.user.setPasswordId(res.locals.user._id, pwd, (err) => {
             if (err) {
                 next(err);
                 return;
             }
 
             res.send({
-                success: true
+                success: true,
             });
         });
     };
@@ -145,5 +147,5 @@ const
 export default {
     get,
     set,
-    password
+    password,
 };

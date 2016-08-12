@@ -2,12 +2,13 @@
   "name": "Shareview",
   "version": "1.0.0",
   "description": "Shareview review service",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "server-dev-local-db": "better-npm-run server-dev-local-db",
     "server-dev": "better-npm-run server-dev",
-    "test": "jest",
+    "build": "better-npm-run compile",
     "jsdoc": "better-npm-run jsdoc",
+    "test": "jest",
     "lint-staged": "lint-staged",
     "eslint:fix": "eslint --fix",
     "git:add": "git add"
@@ -19,7 +20,7 @@
   "author": "ismax <shukhrat@ismax.ru>",
   "betterScripts": {
     "server-dev-local-db": {
-      "command": "node index",
+      "command": "node app",
       "env": {
         "NODE_ENV": "development",
         "DB_HOST": "localhost",
@@ -35,7 +36,7 @@
       }
     },
     "server-dev": {
-      "command": "node index",
+      "command": "node app",
       "env": {
         "NODE_ENV": "development",
         "DEBUG": [
@@ -47,21 +48,28 @@
         ]
       }
     },
+    "compile": {
+      "command": "node ./node_modules/babel-cli/bin/babel.js . --ignore compile,node_modules,__tests__,store,app.js,babel.js,env.js --out-dir compile"
+    },
     "jsdoc": {
       "command": "node ./node_modules/jsdoc/jsdoc.js -c .jsdoc"
     }
   },
   "lint-staged": {
-    "*.js": ["eslint:fix", "git:add"]
+    "*.js": [
+      "eslint:fix",
+      "git:add"
+    ]
   },
   "pre-commit": [
-    "lint-staged",
-    "test"
+    // "lint-staged",
+    // "test"
   ],
   "dependencies": {
     "body-parser": "^1.15.2",
     "crypto": "0.0.3",
     "debug": "^2.2.0",
+    "ejs": "^2.5.1",
     "express": "^4.14.0",
     "express-session": "^1.14.0",
     "mongodb": "^2.2.4",
@@ -71,6 +79,7 @@
     "validator": "^5.5.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.11.4",
     "babel-core": "^6.11.4",
     "babel-preset-es2015": "^6.9.0",
     "better-npm-run": "0.0.10",

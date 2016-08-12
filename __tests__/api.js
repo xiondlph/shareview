@@ -9,7 +9,7 @@ describe('Запросы к API - ', () => {
         return new Promise((resolve, reject) => {
             agent
                 .post('/user/signin')
-                .send({ email: 'shukhrat@ismax.ru', password: '123' })
+                .send({ email: 'shukhrat@ismax.ru', password: 'XtFyKBXeChHY' })
                 .expect(200)
                 .expect('set-cookie', /^shareview.sid=(.*)/)
                 .end((err, res) => {

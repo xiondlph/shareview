@@ -21,6 +21,10 @@ const
     log = debug('shareview:server'),
     PORT = +process.env.PORT || 3000;
 
+// Настройка шаблонизатора
+app.set('views', `${process.env.APPPATH}/views/`);
+app.set('view engine', 'ejs');
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 

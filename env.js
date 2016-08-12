@@ -7,9 +7,10 @@
  */
 
 module.exports = {
-    NODE_ENV: "prodaction",
+    NODE_ENV: 'prodaction',
     PORT: 3001,
-    DB_HOST: "ds040888.mlab.com",
+    APPPATH: __dirname,
+    DB_HOST: 'ds040888.mlab.com',
     DB_PORT: 40888,
     DB_AUTH: 1,
 };

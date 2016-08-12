@@ -13,7 +13,7 @@ import db from '../db';
 const
 
     // Хранилище пользователей
-    store = new Nedb({ filename: __dirname + '/../store/users.json', autoload: true }),
+    store = new Nedb({ filename: `${process.env.APPPATH}/store/users.json`, autoload: true }),
 
     /**
      * Экспорт методов модели данных системы безопастности
@@ -24,7 +24,6 @@ const
      * @param {Function} next - Следующий слой обработки запроса
      */
     user = (req, res, next) => {
-
         // Инициализация объекта хранилища
         if (!req.hasOwnProperty('store')) {
             req.store = {};
@@ -53,8 +52,8 @@ const
              * @param {String} key
              * @param {Function} accept
              */
-            getUserByKey: function (key, accept) {
-                store.findOne({'salt': key}, function (err, user) {
+            getUserByKey(key, accept) {
+                store.findOne({ 'salt': key }, function (err, user) {
                     if (err) {
                         accept(new Error('NeDB error - ' + err.message));
                         return;
@@ -74,8 +73,8 @@ const
              * @param {String} address
              * @param {Function} accept
              */
-            getUserByAddress: function (address, accept) {
-                store.findOne({'address': address}, function (err, user) {
+            getUserByAddress(address, accept) {
+                store.findOne({ 'address': address }, function (err, user) {
                     if (err) {
                         accept(new Error('NeDB error - ' + err.message));
                         return;
@@ -95,13 +94,13 @@ const
              * @param {Object} user
              * @param {Function} accept
              */
-            create: function (user, accept) {
+            create(user, accept) {
                 var data = {
-                    '_id':      user._id.toString(),
-                    'salt':     user.salt,
-                    'email':    user.email,
-                    'address':  user.address,
-                    'period':   user.period
+                    '_id': user._id.toString(),
+                    'salt': user.salt,
+                    'email': user.email,
+                    'address': user.address,
+                    'period': user.period,
                 };
 
                 store.insert(data, function (err, user) {
@@ -126,8 +125,8 @@ const
              * @param {Number} period
              * @param {Function} accept
              */
-            updatePeriod: function (id, period, accept) {
-                store.update({_id: id.toString()}, {$set: {period: period}}, function (err, result) {
+            updatePeriod(id, period, accept) {
+                store.update({ _id: id.toString() }, { $set: { period } }, function (err, result) {
                     if (err) {
                         accept(new Error('NeDB error - ' + err.message));
                         return;
@@ -148,8 +147,8 @@ const
              * @param {Nubber} id
              * @param {Function} accept
              */
-            sync: function (id, accept) {
-                store.findOne({'_id': id.toString()}, function (err, user) {
+            sync(id, accept) {
+                store.findOne({ '_id': id.toString() }, function (err, user) {
                     if (err) {
                         accept(new Error('NeDB error - ' + err.message));
                         return;
@@ -161,9 +160,9 @@ const
                             return;
                         }
 
-                        collection.findAndModify({'_id': id}, [['email', 1]], {$set: {
-                            'period': user.period
-                        }}, {new: true}, function (err, result) {
+                        collection.findAndModify({ '_id': id }, [['email', 1]], { $set: {
+                            'period': user.period,
+                        } }, { new: true }, function (err, result) {
                             if (err) {
                                 accept(new Error('Mongo error - ' + err.message));
                                 return;
@@ -175,7 +174,7 @@ const
                         });
                     });
                 });
-            }
+            },
         };
 
 
@@ -196,14 +195,14 @@ const
              * @param {Number} id
              * @param {Function} accept
              */
-            getUserById: function (id, accept) {
+            getUserById(id, accept) {
                 db.collection('users', function (err, collection) {
                     if (err) {
                         accept(new Error('Mongo error - ' + err.message));
                         return;
                     }
 
-                    collection.findOne({'_id': id}, function (err, user) {
+                    collection.findOne({ '_id': id }, function (err, user) {
                         if (err) {
                             accept(new Error('Mongo error - ' + err.message));
                             return;
@@ -224,14 +223,14 @@ const
              * @param {String} sid
              * @param {Function} accept
              */
-            getUserBySession: function (sid, accept) {
+            getUserBySession(sid, accept) {
                 db.collection('users', function (err, collection) {
                     if (err) {
                         accept(new Error('Mongo error - ' + err.message));
                         return;
                     }
 
-                    collection.findOne({sid: sid}, function (err, user) {
+                    collection.findOne({ sid }, function (err, user) {
                         if (err) {
                             accept(new Error('Mongo error - ' + err.message));
                             return;
@@ -252,14 +251,14 @@ const
              * @param {String} email
              * @param {Function} accept
              */
-            getUserByEmail: function (email, accept) {
+            getUserByEmail(email, accept) {
                 db.collection('users', function (err, collection) {
                     if (err) {
                         accept(new Error('Mongo error - ' + err.message));
                         return;
                     }
 
-                    collection.findOne({'email': email}, function (err, user) {
+                    collection.findOne({ 'email': email }, function (err, user) {
                         if (err) {
                             accept(new Error('Mongo error - ' + err.message));
                             return;
@@ -280,14 +279,14 @@ const
              * @param {String} key
              * @param {Function} accept
              */
-            getUserByKey: function (key, accept) {
+            getUserByKey(key, accept) {
                 db.collection('users', function (err, collection) {
                     if (err) {
                         accept(new Error('Mongo error - ' + err.message));
                         return;
                     }
 
-                    collection.findOne({'salt': key}, function (err, user) {
+                    collection.findOne({ 'salt': key }, function (err, user) {
                         if (err) {
                             accept(new Error('Mongo error - ' + err.message));
                             return;
@@ -308,14 +307,14 @@ const
              * @param {String} address
              * @param {Function} accept
              */
-            getUserByAddress: function (address, accept) {
+            getUserByAddress(address, accept) {
                 db.collection('users', function (err, collection) {
                     if (err) {
                         accept(new Error('Mongo error - ' + err.message));
                         return;
                     }
 
-                    collection.findOne({'address': address}, function (err, user) {
+                    collection.findOne({ 'address': address }, function (err, user) {
                         if (err) {
                             accept(new Error('Mongo error - ' + err.message));
                             return;
@@ -336,14 +335,14 @@ const
              * @param {String} email
              * @param {Function} accept
              */
-            isExistByEmail: function (email, accept) {
+            isExistByEmail(email, accept) {
                 db.collection('users', function (err, collection) {
                     if (err) {
                         accept(new Error('Mongo error - ' + err.message));
                         return;
                     }
 
-                    collection.count({'email': email}, function (err, count) {
+                    collection.count({ 'email': email }, function (err, count) {
                         if (err) {
                             accept(new Error('Mongo error - ' + err.message));
                             return;
@@ -364,7 +363,7 @@ const
              * @param {Object} user
              * @param {Function} accept
              */
-            create: function (user, accept) {
+            create(user, accept) {
                 db.collection('users', function (err, collection) {
                     if (err) {
                         accept(new Error('Mongo error - ' + err.message));
@@ -393,14 +392,14 @@ const
              * @param {Object} data
              * @param {Function} accept
              */
-            update: function (id, data, accept) {
+            update(id, data, accept) {
                 db.collection('users', function (err, collection) {
                     if (err) {
                         accept(new Error('Mongo error - ' + err.message));
                         return;
                     }
 
-                    collection.update({'_id': id}, {$set: data}, function (err, result) {
+                    collection.update({ '_id': id }, { $set: data }, function (err, result) {
                         if (err) {
                             accept(new Error('Mongo error - ' + err.message));
                             return;
@@ -414,7 +413,6 @@ const
             },
 
 
-
             /**
              * Установка хеша текущей сессии для пользователя по id
              *
@@ -423,14 +421,14 @@ const
              * @param {String} sid
              * @param {Function} accept
              */
-            setSessionById: function (id, sid, accept) {
+            setSessionById(id, sid, accept) {
                 db.collection('users', function (err, collection) {
                     if (err) {
                         accept(new Error('Mongo error - ' + err.message));
                         return;
                     }
 
-                    collection.update({'_id': id}, {$set: {'sid': sid}}, function (err, result) {
+                    collection.update({ '_id': id }, { $set: { 'sid': sid } }, function (err, result) {
                         if (err) {
                             accept(new Error('Mongo error - ' + err.message));
                             return;
@@ -451,14 +449,14 @@ const
              * @param {Number} id
              * @param {Function} accept
              */
-            unsetSessionById: function (id, accept) {
+            unsetSessionById(id, accept) {
                 db.collection('users', function (err, collection) {
                     if (err) {
                         accept(new Error('Mongo error - ' + err.message));
                         return;
                     }
 
-                    collection.update({'_id': id}, {$unset: {'sid': true}}, function (err, result) {
+                    collection.update({ '_id': id }, { $unset: { 'sid': true } }, function (err, result) {
                         if (err) {
                             accept(new Error('Mongo error - ' + err.message));
                             return;
@@ -480,14 +478,14 @@ const
              * @param {String} password
              * @param {Function} accept
              */
-            setPasswordId: function (id, password, accept) {
+            setPasswordId(id, password, accept) {
                 db.collection('users', function (err, collection) {
                     if (err) {
                         accept(new Error('Mongo error - ' + err.message));
                         return;
                     }
 
-                    collection.update({'_id': id}, {$set: {password: password}}, function (err, result) {
+                    collection.update({ '_id': id }, { $set: { password } }, function (err, result) {
                         if (err) {
                             accept(new Error('Mongo error - ' + err.message));
                             return;
@@ -509,14 +507,14 @@ const
              * @param {String} password
              * @param {Function} accept
              */
-            setPasswordByEmail: function (email, password, accept) {
+            setPasswordByEmail(email, password, accept) {
                 db.collection('users', function (err, collection) {
                     if (err) {
                         accept(new Error('Mongo error - ' + err.message));
                         return;
                     }
 
-                    collection.update({'email': email}, {$set: {password: password}}, function (err, result) {
+                    collection.update({ 'email': email }, { $set: { password } }, function (err, result) {
                         if (err) {
                             accept(new Error('Mongo error - ' + err.message));
                             return;
@@ -538,14 +536,14 @@ const
              * @param {Number} period
              * @param {Function} accept
              */
-            updatePeriod: function (id, period, accept) {
+            updatePeriod(id, period, accept) {
                 db.collection('users', function (err, collection) {
                     if (err) {
                         accept(new Error('Mongo error - ' + err.message));
                         return;
                     }
 
-                    collection.update({'_id': id}, {$set: {period: period}}, function (err, result) {
+                    collection.update({ '_id': id }, { $set: { period } }, function (err, result) {
                         if (err) {
                             accept(new Error('Mongo error - ' + err.message));
                             return;
@@ -566,25 +564,25 @@ const
              * @param {Number} id
              * @param {Function} accept
              */
-            sync: function (id, accept) {
+            sync(id, accept) {
                 db.collection('users', function (err, collection) {
                     if (err) {
                         accept(new Error('Mongo error - ' + err.message));
                         return;
                     }
 
-                    collection.findOne({'_id': id}, function (err, user) {
+                    collection.findOne({ '_id': id }, function (err, user) {
                         if (err) {
                             accept(new Error('Mongo error - ' + err.message));
                             return;
                         }
 
-                        store.update({'_id': id.toString()}, {$set: {
-                            'salt':     user.salt,
-                            'email':    user.email,
-                            'address':  user.address,
-                            'period':   user.period
-                        }}, {}, function (err, result) {
+                        store.update({ '_id': id.toString() }, { $set: {
+                            'salt': user.salt,
+                            'email': user.email,
+                            'address': user.address,
+                            'period': user.period,
+                        } }, {}, function (err, result) {
                             if (err) {
                                 accept(new Error('Store error - ' + err.message));
                                 return;
@@ -597,7 +595,7 @@ const
                         });
                     });
                 });
-            }
+            },
         };
 
         next();
