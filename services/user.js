@@ -63,7 +63,10 @@ const
 
             // Шифрование
             data.password = crypto.createHmac('sha256', password).digest('hex');
-            data.salt = crypto.createHmac('sha256', req.body.email).digest('hex');
+            data.salt = crypto.createHmac(
+                'sha256',
+                req.body.email
+            ).digest('hex');
 
             req.model.user.create(data, (err) => {
                 if (err) {

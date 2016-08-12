@@ -8,9 +8,25 @@
         "jest": true
     },
     "rules": {
+        "max-len": [
+            "error",
+            100,
+            4,
+            {
+                "ignorePattern": "('X-Ismax-Key')"
+            }
+        ],
         "no-underscore-dangle": 0,
-        "no-param-reassign": ["error", { "props": false }],
-        "arrow-body-style": ["error", "always"],
+        "no-param-reassign": [
+            "error",
+            {
+                "props": false
+            }
+        ],
+        "arrow-body-style": [
+            "error",
+            "always"
+        ],
         "no-shadow": 1,
         "indent": [
             2,
@@ -23,6 +39,19 @@
         "no-var": 0,
         "one-var": 0,
         "global-require": 0,
-        "import/no-extraneous-dependencies": ["error", {"devDependencies": true, "optionalDependencies": false, "peerDependencies": false}]
+        "import/no-extraneous-dependencies": [
+            "error",
+            {
+                "devDependencies": true,
+                "optionalDependencies": false,
+                "peerDependencies": false
+            }
+        ],
+        "no-mixed-operators": [
+            "error",
+            {
+                "allowSamePrecedence": true
+            }
+        ]
     }
 }

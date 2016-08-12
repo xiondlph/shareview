@@ -12,7 +12,7 @@ try {
 }
 
 config = Object.assign({}, config, {
-    retainLines: true
+    retainLines: true,
 });
 
 require('babel-register')(config);

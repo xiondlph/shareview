@@ -62,10 +62,11 @@
     ]
   },
   "pre-commit": [
-    // "lint-staged"
-    // "test"
+    "lint-staged",
+    "test"
   ],
   "dependencies": {
+    "babel-register": "^6.11.6",
     "body-parser": "^1.15.2",
     "crypto": "0.0.3",
     "debug": "^2.2.0",

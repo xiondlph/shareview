@@ -19,10 +19,8 @@ const
      * @param {Function} next
      */
     payment = (req, res, next) => {
-
-
         // Инициализация объекта модели
-        if (!req.hasOwnProperty('model')) {
+        if (!req.model) {
             req.model = {};
         }
 
@@ -43,15 +41,15 @@ const
              * @param {Object} data
              * @param {Function} accept
              */
-            add: function (data, accept) {
-                db.collection('payments', function (err, collection) {
+            add(data, accept) {
+                db.collection('payments', (err, collection) => {
                     if (err) {
-                        throw new Error('Mongo error - ' + err.message);
+                        throw new Error(`Mongo error - ${err.message}`);
                     }
 
-                    collection.insert(data, function (err, payment) {
+                    collection.insert(data, (err, payment) => {
                         if (err) {
-                            throw new Error('Mongo error - ' + err.message);
+                            throw new Error(`Mongo error - ${err.message}`);
                         }
 
                         if (typeof accept === 'function') {
@@ -71,35 +69,49 @@ const
              * @param skip
              * @param limit
              */
-            listByEmail: function (email, skip, limit, accept) {
-                skip  = skip  || 0;
-                limit = limit || 0;
-
-                db.collection('payments', function (err, collection) {
+            listByEmail(email, skip = 0, limit = 0, accept) {
+                db.collection('payments', (err, collection) => {
                     if (err) {
-                        accept(new Error('Mongo error - ' + err.message));
+                        accept(new Error(`Mongo error - ${err.message}`));
                         return;
                     }
 
-                    collection.find({label: email}, {sort: {_id: -1}}).count(function (err, count) {
+                    collection.find({ label: email }, { sort: { _id: -1 } }).count((err, count) => {
                         if (err) {
-                            accept(new Error('Mongo error - ' + err.message));
+                            accept(new Error(`Mongo error - ${err.message}`));
                             return;
                         }
 
-                        collection.find({label: email}, {fields: {'datetime': 1, 'withdraw_amount': 1, '_lastPeriod': 1, '_newPeriod': 1}, sort: {_id: -1}, skip: skip, limit: limit}).toArray(function (err, payments) {
-                            if (err) {
-                                accept(new Error('Mongo error - ' + err.message));
-                                return;
-                            }
+                        collection.find(
+                            {
+                                label: email,
+                            },
+                            {
+                                fields: {
+                                    datetime: 1,
+                                    withdraw_amount: 1,
+                                    _lastPeriod: 1,
+                                    _newPeriod: 1,
+                                },
+                                sort:
+                                {
+                                    _id: -1,
+                                },
+                                skip,
+                                limit,
+                            }).toArray((err, payments) => {
+                                if (err) {
+                                    accept(new Error(`Mongo error - ${err.message}`));
+                                    return;
+                                }
 
-                            if (typeof accept === 'function') {
-                                accept(null, payments, count);
-                            }
-                        });
+                                if (typeof accept === 'function') {
+                                    accept(null, payments, count);
+                                }
+                            });
                     });
                 });
-            }
+            },
         };
 
         next();
