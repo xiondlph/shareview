@@ -62,8 +62,8 @@
     ]
   },
   "pre-commit": [
-    "lint-staged",
-    "test"
+//    "lint-staged",
+//    "test"
   ],
   "dependencies": {
     "babel-register": "^6.11.6",
