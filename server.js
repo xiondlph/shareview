@@ -78,15 +78,22 @@ app.use((req, res) => {
 });
 
 // 500 (Internal server error)
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
+    if (res.headersSent) {
+        return next(err);
+    }
+
     res.status(500).send({ errors: ['Internal server error'] });
     log(err);
+    console.log(err);
 });
 
-// Запуск web сервера на порту 3001/4001
-db.then(() => {
-    app.listen(PORT, () => {
-        log(`Listening on port ${PORT}`);
+export default new Promise((resolve) => {
+    // Запуск web сервера на порту 3001/4001
+    db.then(() => {
+        const server = app.listen(PORT, () => {
+            log(`Listening on port ${PORT}`);
+            resolve(server);
+        });
     });
 });
-

@@ -56,15 +56,18 @@
     }
   },
   "lint-staged": {
-    "*.js": [
-      "eslint:fix",
-      "git:add"
-    ]
+//    "*.js": [
+//      "eslint:fix",
+//      "git:add"
+//    ]
   },
   "pre-commit": [
-//    "lint-staged",
-//    "test"
+    "lint-staged",
+    "test"
   ],
+  "jest": {
+    "automock": false
+  },
   "dependencies": {
     "babel-register": "^6.11.6",
     "body-parser": "^1.15.2",

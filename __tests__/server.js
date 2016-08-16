@@ -1,71 +1,31 @@
-// jest.unmock('supertest');
-// jest.unmock('express');
-// var request = require('supertest'),
-//     express = require('express'),
-//     app = express(),
-//     agent = request.agent(app);
-//
-// describe('Запросы к API - ', () => {
-//     it('Запрос к /', () => {
-//         return new Promise((resolve, reject) => {
-//             agent
-//                 .post('/')
-//                 .expect(404)
-//                 .expect('set-cookie', /^shareview.sid=(.*)/)
-//                 .end((err, res) => {
-//                     if (err) {
-//                         reject(err);
-//                         return;
-//                     }
-//                     resolve(res);
-//                 });
-//         }).then(
-//             null,
-//             err => { expect(err).toEqual(null); }
-//         );
-//     });
-// });
+import supertest from 'supertest';
+import http from '../server';
 
-jest.unmock('supertest');
-jest.unmock('express');
-
-jest.mock('querystring');
-jest.unmock('../test');
-var request = require('supertest'),
-    express = require('express'),
-    test = require('../test'),
-    app = express(),
-    server;
-
-beforeEach(function () {
-    app.get('/', test);
-    server = app.listen(3000, function () {
-        var port = server.address().port;
-        console.log('Example app listening at port %s', port);
-    });
-});
-afterEach(function () {
-    server.close();
-});
+jest.mock('../db');
 
 describe('Запросы к API - ', () => {
-    it('Запрос к /', () => {
-        expect(test({ name: 'debug' })).toEqual('name=test');
+    afterEach(() => {
+        http.then((server) => {
+            server.close();
+        });
+    });
 
-        // return new Promise((resolve, reject) => {
-        //     request(server)
-        //         .get('/')
-        //         .expect(200)
-        //         .end((err, res) => {
-        //             if (err) {
-        //                 reject(err);
-        //                 return;
-        //             }
-        //             resolve(res);
-        //         });
-        // }).then(
-        //     null,
-        //     err => { expect(err).toEqual(null); }
-        // );
+    it('/', () => {
+        return new Promise((resolve, reject) => {
+            http.then((server) => {
+                supertest.agent(server)
+                    .get('/api/profile')
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).catch(
+            err => { expect(err).toEqual(null); }
+        );
     });
 });
