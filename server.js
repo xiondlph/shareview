@@ -19,7 +19,7 @@ import utils from './utils';
 const
     app = express(),
     log = debug('shareview:server'),
-    PORT = +process.env.PORT || 3000;
+    PORT = +process.env.PORT || 3001;
 
 // Настройка шаблонизатора
 app.set('views', `${process.env.APPPATH}/views/`);

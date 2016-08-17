@@ -1,6 +1,7 @@
 import supertest from 'supertest';
 import http from '../server';
 
+jest.mock('nedb');
 jest.mock('../db');
 
 describe('Запросы к API - ', () => {
@@ -10,11 +11,12 @@ describe('Запросы к API - ', () => {
         });
     });
 
-    it('/', () => {
+    it('/user/create', () => {
         return new Promise((resolve, reject) => {
             http.then((server) => {
                 supertest.agent(server)
-                    .get('/api/profile')
+                    .post('/user/create')
+                    .send({ email: 'test@test.ru' })
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
@@ -24,7 +26,9 @@ describe('Запросы к API - ', () => {
                         resolve(res);
                     });
             });
-        }).catch(
+        }).then(
+            res => { console.log(res); }
+        ).catch(
             err => { expect(err).toEqual(null); }
         );
     });

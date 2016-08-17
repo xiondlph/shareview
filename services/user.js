@@ -68,13 +68,13 @@ const
                 req.body.email
             ).digest('hex');
 
-            req.model.user.create(data, (err) => {
+            req.model.user.create(data, (err, result) => {
                 if (err) {
                     next(err);
                     return;
                 }
 
-                req.store.user.create(data, (err) => {
+                req.store.user.create(result, (err) => {
                     if (err) {
                         next(err);
                         return;
