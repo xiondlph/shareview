@@ -10,13 +10,13 @@
 
 // Объявление модулей
 import debug from 'debug';
-import mongo from 'mongodb';
+import mongodb from 'mongodb';
 
 const
     logDB = debug('shareview:mongodb'),
-    Server = mongo.Server,
-    Db = mongo.Db,
-    BSON = mongo.BSONPure,
+    Server = mongodb.Server,
+    Db = mongodb.Db,
+    BSON = mongodb.BSONPure,
     mongoAuth = +process.env.DB_AUTH,
     mongoHost = process.env.DB_HOST || 'ds040888.mlab.com',
     mongoPort = process.env.DB_PORT || 40888,

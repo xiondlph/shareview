@@ -335,24 +335,10 @@ const
              * @param {String} email
              * @param {Function} accept
              */
-            isExistByEmail(email, accept) {
-                db.collection('users', (err, collection) => {
-                    if (err) {
-                        accept(new Error(`Mongo error - ${err.message}`));
-                        return;
-                    }
+            isExistByEmail(email) {
+                const collection = db.collection('users');
 
-                    collection.count({ email }, (err, count) => {
-                        if (err) {
-                            accept(new Error(`Mongo error - ${err.message}`));
-                            return;
-                        }
-
-                        if (typeof accept === 'function') {
-                            accept(null, count);
-                        }
-                    });
-                });
+                return collection.count([email]);
             },
 
 

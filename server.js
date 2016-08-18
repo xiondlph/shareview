@@ -16,6 +16,9 @@ import models from './models';
 import services from './services';
 import utils from './utils';
 
+// process.env.APPPATH = __dirname;
+// process.env.DEBUG = 'shareview:server';
+
 const
     app = express(),
     log = debug('shareview:server'),
@@ -85,7 +88,6 @@ app.use((err, req, res, next) => {
 
     res.status(500).send({ errors: ['Internal server error'] });
     log(err);
-    console.log(err);
 });
 
 export default new Promise((resolve) => {

@@ -27,7 +27,7 @@ describe('Запросы к API - ', () => {
                     });
             });
         }).then(
-            res => { console.log(res); }
+            res => { expect(res.body.success).toEqual(true); }
         ).catch(
             err => { expect(err).toEqual(null); }
         );
