@@ -33,13 +33,13 @@ const
             throw new Error('Validate error - mail is invalid');
         }
 
-        req.model.user.isExistByEmail(req.body.email).then(count => {
+        req.model.__user.getUserByEmail(req.body.email).then(exist => {
             var currentDate = new Date(),
                 transporter,
                 password,
                 data;
 
-            if (count > 0) {
+            if (exist) {
                 res.send({
                     success: false,
                     exist: true,

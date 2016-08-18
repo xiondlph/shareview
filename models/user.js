@@ -336,9 +336,7 @@ const
              * @param {Function} accept
              */
             isExistByEmail(email) {
-                const collection = db.collection('users');
-
-                return collection.count([email]);
+                return db.collection('users').count({ email });
             },
 
 

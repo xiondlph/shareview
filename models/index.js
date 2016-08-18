@@ -8,9 +8,11 @@
 
 // Объявление модулей
 import user from './user';
+import __user from './__user';
 import payment from './payment';
 
 export default {
     user,
+    __user,
     payment
 }

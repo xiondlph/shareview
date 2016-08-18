@@ -48,7 +48,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.all('*', models.user, services.secure.user);
+app.all('*', models.user, models.__user, services.secure.user);
 
 // Secure
 app.post('/user/signin', services.secure.signin);
