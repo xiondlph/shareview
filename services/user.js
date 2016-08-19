@@ -39,13 +39,10 @@ const
                 password,
                 data;
 
-            if (exist) {
-                res.send({
-                    success: false,
-                    exist: true,
-                });
+            throw new Error('huy');
 
-                return;
+            if (exist) {
+                return Promise.reject();
             }
 
             password = generatePassword(12, false);
@@ -63,57 +60,47 @@ const
                 req.body.email
             ).digest('hex');
 
-            req.model.user.create(data, (err, result) => {
-                if (err) {
-                    next(err);
-                    return;
-                }
+            req.model.user.create(data).then(result => {
+                res.locals.email = data.email;
+                res.locals.password = password;
 
-                req.store.user.create(result, (err) => {
+                res.render('mail/register', (err, text) => {
                     if (err) {
                         next(err);
                         return;
                     }
 
-                    res.locals.email = data.email;
-                    res.locals.password = password;
+                    transporter = nodemailer.createTransport({
+                        service: 'Mail.ru',
+                        auth: {
+                            user: 'notification@shareview.ru',
+                            pass: 'XtFyKBXeChHY',
+                        },
+                    });
 
-                    res.render('mail/register', (err, text) => {
+                    transporter.sendMail({
+                        from: 'SHAREVIEW <notification@shareview.ru>',
+                        to: data.email,
+                        subject: 'Регистрация в сервисе SHAREVIEW',
+                        text,
+                        headers: {
+                            'X-Mailer': 'SHAREVIEW',
+                        },
+                        // localAddress: '194.87.197.55'
+                    }, (err) => {
                         if (err) {
                             next(err);
                             return;
                         }
 
-                        transporter = nodemailer.createTransport({
-                            service: 'Mail.ru',
-                            auth: {
-                                user: 'notification@shareview.ru',
-                                pass: 'XtFyKBXeChHY',
-                            },
-                        });
-
-                        transporter.sendMail({
-                            from: 'SHAREVIEW <notification@shareview.ru>',
-                            to: data.email,
-                            subject: 'Регистрация в сервисе SHAREVIEW',
-                            text,
-                            headers: {
-                                'X-Mailer': 'SHAREVIEW',
-                            },
-                            // localAddress: '194.87.197.55'
-                        }, (err) => {
-                            if (err) {
-                                next(err);
-                                return;
-                            }
-
-                            res.send({ success: true });
-                        });
+                        res.send({ success: true });
                     });
                 });
             });
         }).catch(
-            err => { console.log(err); next(err); }
+            err => {
+                err && next(err);
+            }
         );
     },
 
