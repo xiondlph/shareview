@@ -1,5 +1,5 @@
 const
-    mongoUser = {
+    user = {
         _id: '57acf3a493f8f719f4aa6423',
         email: 'test@ismax.ru',
         active: false,
@@ -9,19 +9,36 @@ const
         salt: '9be79a1476b8d6bf4e50d705ff34b4c8b775c61c0deb2d37805f5ecb9fd96551',
         sid: 'AWop0J4p2RdtTiabvckyRCF9XSj34-xa',
     },
+    find = query => {
+        return {
+            limit() {
+                return {
+                    toArray() {
+                        if (query.email && query.email === 'find@error.ru') {
+                            return Promise.reject(Error('Mongo error (find)'));
+                        }
+
+                        return Promise.resolve([]);
+                    },
+                };
+            },
+        };
+    },
+    insertOne = data => {
+        if (data.email === 'insertone@error.ru') {
+            return Promise.reject(Error('Mongo error (insertOne)'));
+        }
+
+        return Promise.resolve({
+            insertedId: user._id,
+        });
+    },
     db = {
-        collection(name, callback) {
-            callback(null, {
-                findOne: jest.fn()
-                    .mockImplementationOnce((query, cb) => cb(null, null))
-                    .mockImplementationOnce((query, cb) => cb(null, mongoUser)),
-
-                count: jest.fn()
-                    .mockImplementationOnce((query, cb) => cb(null, 0)),
-
-                insert: jest.fn()
-                    .mockImplementationOnce((query, cb) => cb(null, mongoUser)),
-            });
+        collection() {
+            return {
+                find,
+                insertOne,
+            };
         },
     },
     init = new Promise((resolve) => {

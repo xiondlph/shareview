@@ -33,15 +33,17 @@ const
             throw new Error('Validate error - mail is invalid');
         }
 
-        req.model.__user.getUserByEmail(req.body.email).then(exist => {
+        req.model.__user.getUserByEmail(req.body.email).then(users => {
             var currentDate = new Date(),
                 transporter,
                 password,
                 data;
 
-            throw new Error('huy');
-
-            if (exist) {
+            if (users.length) {
+                res.send({
+                    success: false,
+                    exist: true,
+                });
                 return Promise.reject();
             }
 
@@ -60,7 +62,8 @@ const
                 req.body.email
             ).digest('hex');
 
-            req.model.user.create(data).then(result => {
+            return req.model.__user.create(data).then(result => {
+                res.locals._id = result.insertedId;
                 res.locals.email = data.email;
                 res.locals.password = password;
 
@@ -99,7 +102,9 @@ const
             });
         }).catch(
             err => {
-                err && next(err);
+                if (err) {
+                    next(err);
+                }
             }
         );
     },

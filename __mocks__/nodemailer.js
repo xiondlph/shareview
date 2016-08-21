@@ -2,8 +2,14 @@ const
     nodemailer = {
         createTransport() {
             return {
-                sendMail: jest.fn()
-                    .mockImplementationOnce((options, cb) => cb(null)),
+                sendMail(options, cb) {
+                    if (options.to === 'sendmail@error.ru') {
+                        cb(Error('nodemailer error (sendMail)'));
+                        return;
+                    }
+
+                    cb(null);
+                },
             };
         },
     };

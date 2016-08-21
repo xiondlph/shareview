@@ -52,6 +52,7 @@
             {
                 "allowSamePrecedence": true
             }
-        ]
+        ],
+        "consistent-return": 0
     }
 }

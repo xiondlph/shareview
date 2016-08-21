@@ -22,18 +22,19 @@ const
      * @param {Function} next
      */
     user = (req, res, next) => {
-        req.model.user.getUserBySession(req.session.id, (err, data) => {
-            if (err) {
-                next(err);
-                return;
-            }
-
-            if (data) {
-                res.locals.user = data;
+        req.model.__user.getUserBySession(req.session.id).then(users => {
+            if (users.length) {
+                res.locals.user = users[0];
             }
 
             next();
-        });
+        }).catch(
+            err => {
+                if (err) {
+                    next(err);
+                }
+            }
+        );
     },
 
 

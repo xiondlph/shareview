@@ -31,14 +31,36 @@ const
          */
         req.model.__user = {
             /**
+             * Получения пользователя по индексу сессии
+             *
+             * @method getUserBySession
+             * @param {String} sid
+             * @return {Promise}
+             */
+            getUserBySession(sid) {
+                return db.collection('users').find({ sid }).limit(1).toArray();
+            },
+
+            /**
              * Получения пользователя по Email
              *
              * @method getUserByEmail
              * @param {String} email
-             * @param {Function} accept
+             * @return {Promise}
              */
             getUserByEmail(email) {
                 return db.collection('users').find({ email }).limit(1).toArray();
+            },
+
+            /**
+             * Создание нового пользователя
+             *
+             * @method create
+             * @param {Object} user
+             * @return {Promise}
+             */
+            create(user) {
+                return db.collection('users').insertOne(user);
             },
         };
 
