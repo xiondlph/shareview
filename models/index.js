@@ -14,5 +14,5 @@ import payment from './payment';
 export default {
     user,
     __user,
-    payment
-}
+    payment,
+};

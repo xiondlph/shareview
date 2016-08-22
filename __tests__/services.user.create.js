@@ -2,16 +2,15 @@ import supertest from 'supertest';
 import http from '../server';
 
 jest.mock('../db');
-// jest.mock('ejs');
 
-describe('Запросы к API - ', () => {
+describe('Регистрация пользователя (/user/create) - ', () => {
     afterEach(() => {
         http.then((server) => {
             server.close();
         });
     });
 
-    it('Регистрация пользователя (/user/create)', () => {
+    it('Успешная регистрация', () => {
         return new Promise((resolve, reject) => {
             http.then((server) => {
                 supertest.agent(server)
@@ -31,7 +30,7 @@ describe('Запросы к API - ', () => {
         );
     });
 
-    it('Регистрация пользователя (/user/create) - ошибка валидации email', () => {
+    it('Ошибка валидации email', () => {
         return new Promise((resolve, reject) => {
             http.then((server) => {
                 supertest.agent(server)
@@ -51,12 +50,12 @@ describe('Запросы к API - ', () => {
         );
     });
 
-    it('Регистрация пользователя (/user/create) - ошибка в getUserByEmail', () => {
+    it('Ошибка в getUserByEmail', () => {
         return new Promise((resolve, reject) => {
             http.then((server) => {
                 supertest.agent(server)
                     .post('/user/create')
-                    .send({ email: 'find@error.ru' })
+                    .send({ email: 'find@mongo.error' })
                     .expect(500)
                     .end((err, res) => {
                         if (err) {
@@ -71,12 +70,12 @@ describe('Запросы к API - ', () => {
         );
     });
 
-    it('Регистрация пользователя (/user/create) - ошибка в create', () => {
+    it('Ошибка в create (mongo)', () => {
         return new Promise((resolve, reject) => {
             http.then((server) => {
                 supertest.agent(server)
                     .post('/user/create')
-                    .send({ email: 'insertone@error.ru' })
+                    .send({ email: 'insertone@mongo.error' })
                     .expect(500)
                     .end((err, res) => {
                         if (err) {
@@ -91,12 +90,32 @@ describe('Запросы к API - ', () => {
         );
     });
 
-    it('Регистрация пользователя (/user/create) - ошибка в sendMail', () => {
+    it('Ошибка в create (nedb)', () => {
         return new Promise((resolve, reject) => {
             http.then((server) => {
                 supertest.agent(server)
                     .post('/user/create')
-                    .send({ email: 'sendmail@error.ru' })
+                    .send({ email: 'insert@nedb.error' })
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
+    it('Ошибка в sendMail', () => {
+        return new Promise((resolve, reject) => {
+            http.then((server) => {
+                supertest.agent(server)
+                    .post('/user/create')
+                    .send({ email: 'sendmail@nodemailer.error' })
                     .expect(500)
                     .end((err, res) => {
                         if (err) {

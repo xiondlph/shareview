@@ -7,9 +7,30 @@
  */
 
 // Объявление модулей
+import Nedb from 'nedb';
 import db from '../db';
 
 const
+    // Локальное хранилище пользователей
+    store = new Nedb({ filename: `${process.env.APPPATH}/store/__users.json`, autoload: true }),
+
+    storeInsert = (user, mongoResult) => {
+        return new Promise((resolve, reject) => {
+            user._id = mongoResult.insertedId.toString();
+            store.insert(user, (err, nedbResult) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                store.loadDatabase();
+                resolve({
+                    mongoResult,
+                    nedbResult,
+                });
+            });
+        });
+    },
     /**
      * Экспорт методов модели данных системы безопастности
      *
@@ -60,7 +81,9 @@ const
              * @return {Promise}
              */
             create(user) {
-                return db.collection('users').insertOne(user);
+                return db.collection('users')
+                    .insertOne(user)
+                    .then(mongoResult => { return storeInsert(user, mongoResult); });
             },
         };
 

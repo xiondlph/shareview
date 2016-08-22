@@ -3,7 +3,7 @@ const
         createTransport() {
             return {
                 sendMail(options, cb) {
-                    if (options.to === 'sendmail@error.ru') {
+                    if (options.to === 'sendmail@nodemailer.error') {
                         cb(Error('nodemailer error (sendMail)'));
                         return;
                     }
