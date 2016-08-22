@@ -53,6 +53,12 @@
                 "allowSamePrecedence": true
             }
         ],
-        "consistent-return": 0
+        "consistent-return": 0,
+        "no-unused-vars": [
+            "error",
+            {
+                "varsIgnorePattern": "exception"
+            }
+        ]
     }
 }

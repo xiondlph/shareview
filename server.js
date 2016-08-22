@@ -11,6 +11,8 @@ import debug from 'debug';
 import express from 'express';
 import bodyParser from 'body-parser';
 import session from 'express-session';
+import fs from 'fs';
+import exception from './exception';
 import { init as db } from './db';
 import models from './models';
 import services from './services';
@@ -22,7 +24,20 @@ process.env.DEBUG = 'shareview:server';
 const
     app = express(),
     log = debug('shareview:server'),
-    PORT = +process.env.PORT || 3001;
+    PORT = +process.env.PORT || 3001,
+    logError = err => {
+        err.stack.message = `httpException: ${err.stack.message}`;
+
+        // Запись стека ошибки в лог файл
+        fs.open(`${process.env.APPPATH}/log/error.log`, 'a', (e, id) => {
+            fs.write(id, `${JSON.stringify(err.stack, null, '\t')}\n`, null, 'utf8', () => {
+                fs.close(id);
+            });
+        });
+
+        // Вывод стека ошибок в stdout
+        debug(err.stack);
+    };
 
 // Настройка шаблонизатора
 app.set('views', `${process.env.APPPATH}/views/`);
@@ -87,8 +102,7 @@ app.use((err, req, res, next) => {
     }
 
     res.status(500).send({ errors: ['Internal server error'] });
-    console.log(err);
-    log(err);
+    logError(err);
 });
 
 export default new Promise((resolve) => {

@@ -36,7 +36,7 @@
       }
     },
     "server-dev": {
-      "command": "node app",
+      "command": "node cluster",
       "env": {
         "NODE_ENV": "development",
         "DEBUG": [
