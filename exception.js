@@ -24,7 +24,7 @@ Error.prepareStackTrace = (err, stack) => {
         stack: [],
     };
 
-    stack.forEach((frame) => {
+    for (const frame of stack) {
         errLog.stack.push({
             time: (new Date()).toUTCString(),
             file: frame.getFileName(),
@@ -32,9 +32,9 @@ Error.prepareStackTrace = (err, stack) => {
             column: frame.getColumnNumber(),
             func: frame.getFunctionName(),
         });
-    });
+    }
 
-    // return JSON.stringify(errLog, null, "\t");
+    // return JSON.stringify(errLog, null, '\t');
     return errLog;
 };
 
@@ -43,12 +43,12 @@ process.on('uncaughtException', (err) => {
     err.stack.message = `uncaughtException: ${err.stack.message}`;
 
     // Проверка доступности директории для логов
-    fs.access(`${process.env.APPPATH}/log/`, fs.constants.R_OK | fs.constants.W_OK, (fErr) => {
+    fs.access(`${process.env.APPPATH}/log/`, fs.R_OK | fs.W_OK, (fErr) => {
         if (!fErr) {
             // Запись стека ошибки в лог файл
             const fd = fs.openSync(`${process.env.APPPATH}/log/error.log`, 'a');
 
-            fs.writeSync(fd, `${JSON.stringify(err.stack, null, '\t')}\n`, null, 'utf8');
+            fs.writeSync(fd, JSON.stringify(err.stack, null, '\t'), null, 'utf8');
             fs.closeSync(fd);
 
             // Завершение текущего процесса

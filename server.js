@@ -26,9 +26,9 @@ const
     log = debug('shareview:server'),
     PORT = +process.env.PORT || 3001,
     logError = err => {
-        err.stack.message = `httpException: ${err.stack.message}`;
+        // err.stack.message = `httpException: ${err.stack.message}`;
 
-        fs.access(`${process.env.APPPATH}/log/`, fs.constants.R_OK | fs.constants.W_OK, (fErr) => {
+        fs.access(`${process.env.APPPATH}/log/`, fs.R_OK | fs.W_OK, (fErr) => {
             if (!fErr) {
                 // Запись стека ошибки в лог файл
                 const fd = fs.openSync(`${process.env.APPPATH}/log/error.log`, 'a');

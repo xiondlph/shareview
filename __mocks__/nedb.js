@@ -1,3 +1,7 @@
+/**
+ * Мок для Nedb плагина
+ */
+
 const
     NedbUser = {
         period: 1471038756540,

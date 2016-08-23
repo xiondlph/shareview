@@ -1,3 +1,7 @@
+/**
+ * Мок для Nodemailer плагина
+ */
+
 const
     nodemailer = {
         createTransport() {

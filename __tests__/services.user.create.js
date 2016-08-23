@@ -1,6 +1,7 @@
 import supertest from 'supertest';
 import http from '../server';
 
+jest.mock('../exception');
 jest.mock('../db');
 
 describe('Регистрация пользователя (/user/create) - ', () => {
