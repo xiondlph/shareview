@@ -20,7 +20,7 @@
   "author": "ismax <shukhrat@ismax.ru>",
   "betterScripts": {
     "server-dev-local-db": {
-      "command": "node app",
+      "command": "node cluster",
       "env": {
         "NODE_ENV": "development",
         "DB_HOST": "localhost",

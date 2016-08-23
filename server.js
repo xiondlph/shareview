@@ -28,15 +28,18 @@ const
     logError = err => {
         err.stack.message = `httpException: ${err.stack.message}`;
 
-        // Запись стека ошибки в лог файл
-        fs.open(`${process.env.APPPATH}/log/error.log`, 'a', (e, id) => {
-            fs.write(id, `${JSON.stringify(err.stack, null, '\t')}\n`, null, 'utf8', () => {
-                fs.close(id);
-            });
+        fs.access(`${process.env.APPPATH}/log/`, fs.constants.R_OK | fs.constants.W_OK, (fErr) => {
+            if (!fErr) {
+                // Запись стека ошибки в лог файл
+                const fd = fs.openSync(`${process.env.APPPATH}/log/error.log`, 'a');
+
+                fs.writeSync(fd, `${JSON.stringify(err.stack, null, '\t')}\n`, null, 'utf8');
+                fs.closeSync(fd);
+            }
         });
 
         // Вывод стека ошибок в stdout
-        debug(err.stack);
+        log(err.stack);
     };
 
 // Настройка шаблонизатора
