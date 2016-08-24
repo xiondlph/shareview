@@ -1,3 +1,7 @@
+/**
+ * Тест регистрации пользователя
+ */
+
 import supertest from 'supertest';
 import http from '../server';
 
@@ -5,12 +9,6 @@ jest.mock('../exception');
 jest.mock('../db');
 
 describe('Регистрация пользователя (/user/create) - ', () => {
-    afterEach(() => {
-        http.then((server) => {
-            server.close();
-        });
-    });
-
     it('Успешная регистрация', () => {
         return new Promise((resolve, reject) => {
             http.then((server) => {
@@ -128,6 +126,37 @@ describe('Регистрация пользователя (/user/create) - ', ()
             });
         }).then(
             res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+});
+
+describe('Авторизация пользователя (/user/signin) - ', () => {
+    afterEach(() => {
+        http.then((server) => {
+            server.close();
+        });
+    });
+
+    it('Успешная авторизация', () => {
+        return new Promise((resolve, reject) => {
+            http.then((server) => {
+                supertest.agent(server)
+                    .post('/user/signin')
+                    .send({
+                        email: 'shukhrat@ismax.ru',
+                        password: 'pMBXHsgErq1V',
+                    })
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.success).toEqual(true); }
         );
     });
 });

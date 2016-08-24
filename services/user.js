@@ -33,13 +33,13 @@ const
             throw new Error('Validate error - mail is invalid');
         }
 
-        req.model.__user.getUserByEmail(req.body.email).then(users => {
+        req.model.__user.getUserByEmail(req.body.email).then(user => {
             var currentDate = new Date(),
                 transporter,
                 password,
                 data;
 
-            if (users.length) {
+            if (user) {
                 res.send({
                     success: false,
                     exist: true,
