@@ -18,7 +18,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             request.then(agent => {
                 agent
                     .post('/user/create')
-                    .send({ email: 'test@test.ru' })
+                    .send({ email: 'user.create@succes.test' })
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
@@ -38,7 +38,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             request.then(agent => {
                 agent
                     .post('/user/create')
-                    .send({ email: 'incorrect_email' })
+                    .send({ email: 'user.create.incorrect.email.test' })
                     .expect(500)
                     .end((err, res) => {
                         if (err) {
@@ -58,7 +58,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             request.then(agent => {
                 agent
                     .post('/user/create')
-                    .send({ email: 'find@mongo.error' })
+                    .send({ email: 'user.create@mongo.find.error.test' })
                     .expect(500)
                     .end((err, res) => {
                         if (err) {
@@ -78,7 +78,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             request.then(agent => {
                 agent
                     .post('/user/create')
-                    .send({ email: 'insertone@mongo.error' })
+                    .send({ email: 'user.create@mongo.insertone.error.test' })
                     .expect(500)
                     .end((err, res) => {
                         if (err) {
@@ -98,7 +98,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             request.then(agent => {
                 agent
                     .post('/user/create')
-                    .send({ email: 'insert@nedb.error' })
+                    .send({ email: 'user.create@nedb.insert.error.test' })
                     .expect(500)
                     .end((err, res) => {
                         if (err) {
@@ -118,7 +118,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             request.then(agent => {
                 agent
                     .post('/user/create')
-                    .send({ email: 'sendmail@nodemailer.error' })
+                    .send({ email: 'user.create@nodemailer.sendmail.error.test' })
                     .expect(500)
                     .end((err, res) => {
                         if (err) {
@@ -141,7 +141,7 @@ describe('Авторизация пользователя (/user/signin) - ', ()
                 agent
                     .post('/user/signin')
                     .send({
-                        email: 'user.signin@test.info',
+                        email: 'user.signin@success.test',
                         password: 'pMBXHsgErq1V',
                     })
                     .expect(200)

@@ -12,7 +12,7 @@ const
 
             insert: jest.fn()
                 .mockImplementation((data, cb) => {
-                    if (data.email === 'insert@nedb.error') {
+                    if (data.email === 'user.create@nedb.insert.error.test') {
                         cb(Error('Nedb error (insert)'));
                         return;
                     }

@@ -18,11 +18,11 @@ const
             limit() {
                 return {
                     toArray() {
-                        if (query.email && query.email === 'find@mongo.error') {
+                        if (query.email && query.email === 'user.create@mongo.find.error.test') {
                             return Promise.reject(Error('Mongo error (find)'));
                         }
 
-                        if (query.email && query.email === 'user.signin@test.info') {
+                        if (query.email && query.email === 'user.signin@success.test') {
                             return Promise.resolve([{ _id: 'signin', password: user.password }]);
                         }
 
@@ -37,7 +37,7 @@ const
         };
     },
     insertOne = data => {
-        if (data.email === 'insertone@mongo.error') {
+        if (data.email === 'user.create@mongo.insertone.error.test') {
             return Promise.reject(Error('Mongo error (insertOne)'));
         }
 
