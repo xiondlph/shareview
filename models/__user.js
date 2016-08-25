@@ -33,7 +33,7 @@ const
     },
 
     mongoUpdate = (query, data) => {
-        return db.collection('users').updateOne(query, { $set: data });
+        return db.collection('users').updateOne(query, data);
     },
     /**
      * Экспорт методов модели данных системы безопастности
@@ -102,7 +102,17 @@ const
              * @param {String} sid
              */
             setSessionById(id, sid) {
-                return mongoUpdate({ _id: id }, { sid });
+                return mongoUpdate({ _id: id }, { $set: { sid } });
+            },
+
+            /**
+             * Удаление хеша текущей сессии для пользователя по id
+             *
+             * @method unsetSessionById
+             * @param {Number} id
+             */
+            unsetSessionById(id) {
+                return mongoUpdate({ _id: id }, { $unset: { sid: true } });
             },
         };
 

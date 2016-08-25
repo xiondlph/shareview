@@ -88,7 +88,8 @@ const
                 return Promise.reject();
             }
 
-            return req.model.__user.setSessionById(user._id, req.session.id).then(() => {
+            return req.model.__user.setSessionById(user._id, req.session.id).then((user) => {
+                console.log(user);
                 res.send({ success: true });
             });
         }).catch(
@@ -110,14 +111,15 @@ const
      * @param {Function} next
      */
     signout = (req, res, next) => {
-        req.model.user.unsetSessionById(res.locals.user._id, (err) => {
-            if (err) {
-                next(err);
-                return;
-            }
-
+        req.model.__user.unsetSessionById(res.locals.user._id).then(() => {
             res.send({ success: true });
-        });
+        }).catch(
+            err => {
+                if (err) {
+                    next(err);
+                }
+            }
+        );
     };
 
 export default {

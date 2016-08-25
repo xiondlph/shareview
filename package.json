@@ -66,8 +66,7 @@
     "test"
   ],
   "jest": {
-    "automock": false,
-    "testEnvironment": "node"
+    "automock": false
   },
   "dependencies": {
     "babel-register": "^6.11.6",

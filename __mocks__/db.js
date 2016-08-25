@@ -22,7 +22,11 @@ const
                             return Promise.reject(Error('Mongo error (find)'));
                         }
 
-                        if (query.email && query.email === 'shukhrat@ismax.ru') {
+                        if (query.email && query.email === 'user.signin@test.info') {
+                            return Promise.resolve([{ _id: 'signin', password: user.password }]);
+                        }
+
+                        if (query.sid === user.sid) {
                             return Promise.resolve([user]);
                         }
 
@@ -41,7 +45,10 @@ const
             insertedId: user._id,
         });
     },
-    updateOne = () => {
+    updateOne = (query, data) => {
+        if (query._id === 'signin') {
+            user.sid = data.$set.sid;
+        }
         return Promise.resolve({
             upsertedId: user._id,
         });
