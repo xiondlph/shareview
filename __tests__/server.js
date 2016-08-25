@@ -185,3 +185,24 @@ describe('Выход из сессии (/user/signout) - ', () => {
         );
     });
 });
+
+describe('Запрос данных профиля (/api/profile) - ', () => {
+    it('Успешное получение данных', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .get('/api/profile')
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.success).toEqual(true); }
+        );
+    });
+});

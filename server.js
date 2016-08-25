@@ -83,7 +83,7 @@ app.get('/review', utils.request.api, services.review.get);
 app.all('/api/*', services.secure.auth);
 
 // Profile (api)...
-app.get('/api/profile', services.user.sync, services.profile.get);
+app.get('/api/profile', services.profile.get);
 app.put('/api/profile', services.profile.set);
 app.post('/api/password', services.profile.password);
 
