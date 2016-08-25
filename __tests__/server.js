@@ -134,6 +134,70 @@ describe('Регистрация пользователя (/user/create) - ', ()
     });
 });
 
+describe('Сброс пароля (/user/forgot) - ', () => {
+    it('Успешный сброс', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/user/forgot')
+                    .send({
+                        email: 'user.forgot@success.test',
+                    })
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.success).toEqual(true); }
+        );
+    });
+
+    it('Ошибка валидации email', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/user/forgot')
+                    .send({ email: 'user.forgot.incorrect.email.test' })
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
+    it('Отсутствие модифицированных записей в БД', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/user/forgot')
+                    .send({ email: 'user.forgot@mongo.updateone.nomodified.test' })
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.success).toEqual(false); }
+        );
+    });
+});
+
 describe('Авторизация пользователя (/user/signin) - ', () => {
     it('Успешная авторизация', () => {
         return new Promise((resolve, reject) => {

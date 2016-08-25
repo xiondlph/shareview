@@ -44,7 +44,7 @@ const
                     success: false,
                     exist: true,
                 });
-                return Promise.reject();
+                return;
             }
 
             password = generatePassword(12, false);
@@ -89,7 +89,7 @@ const
                         headers: {
                             'X-Mailer': 'SHAREVIEW',
                         },
-                        // localAddress: '194.87.197.55'
+                        localAddress: '194.87.197.55'
                     }, (err) => {
                         if (err) {
                             next(err);
@@ -135,12 +135,7 @@ const
         password = generatePassword(12, false);
         pwd = crypto.createHmac('sha256', password).digest('hex');
 
-        req.model.user.setPasswordByEmail(req.body.email, pwd, (err, result) => {
-            if (err) {
-                next(err);
-                return;
-            }
-
+        req.model.__user.setPasswordByEmail(req.body.email, pwd).then(result => {
             if (!result.result.nModified) {
                 res.send({ success: false });
                 return;
@@ -180,7 +175,13 @@ const
                     res.send({ success: true });
                 });
             });
-        });
+        }).catch(
+            err => {
+                if (err) {
+                    next(err);
+                }
+            }
+        );
     },
 
     /**

@@ -49,8 +49,21 @@ const
         if (query._id === 'signin') {
             user.sid = data.$set.sid;
         }
+
+        if (query.email === 'user.forgot@mongo.updateone.nomodified.test') {
+            return Promise.resolve({
+                upsertedId: user._id,
+                result: {
+                    nModified: 0,
+                },
+            });
+        }
+
         return Promise.resolve({
             upsertedId: user._id,
+            result: {
+                nModified: 1,
+            },
         });
     },
     db = {

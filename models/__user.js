@@ -114,6 +114,17 @@ const
             unsetSessionById(id) {
                 return mongoUpdate({ _id: id }, { $unset: { sid: true } });
             },
+
+            /**
+             * Установка нового пароля для пользователя по Email
+             *
+             * @method setPasswordByEmail
+             * @param {String} email
+             * @param {String} password
+             */
+            setPasswordByEmail(email, password) {
+                return mongoUpdate({ email }, { $set: { password } });
+            },
         };
 
         next();
