@@ -177,7 +177,47 @@ describe('Сброс пароля (/user/forgot) - ', () => {
         );
     });
 
-    it('Отсутствие модифицированных записей в БД', () => {
+    it('Ошибка в setPasswordByEmail (mongo)', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/user/forgot')
+                    .send({ email: 'user.forgot@mongo.updateone.error.test' })
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
+    it('Ошибка в setPasswordByEmail (nedb)', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/user/forgot')
+                    .send({ email: 'user.forgot@nedb.update.error.test' })
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
+    it('Отсутствие затронутых записей в БД', () => {
         return new Promise((resolve, reject) => {
             request.then(agent => {
                 agent
@@ -196,9 +236,98 @@ describe('Сброс пароля (/user/forgot) - ', () => {
             res => { expect(res.body.success).toEqual(false); }
         );
     });
+
+    it('Ошибка в sendMail', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/user/forgot')
+                    .send({ email: 'user.forgot@nodemailer.sendmail.error.test' })
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
 });
 
 describe('Авторизация пользователя (/user/signin) - ', () => {
+    it('Ошибка валидации email', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/user/signin')
+                    .send({
+                        email: 'user.signin.incorrect.email.test',
+                        password: 'pMBXHsgErq1V',
+                    })
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
+    it('Ошибка в setSessionById (mongo)', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/user/signin')
+                    .send({
+                        email: 'user.signin@mongo.updateone.error.test',
+                        password: 'pMBXHsgErq1V',
+                    })
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
+    it('Ошибка в setSessionById (nedb)', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/user/signin')
+                    .send({
+                        email: 'user.signin@nedb.update.error.test',
+                        password: 'pMBXHsgErq1V',
+                    })
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
     it('Успешная авторизация', () => {
         return new Promise((resolve, reject) => {
             request.then(agent => {

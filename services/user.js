@@ -89,7 +89,7 @@ const
                         headers: {
                             'X-Mailer': 'SHAREVIEW',
                         },
-                        localAddress: '194.87.197.55'
+                        localAddress: '194.87.197.55',
                     }, (err) => {
                         if (err) {
                             next(err);
@@ -136,7 +136,7 @@ const
         pwd = crypto.createHmac('sha256', password).digest('hex');
 
         req.model.__user.setPasswordByEmail(req.body.email, pwd).then(result => {
-            if (!result.result.nModified) {
+            if (!result.mongoResult.result.nModified) {
                 res.send({ success: false });
                 return;
             }

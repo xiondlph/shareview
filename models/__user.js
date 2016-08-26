@@ -14,7 +14,7 @@ const
     // Локальное хранилище пользователей
     store = new Nedb({ filename: `${process.env.APPPATH}/store/__users.json`, autoload: true }),
 
-    storeInsert = (user, mongoResult) => {
+    nedbInsert = (user, mongoResult) => {
         return new Promise((resolve, reject) => {
             user._id = mongoResult.insertedId.toString();
             store.insert(user, (err, nedbResult) => {
@@ -32,8 +32,31 @@ const
         });
     },
 
+    nedbUpdate = (query, data, mongoResult) => {
+        return new Promise((resolve, reject) => {
+            if (query._id) {
+                query._id = query._id.toString();
+            }
+
+            store.update(query, data, (err, nedbResult) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                store.loadDatabase();
+                resolve({
+                    mongoResult,
+                    nedbResult,
+                });
+            });
+        });
+    },
+
     mongoUpdate = (query, data) => {
-        return db.collection('users').updateOne(query, data);
+        return db.collection('users')
+            .updateOne(query, data)
+            .then(mongoResult => { return nedbUpdate(query, data, mongoResult); });
     },
     /**
      * Экспорт методов модели данных системы безопастности
@@ -63,7 +86,11 @@ const
              * @return {Promise}
              */
             getUserBySession(sid) {
-                return db.collection('users').find({ sid }).limit(1).toArray();
+                return db.collection('users')
+                    .find({ sid })
+                    .limit(1)
+                    .toArray()
+                    .then(users => { return users.length ? users[0] : null; });
             },
 
             /**
@@ -78,7 +105,7 @@ const
                     .find({ email })
                     .limit(1)
                     .toArray()
-                    .then(users => { return users.length ? users[0] : false; });
+                    .then(users => { return users.length ? users[0] : null; });
             },
 
             /**
@@ -91,7 +118,7 @@ const
             create(user) {
                 return db.collection('users')
                     .insertOne(user)
-                    .then(mongoResult => { return storeInsert(user, mongoResult); });
+                    .then(mongoResult => { return nedbInsert(user, mongoResult); });
             },
 
             /**

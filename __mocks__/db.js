@@ -18,12 +18,22 @@ const
             limit() {
                 return {
                     toArray() {
-                        if (query.email && query.email === 'user.create@mongo.find.error.test') {
+                        if (query.email === 'user.create@mongo.find.error.test') {
                             return Promise.reject(Error('Mongo error (find)'));
                         }
 
-                        if (query.email && query.email === 'user.signin@success.test') {
-                            return Promise.resolve([{ _id: 'signin', password: user.password }]);
+                        if (query.email === 'user.signin@success.test') {
+                            return Promise.resolve([{
+                                _id: 'user.signin@success.test',
+                                password: user.password,
+                            }]);
+                        }
+
+                        if (query.email === 'user.signin@mongo.updateone.error.test') {
+                            return Promise.resolve([{
+                                _id: 'user.signin@mongo.updateone.error.test',
+                                password: user.password,
+                            }]);
                         }
 
                         if (query.sid === user.sid) {
@@ -46,8 +56,16 @@ const
         });
     },
     updateOne = (query, data) => {
-        if (query._id === 'signin') {
+        if (query._id === 'user.signin@success.test') {
             user.sid = data.$set.sid;
+        }
+
+        if (query._id === 'user.signin@mongo.updateone.error.test') {
+            return Promise.reject(Error('Mongo error (updateOne)'));
+        }
+
+        if (query.email === 'user.forgot@mongo.updateone.error.test') {
+            return Promise.reject(Error('Mongo error (updateOne)'));
         }
 
         if (query.email === 'user.forgot@mongo.updateone.nomodified.test') {
