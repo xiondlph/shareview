@@ -11,26 +11,49 @@ const
             loadDatabase: jest.fn(),
 
             insert: jest.fn()
-                .mockImplementation((data, cb) => {
-                    if (
-                        data.email === 'user.create@nedb.insert.error.test'
-                    ) {
-                        cb(Error('Nedb error (insert)'));
-                        return;
-                    }
+                // Регистрация пользователя (/user/create)
+                // Успешная регистрация - services.secure.user(create) => cuccess
+                .mockImplementationOnce((data, cb) => {
+                    cb(null, user);
+                })
+
+                // Регистрация пользователя (/user/create)
+                // Ошибка в create (nedb) - services.secure.user(create) => failed
+                .mockImplementationOnce((data, cb) => {
+                    cb(Error('Nedb error (insert)'));
+                })
+
+                // Регистрация пользователя (/user/create)
+                // Ошибка в sendMail - services.secure.user(create) => cuccess
+                .mockImplementationOnce((data, cb) => {
                     cb(null, user);
                 }),
 
             update: jest.fn()
-                .mockImplementation((qyery, data, cb) => {
-                    console.log(qyery);
-                    if (
-                        qyery.email === 'user.forgot@nedb.update.error.test' ||
-                        qyery.email === 'user.signin@nedb.update.error.test'
-                    ) {
-                        cb(Error('Nedb error (update)'));
-                        return;
-                    }
+                // Сброс пароля (/user/forgot)
+                // Успешный сброс - services.user.forgot(setPasswordByEmail) => cuccess
+                .mockImplementationOnce((qyery, data, cb) => {
+                    cb(null, user);
+                })
+
+                // Сброс пароля (/user/forgot)
+                // Ошибка в setPasswordByEmail (nedb) -
+                // services.user.forgot (setPasswordByEmail) => failed
+                .mockImplementationOnce((qyery, data, cb) => {
+                    cb(Error('Nedb error (update)'));
+                })
+
+                // Сброс пароля (/user/forgot)
+                // Отсутствие затронутых записей в БД -
+                // services.user.forgot(setPasswordByEmail) => cuccess
+                .mockImplementationOnce((qyery, data, cb) => {
+                    cb(null, user);
+                })
+
+                // Сброс пароля (/user/forgot)
+                // Ошибка в sendMail -
+                // services.user.forgot(setPasswordByEmail) => cuccess
+                .mockImplementationOnce((qyery, data, cb) => {
                     cb(null, user);
                 }),
         };
