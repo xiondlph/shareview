@@ -39,7 +39,7 @@ const
         })
 
         // Регистрация пользователя(/user/create)
-        // Ошибка валидации email - services.secure.user => cuccess
+        // Ошибка валидации email - services.secure.user (getUserBySession) => cuccess
         .mockReturnValueOnce({
             limit() {
                 return {
@@ -147,7 +147,7 @@ const
         })
 
         // Сброс пароля (/user/forgot)
-        // Успешный сброс - services.user.forgot (getUserBySession) => cuccess
+        // Успешный сброс - services.secure.user (getUserBySession) => cuccess
         .mockReturnValueOnce({
             limit() {
                 return {
@@ -159,7 +159,7 @@ const
         })
 
         // Сброс пароля (/user/forgot)
-        // Ошибка валидации email - services.user.forgot => cuccess
+        // Ошибка валидации email - services.secure.user (getUserBySession) => cuccess
         .mockReturnValueOnce({
             limit() {
                 return {
@@ -171,7 +171,7 @@ const
         })
 
         // Сброс пароля (/user/forgot)
-        // Ошибка в setPasswordByEmail (mongo) - services.user.forgot (getUserBySession) => cuccess
+        // Ошибка в setPasswordByEmail (mongo) - services.secure.user (getUserBySession) => cuccess
         .mockReturnValueOnce({
             limit() {
                 return {
@@ -183,7 +183,7 @@ const
         })
 
         // Сброс пароля (/user/forgot)
-        // Ошибка в setPasswordByEmail (nedb) - services.user.forgot (getUserBySession) => cuccess
+        // Ошибка в setPasswordByEmail (nedb) - services.secure.user (getUserBySession) => cuccess
         .mockReturnValueOnce({
             limit() {
                 return {
@@ -195,7 +195,7 @@ const
         })
 
         // Сброс пароля (/user/forgot)
-        // Отсутствие затронутых записей в БД - services.user.forgot (getUserBySession) => cuccess
+        // Отсутствие затронутых записей в БД - services.secure.user (getUserBySession) => cuccess
         .mockReturnValueOnce({
             limit() {
                 return {
@@ -207,12 +207,120 @@ const
         })
 
         // Сброс пароля (/user/forgot)
-        // Ошибка в sendMail - services.user.forgot (getUserBySession) => cuccess
+        // Ошибка в sendMail - services.secure.user (getUserBySession) => cuccess
         .mockReturnValueOnce({
             limit() {
                 return {
                     toArray() {
                         return Promise.resolve([]);
+                    },
+                };
+            },
+        })
+
+        // Авторизация пользователя (/user/signin)
+        // Ошибка валидации email - services.secure.user (getUserBySession) => cuccess
+        .mockReturnValueOnce({
+            limit() {
+                return {
+                    toArray() {
+                        return Promise.resolve([]);
+                    },
+                };
+            },
+        })
+
+        // Авторизация пользователя (/user/signin)
+        // Ошибка в getUserByEmail (mongo) - services.secure.user (getUserBySession) => cuccess
+        .mockReturnValueOnce({
+            limit() {
+                return {
+                    toArray() {
+                        return Promise.resolve([]);
+                    },
+                };
+            },
+        })
+
+        // Авторизация пользователя (/user/signin)
+        // Ошибка в getUserByEmail (mongo) - services.secure.signin (getUserByEmail) => failed
+        .mockReturnValueOnce({
+            limit() {
+                return {
+                    toArray() {
+                        return Promise.reject(Error('Mongo error (find)'));
+                    },
+                };
+            },
+        })
+
+        // Авторизация пользователя (/user/signin)
+        // Ошибка в setSessionById (mongo) - services.secure.user (getUserBySession) => cuccess
+        .mockReturnValueOnce({
+            limit() {
+                return {
+                    toArray() {
+                        return Promise.resolve([]);
+                    },
+                };
+            },
+        })
+
+        // Авторизация пользователя (/user/signin)
+        // Ошибка в setSessionById (mongo) - services.secure.signin (getUserByEmail) => cuccess
+        .mockReturnValueOnce({
+            limit() {
+                return {
+                    toArray() {
+                        return Promise.resolve([user]);
+                    },
+                };
+            },
+        })
+
+        // Авторизация пользователя (/user/signin)
+        // Ошибка в setSessionById (nedb) - services.secure.user (getUserBySession) => cuccess
+        .mockReturnValueOnce({
+            limit() {
+                return {
+                    toArray() {
+                        return Promise.resolve([]);
+                    },
+                };
+            },
+        })
+
+        // Авторизация пользователя (/user/signin)
+        // Ошибка в setSessionById (nedb) - services.secure.signin (getUserByEmail) => cuccess
+        .mockReturnValueOnce({
+            limit() {
+                return {
+                    toArray() {
+                        return Promise.resolve([user]);
+                    },
+                };
+            },
+        })
+
+        // Авторизация пользователя (/user/signin)
+        // Успешная авторизация - services.secure.user (getUserBySession) => cuccess
+        .mockReturnValueOnce({
+            limit() {
+                return {
+                    toArray() {
+                        return Promise.resolve([]);
+                    },
+                };
+            },
+        })
+
+        // Авторизация пользователя (/user/signin)
+        // Успешная авторизация - services.secure.signin (getUserByEmail) => cuccess
+        .mockReturnValueOnce({
+            limit() {
+                return {
+                    toArray() {
+                        return Promise.resolve([user]);
                     },
                 };
             },
@@ -279,37 +387,29 @@ const
             result: {
                 nModified: 1,
             },
-        })),
+        }))
 
-    // updateOne = (query, data) => {
-    //     if (query._id === 'user.signin@success.test') {
-    //         user.sid = data.$set.sid;
-    //     }
-    //
-    //     if (query._id === 'user.signin@mongo.updateone.error.test') {
-    //         return Promise.reject(Error('Mongo error (updateOne)'));
-    //     }
-    //
-    //     if (query.email === 'user.forgot@mongo.updateone.error.test') {
-    //         return Promise.reject(Error('Mongo error (updateOne)'));
-    //     }
-    //
-    //     if (query.email === 'user.forgot@mongo.updateone.nomodified.test') {
-    //         return Promise.resolve({
-    //             upsertedId: user._id,
-    //             result: {
-    //                 nModified: 0,
-    //             },
-    //         });
-    //     }
-    //
-    //     return Promise.resolve({
-    //         upsertedId: user._id,
-    //         result: {
-    //             nModified: 1,
-    //         },
-    //     });
-    // },
+        // Авторизация пользователя (/user/signin)
+        // Ошибка в setSessionById (mongo) - services.secure.signin (setSessionById) => failed
+        .mockReturnValueOnce(Promise.reject(Error('Mongo error (updateOne)')))
+
+        // Авторизация пользователя (/user/signin)
+        // Ошибка в setSessionById (nedb) - services.secure.signin (setSessionById) => success
+        .mockReturnValueOnce(Promise.resolve({
+            upsertedId: user._id,
+            result: {
+                nModified: 1,
+            },
+        }))
+
+        // Авторизация пользователя (/user/signin)
+        // Успешная авторизация - services.secure.signin (setSessionById) => success
+        .mockReturnValueOnce(Promise.resolve({
+            upsertedId: user._id,
+            result: {
+                nModified: 1,
+            },
+        })),
     db = {
         collection() {
             return {

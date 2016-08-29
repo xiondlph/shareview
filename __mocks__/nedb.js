@@ -55,6 +55,20 @@ const
                 // services.user.forgot(setPasswordByEmail) => cuccess
                 .mockImplementationOnce((qyery, data, cb) => {
                     cb(null, user);
+                })
+
+                // Авторизация пользователя (/user/signin)
+                // Ошибка в setSessionById (nedb) -
+                // services.secure.signin (setSessionById) => failed
+                .mockImplementationOnce((qyery, data, cb) => {
+                    cb(Error('Nedb error (update)'));
+                })
+
+                // Авторизация пользователя (/user/signin)
+                // Успешная авторизация -
+                // services.secure.signin (setSessionById) => cuccess
+                .mockImplementationOnce((qyery, data, cb) => {
+                    cb(null, user);
                 }),
         };
     };
