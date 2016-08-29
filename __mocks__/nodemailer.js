@@ -3,22 +3,53 @@
  */
 
 const
-    nodemailer = {
-        createTransport() {
-            return {
-                sendMail(options, cb) {
-                    if (
-                        options.to === 'user.create@nodemailer.sendmail.error.test'
-                        || options.to === 'user.forgot@nodemailer.sendmail.error.test'
-                    ) {
-                        cb(Error('nodemailer error (sendMail)'));
-                        return;
-                    }
+    nodemailer = jest.fn()
+        // Регистрация пользователя (/user/create)
+        // Успешная регистрация - services.user.create (sendMail) => cuccess
+        .mockImplementationOnce({
+            createTransport() {
+                return {
+                    sendMail(options, cb) {
+                        cb(null);
+                    },
+                };
+            },
+        })
 
-                    cb(null);
-                },
-            };
-        },
-    };
+        // Регистрация пользователя (/user/create)
+        // Успешная регистрация - services.user.create (sendMail) => failed
+        .mockImplementationOnce({
+            createTransport() {
+                return {
+                    sendMail(options, cb) {
+                        cb(Error('nodemailer error (sendMail)'));
+                    },
+                };
+            },
+        })
+
+        // Сброс пароля (/user/forgot)
+        // Успешный сброс - services.user.forgot (sendMail) => cuccess
+        .mockImplementation({
+            createTransport() {
+                return {
+                    sendMail(options, cb) {
+                        cb(null);
+                    },
+                };
+            },
+        })
+
+        // Сброс пароля (/user/forgot)
+        // Ошибка в sendMail - services.user.forgot (sendMail) => cuccess
+        .mockImplementationOnce({
+            createTransport() {
+                return {
+                    sendMail(options, cb) {
+                        cb(null);
+                    },
+                };
+            },
+        });
 
 export default nodemailer;
