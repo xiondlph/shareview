@@ -324,6 +324,54 @@ const
                     },
                 };
             },
+        })
+
+        // Выход из сессии (/user/signout)
+        // Успешный выход из сессии - services.secure.user (getUserBySession) => cuccess
+        .mockReturnValueOnce({
+            limit() {
+                return {
+                    toArray() {
+                        return Promise.resolve([user]);
+                    },
+                };
+            },
+        })
+
+        // Выход из сессии (/user/signout)
+        // Ошибка в unsetSessionById (mongo) - services.secure.user (getUserBySession) => cuccess
+        .mockReturnValueOnce({
+            limit() {
+                return {
+                    toArray() {
+                        return Promise.resolve([user]);
+                    },
+                };
+            },
+        })
+
+        // Выход из сессии (/user/signout)
+        // Ошибка в unsetSessionById (nedb) - services.secure.user (getUserBySession) => cuccess
+        .mockReturnValueOnce({
+            limit() {
+                return {
+                    toArray() {
+                        return Promise.resolve([user]);
+                    },
+                };
+            },
+        })
+
+        // Запрос данных профиля (/api/profile)
+        // Успешное получение данных - services.secure.user (getUserBySession) => cuccess
+        .mockReturnValueOnce({
+            limit() {
+                return {
+                    toArray() {
+                        return Promise.resolve([user]);
+                    },
+                };
+            },
         }),
 
     insertOne = jest.fn()
@@ -404,6 +452,28 @@ const
 
         // Авторизация пользователя (/user/signin)
         // Успешная авторизация - services.secure.signin (setSessionById) => success
+        .mockReturnValueOnce(Promise.resolve({
+            upsertedId: user._id,
+            result: {
+                nModified: 1,
+            },
+        }))
+
+        // Выход из сессии (/user/signout)
+        // Успешный выход из сессии - services.secure.signout (unsetSessionById) => success
+        .mockReturnValueOnce(Promise.resolve({
+            upsertedId: user._id,
+            result: {
+                nModified: 1,
+            },
+        }))
+
+        // Выход из сессии (/user/signout)
+        // Ошибка в unsetSessionById (mongo) - services.secure.signout (unsetSessionById) => failed
+        .mockReturnValueOnce(Promise.reject(Error('Mongo error (updateOne)')))
+
+        // Выход из сессии (/user/signout)
+        // Ошибка в unsetSessionById (nedb) - services.secure.signout (unsetSessionById) => success
         .mockReturnValueOnce(Promise.resolve({
             upsertedId: user._id,
             result: {

@@ -69,6 +69,20 @@ const
                 // services.secure.signin (setSessionById) => cuccess
                 .mockImplementationOnce((qyery, data, cb) => {
                     cb(null, user);
+                })
+
+                // Выход из сессии (/user/signout)
+                // Успешный выход из сессии -
+                // services.secure.signout (unsetSessionById) => cuccess
+                .mockImplementationOnce((qyery, data, cb) => {
+                    cb(null, user);
+                })
+
+                // Выход из сессии (/user/signout)
+                // Ошибка в unsetSessionById (nedb) -
+                // services.secure.signout (unsetSessionById) => failed
+                .mockImplementationOnce((qyery, data, cb) => {
+                    cb(Error('Nedb error (update)'));
                 }),
         };
     };

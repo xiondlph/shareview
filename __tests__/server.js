@@ -375,53 +375,90 @@ describe('Авторизация пользователя (/user/signin) - ', ()
     });
 });
 
-// describe('Выход из сессии (/user/signout) - ', () => {
-//     it('Успешный выход из сессии', () => {
-//         return new Promise((resolve, reject) => {
-//             request.then(agent => {
-//                 agent
-//                     .get('/user/signout')
-//                     .expect(200)
-//                     .end((err, res) => {
-//                         if (err) {
-//                             reject(err);
-//                             return;
-//                         }
-//                         resolve(res);
-//                     });
-//             });
-//         }).then(
-//             res => { expect(res.body.success).toEqual(true); }
-//         );
-//     });
-// });
-//
-// describe('Запрос данных профиля (/api/profile) - ', () => {
-//     afterEach(() => {
-//         http.then(server => {
-//             server.close();
-//         });
-//     });
-//
-//     it('Успешное получение данных', () => {
-//         return new Promise((resolve, reject) => {
-//             request.then(agent => {
-//                 agent
-//                     .get('/api/profile')
-//                     .expect(200)
-//                     .end((err, res) => {
-//                         if (err) {
-//                             reject(err);
-//                             return;
-//                         }
-//                         resolve(res);
-//                     });
-//             });
-//         }).then(
-//             res => {
-//                 expect(res.body.success).toEqual(true);
-//                 expect(res.body.profile.email).toEqual('shukhrat@ismax.ru');
-//             }
-//         );
-//     });
-// });
+describe('Выход из сессии (/user/signout) - ', () => {
+    it('Успешный выход из сессии', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .get('/user/signout')
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.success).toEqual(true); }
+        );
+    });
+
+    it('Ошибка в unsetSessionById (mongo)', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .get('/user/signout')
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
+    it('Ошибка в unsetSessionById (nedb)', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .get('/user/signout')
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+});
+
+describe('Запрос данных профиля (/api/profile) - ', () => {
+    afterEach(() => {
+        http.then(server => {
+            server.close();
+        });
+    });
+    it('Успешное получение данных', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .get('/api/profile')
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => {
+                expect(res.body.success).toEqual(true);
+                expect(res.body.profile.email).toEqual('shukhrat@ismax.ru');
+            }
+        );
+    });
+});
