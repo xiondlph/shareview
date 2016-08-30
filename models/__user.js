@@ -152,6 +152,17 @@ const
             setPasswordByEmail(email, password) {
                 return mongoUpdate({ email }, { $set: { password } });
             },
+
+            /**
+             * Обновление данных пользователя
+             *
+             * @method update
+             * @param {Number} id
+             * @param {Object} data
+             */
+            update(id, data) {
+                return mongoUpdate({ _id: id }, { $set: { data } });
+            },
         };
 
         next();

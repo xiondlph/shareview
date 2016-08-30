@@ -10,46 +10,24 @@
 import crypto from 'crypto';
 import validator from 'validator';
 
-// Обновление данных профиля
-function updateProfile(req, res, next, data) {
-    req.model.user.update(res.locals.user._id, data, (err) => {
-        if (err) {
-            next(err);
-            return;
-        }
-
-        req.model.user.sync(res.locals.user._id, (err) => {
-            if (err) {
-                next(err);
-                return;
-            }
-
+const
+    // Обновление данных профиля
+    updateProfile = (req, res, next, data) => {
+        req.model.__user.update(res.locals.user._id, data).then(() => {
             res.send({
                 success: true,
             });
-        });
-    });
-}
-
-
-// Проверка дубликатов mail
-function isExistByEmail(req, res, next, accept) {
-    req.model.user.isExistByEmail(req.body.email, (err, count) => {
-        if (err) {
+        }).catch(err => {
             next(err);
-            return;
-        }
+        });
+    },
 
-        if (count > 0 && req.body.email !== res.locals.user.email) {
-            accept(true); // Дубликат
-        } else {
-            accept(false); // Уникальный
-        }
-    });
-}
-
-
-const
+    // Проверка дубликатов mail
+    isExistByEmail = (req, res) => {
+        return req.model.__user.getUserByEmail(req.body.email).then(user => {
+            return (user && req.body.email !== res.locals.user.email);
+        });
+    },
 
     /**
      * Получение данных профиля
@@ -57,7 +35,6 @@ const
      * @method get
      * @param {Object} req Объект запроса сервера
      * @param {Object} res Объект ответа сервера
-     * @param {Function} next
      */
     get = (req, res) => {
         res.send({
@@ -100,7 +77,7 @@ const
 
             data.email = req.body.email;
 
-            isExistByEmail(req, res, next, (exist) => {
+            isExistByEmail(req, res).then(exist => {
                 if (exist) {
                     res.send({
                         success: false,
@@ -111,7 +88,10 @@ const
                 }
 
                 updateProfile(req, res, next, data);
+            }).catch(err => {
+                next(err);
             });
+
             return;
         }
 
