@@ -32,7 +32,7 @@ const
         if (!validator.isEmail(req.body.email)) {
             throw new Error('Validate error - mail is invalid');
         }
-
+debugger;
         req.model.__user.getUserByEmail(req.body.email).then(user => {
             var currentDate = new Date(),
                 transporter,

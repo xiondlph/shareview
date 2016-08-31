@@ -18,20 +18,50 @@ const
             limit() {
                 return {
                     toArray() {
-                        if (query.sid === 'is_authorized') {
-                            return Promise.resolve([]);
+                        if (query.sid === 'error' || query.email === 'mongo.find.error@email.ru') {
+                            return Promise.reject(Error('Mongo error (find)'));
                         }
-                        return Promise.resolve([user]);
+
+                        if (query.sid === 'authorized') {
+                            return Promise.resolve([user]);
+                        }
+
+                        return Promise.resolve([]);
                     },
                 };
             },
         };
     },
-    insertOne = () => {
+    insertOne = (record) => {
+        if (record.email === 'mongo.insertone.error@email.ru') {
+            return Promise.reject(Error('Mongo error (insertOne)'));
+        }
 
+        return Promise.resolve({
+            insertedId: user._id,
+        });
     },
-    updateOne = () => {
 
+    updateOne = (query, data) => {
+        if (query.email === 'mongo.updateone.error@email.ru') {
+            return Promise.reject(Error('Mongo error (updateOne)'));
+        }
+
+        if (query.email === 'mongo.updateone.nomodified@email.ru') {
+            return Promise.resolve({
+                upsertedId: user._id,
+                result: {
+                    nModified: 0,
+                },
+            });
+        }
+
+        return Promise.resolve({
+            upsertedId: user._id,
+            result: {
+                nModified: 1,
+            },
+        });
     },
     db = {
         collection() {
