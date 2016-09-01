@@ -33,13 +33,34 @@ describe('Регистрация пользователя (/user/create) - ', ()
         );
     });
 
+    it('Если пользователь авторизован', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/user/create')
+                    .send({ email: 'simple@email.ru' })
+                    .set('Cookie', 'mongo.find.user')
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.success).toEqual(false); }
+        );
+    });
+
     it('Ошибка в getUserBySession', () => {
         return new Promise((resolve, reject) => {
             request.then(agent => {
                 agent
                     .post('/user/create')
                     .send({ email: 'simple@email.ru' })
-                    .set('Cookie', 'error')
+                    .set('Cookie', 'mongo.find.error')
                     .expect(500)
                     .end((err, res) => {
                         if (err) {
@@ -176,13 +197,34 @@ describe('Сброс пароля (/user/forgot) - ', () => {
         );
     });
 
+    it('Если пользователь авторизован', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/user/forgot')
+                    .send({ email: 'simple@email.ru' })
+                    .set('Cookie', 'mongo.find.user')
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.success).toEqual(false); }
+        );
+    });
+
     it('Ошибка в getUserBySession', () => {
         return new Promise((resolve, reject) => {
             request.then(agent => {
                 agent
                     .post('/user/forgot')
                     .send({ email: 'simple@email.ru' })
-                    .set('Cookie', 'error')
+                    .set('Cookie', 'mongo.find.error')
                     .expect(500)
                     .end((err, res) => {
                         if (err) {
@@ -322,6 +364,54 @@ describe('Авторизация пользователя (/user/signin) - ', ()
         );
     });
 
+    it('Если пользователь авторизован', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/user/signin')
+                    .send({
+                        email: 'mongo.find.user@email.ru',
+                        password: 'pMBXHsgErq1V',
+                    })
+                    .set('Cookie', 'mongo.find.user')
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.success).toEqual(true); }
+        );
+    });
+
+    it('Ошибка в getUserBySession', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/user/signin')
+                    .send({
+                        email: 'mongo.find.user@email.ru',
+                        password: 'pMBXHsgErq1V',
+                    })
+                    .set('Cookie', 'mongo.find.error')
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
     it('Ошибка валидации email', () => {
         return new Promise((resolve, reject) => {
             request.then(agent => {
@@ -423,7 +513,7 @@ describe('Выход из сессии (/user/signout) - ', () => {
             request.then(agent => {
                 agent
                     .get('/user/signout')
-                    .set('Cookie', 'authorized')
+                    .set('Cookie', 'mongo.find.user')
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
@@ -438,12 +528,31 @@ describe('Выход из сессии (/user/signout) - ', () => {
         );
     });
 
-    it('Ошибка в unsetSessionById (mongo)', () => {
+    it('Если пользователь не авторизован', () => {
         return new Promise((resolve, reject) => {
             request.then(agent => {
                 agent
                     .get('/user/signout')
-                    .set('Cookie', 'unsetSessionById.mongo.error')
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.success).toEqual(true); }
+        );
+    });
+
+    it('Ошибка в getUserBySession', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .get('/user/signout')
+                    .set('Cookie', 'mongo.find.error')
                     .expect(500)
                     .end((err, res) => {
                         if (err) {
@@ -457,53 +566,294 @@ describe('Выход из сессии (/user/signout) - ', () => {
             res => { expect(res.body.errors).toEqual(['Internal server error']); }
         );
     });
-    //
-    // it('Ошибка в unsetSessionById (nedb)', () => {
-    //    return new Promise((resolve, reject) => {
-    //        request.then(agent => {
-    //            agent
-    //                .get('/user/signout')
-    //                .expect(500)
-    //                .end((err, res) => {
-    //                    if (err) {
-    //                        reject(err);
-    //                        return;
-    //                    }
-    //                    resolve(res);
-    //                });
-    //        });
-    //    }).then(
-    //        res => { expect(res.body.errors).toEqual(['Internal server error']); }
-    //    );
-    // });
-});
-//
-// describe('Запрос данных профиля (/api/profile) - ', () => {
-//     afterEach(() => {
-//         http.then(server => {
-//             server.close();
-//         });
-//     });
-//     it('Успешное получение данных', () => {
-//         return new Promise((resolve, reject) => {
-//             request.then(agent => {
-//                 agent
-//                     .get('/api/profile')
-//                     .expect(200)
-//                     .end((err, res) => {
-//                         if (err) {
-//                             reject(err);
-//                             return;
-//                         }
-//                         resolve(res);
-//                     });
-//             });
-//         }).then(
-//             res => {
-//                 expect(res.body.success).toEqual(true);
-//                 expect(res.body.profile.email).toEqual('shukhrat@ismax.ru');
-//             }
-//         );
-//     });
-// });
 
+    it('Ошибка в unsetSessionById (mongo)', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .get('/user/signout')
+                    .set('Cookie', 'mongo.find.user.mongo.updateone.error')
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
+    it('Ошибка в unsetSessionById (nedb)', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .get('/user/signout')
+                    .set('Cookie', 'mongo.find.user.nedb.update.error')
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+           res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+});
+
+describe('Запрос данных профиля (/api/profile) - ', () => {
+    it('Успешное получение данных', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .get('/api/profile')
+                    .set('Cookie', 'mongo.find.user')
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => {
+                expect(res.body.success).toEqual(true);
+                expect(res.body.profile.email).toEqual('shukhrat@ismax.ru');
+            }
+        );
+    });
+
+    it('Ошибка в getUserBySession', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .get('/api/profile')
+                    .set('Cookie', 'mongo.find.error')
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+});
+
+describe('Обновление данных профиля (/api/profile) - ', () => {
+    afterEach(() => {
+        http.then(server => {
+            server.close();
+        });
+    });
+
+    it('Успешное получение данных', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .put('/api/profile')
+                    .send({
+                        email: 'simple@email.ru',
+                        address: '127.0.0.1',
+                    })
+                    .set('Cookie', 'mongo.find.user')
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => {
+                expect(res.body.success).toEqual(true);
+            }
+        );
+    });
+
+    it('Дублирование email', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .put('/api/profile')
+                    .send({
+                        email: 'mongo.find.user@email.ru',
+                        address: '127.0.0.1',
+                    })
+                    .set('Cookie', 'mongo.find.user')
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => {
+                expect(res.body.success).toEqual(false);
+                expect(res.body.exist).toEqual(true);
+            }
+        );
+    });
+
+    it('Ошибка в getUserBySession', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .put('/api/profile')
+                    .send({
+                        email: 'simple@email.ru',
+                        address: '127.0.0.1',
+                    })
+                    .set('Cookie', 'mongo.find.error')
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
+    it('Ошибка валидации email', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .put('/api/profile')
+                    .send({
+                        email: 'Invalid email',
+                        address: '127.0.0.1',
+                    })
+                    .set('Cookie', 'mongo.find.user')
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
+    it('Ошибка валидации IP', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .put('/api/profile')
+                    .send({
+                        email: 'simple@email.ru',
+                        address: 'Invalid IP',
+                    })
+                    .set('Cookie', 'mongo.find.user')
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
+    it('Ошибка в getUserByEmail', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .put('/api/profile')
+                    .send({
+                        email: 'mongo.find.error@email.ru',
+                        address: '127.0.0.1',
+                    })
+                    .set('Cookie', 'mongo.find.user')
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
+    it('Ошибка в update (mongo)', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .put('/api/profile')
+                    .send({
+                        email: 'mongo.updateone.error@email.ru',
+                        address: '127.0.0.1',
+                    })
+                    .set('Cookie', 'mongo.find.user')
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
+    it('Ошибка в update (nedb)', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .put('/api/profile')
+                    .send({
+                        email: 'nedb.update.error@email.ru',
+                        address: '127.0.0.1',
+                    })
+                    .set('Cookie', 'mongo.find.user')
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+});

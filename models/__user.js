@@ -161,7 +161,7 @@ const
              * @param {Object} data
              */
             update(id, data) {
-                return mongoUpdate({ _id: id }, { $set: { data } });
+                return mongoUpdate({ _id: id }, { $set: data });
             },
         };
 

@@ -21,23 +21,32 @@ const
                         var currentUser = user;
 
                         if (query.sid) {
-                            currentUser._id = query.sid;
-
-                            if (query.sid === 'unsetSessionById.mongo.error') {
+                            if (query.sid === 'mongo.find.user.mongo.updateone.error') {
+                                currentUser._id = 'mongo.updateone.error';
                                 return Promise.resolve([currentUser]);
                             }
+
+                            if (query.sid === 'mongo.find.user.nedb.update.error') {
+                                currentUser._id = 'nedb.update.error';
+                                return Promise.resolve([currentUser]);
+                            }
+                            currentUser._id = query.sid;
                         }
 
-                        if (query.sid === 'error' || query.email === 'mongo.find.error@email.ru') {
-                            return Promise.reject(Error('Mongo error (find)'));
-                        }
-
-                        if (query.sid === 'authorized') {
+                        if (query.sid === 'mongo.find.user') {
                             return Promise.resolve([currentUser]);
                         }
 
                         if (query.email === 'mongo.find.user@email.ru') {
                             return Promise.resolve([currentUser]);
+                        }
+
+                        if (query.sid === 'mongo.find.error') {
+                            return Promise.reject(Error('Mongo error (find)'));
+                        }
+
+                        if (query.email === 'mongo.find.error@email.ru') {
+                            return Promise.reject(Error('Mongo error (find)'));
                         }
 
                         return Promise.resolve([]);
@@ -46,7 +55,7 @@ const
             },
         };
     },
-    insertOne = (record) => {
+    insertOne = record => {
         if (record.email === 'mongo.insertone.error@email.ru') {
             return Promise.reject(Error('Mongo error (insertOne)'));
         }
@@ -57,13 +66,13 @@ const
     },
 
     updateOne = (query, data) => {
-        if (query._id === 'unsetSessionById.mongo.error') {
+        if (query._id === 'mongo.updateone.error') {
             return Promise.reject(Error('Mongo error (updateOne)'));
         }
 
         if (
             query.email === 'mongo.updateone.error@email.ru' ||
-            (data.$set && data.$set.sid === 'mongo.updateone.error')
+            (data.$set && data.$set.email === 'mongo.updateone.error@email.ru')
         ) {
             return Promise.reject(Error('Mongo error (updateOne)'));
         }

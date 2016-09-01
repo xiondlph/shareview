@@ -18,9 +18,13 @@ const
                 cb(null, user);
             },
             update(query, data, cb) {
+                if (query._id === 'nedb.update.error') {
+                    cb(Error('Nedb error (update)'));
+                }
+
                 if (
                     query.email === 'nedb.update.error@email.ru' ||
-                    (data.$set && data.$set.sid === 'nedb.update.error')
+                    (data.$set && data.$set.email === 'nedb.update.error@email.ru')
                 ) {
                     cb(Error('Nedb error (update)'));
                 }
