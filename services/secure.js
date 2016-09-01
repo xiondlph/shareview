@@ -110,6 +110,11 @@ const
      * @param {Function} next
      */
     signout = (req, res, next) => {
+        if (!res.locals.user) {
+            res.send({ success: true });
+            return;
+        }
+
         req.model.__user.unsetSessionById(res.locals.user._id).then(() => {
             res.send({ success: true });
         }).catch(

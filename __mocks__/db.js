@@ -18,12 +18,26 @@ const
             limit() {
                 return {
                     toArray() {
+                        var currentUser = user;
+
+                        if (query.sid) {
+                            currentUser._id = query.sid;
+
+                            if (query.sid === 'unsetSessionById.mongo.error') {
+                                return Promise.resolve([currentUser]);
+                            }
+                        }
+
                         if (query.sid === 'error' || query.email === 'mongo.find.error@email.ru') {
                             return Promise.reject(Error('Mongo error (find)'));
                         }
 
                         if (query.sid === 'authorized') {
-                            return Promise.resolve([user]);
+                            return Promise.resolve([currentUser]);
+                        }
+
+                        if (query.email === 'mongo.find.user@email.ru') {
+                            return Promise.resolve([currentUser]);
                         }
 
                         return Promise.resolve([]);
@@ -43,7 +57,14 @@ const
     },
 
     updateOne = (query, data) => {
-        if (query.email === 'mongo.updateone.error@email.ru') {
+        if (query._id === 'unsetSessionById.mongo.error') {
+            return Promise.reject(Error('Mongo error (updateOne)'));
+        }
+
+        if (
+            query.email === 'mongo.updateone.error@email.ru' ||
+            (data.$set && data.$set.sid === 'mongo.updateone.error')
+        ) {
             return Promise.reject(Error('Mongo error (updateOne)'));
         }
 
