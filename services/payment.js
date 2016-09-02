@@ -195,21 +195,18 @@ const
         var skip = req.query.start,
             limit = req.query.limit;
 
-        req.model.payment.listByEmail(
-            res.locals.user.email,
+        req.model.__payment.listById(
+            res.locals.user._id,
             skip,
-            limit,
-            (err, payments, count) => {
-                if (err) {
-                    next(err);
-                    return;
-                }
-
+            limit)
+            .then(({ payments, count }) => {
                 res.send({
                     success: true,
                     payments,
                     total: count,
                 });
+            }).catch(err => {
+                next(err);
             });
     };
 

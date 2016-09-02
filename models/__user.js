@@ -58,6 +58,7 @@ const
             .updateOne(query, data)
             .then(mongoResult => { return nedbUpdate(query, data, mongoResult); });
     },
+
     /**
      * Экспорт методов модели данных системы безопастности
      *
@@ -140,6 +141,17 @@ const
              */
             unsetSessionById(id) {
                 return mongoUpdate({ _id: id }, { $unset: { sid: true } });
+            },
+
+            /**
+             * Установка нового пароля для пользователя по id
+             *
+             * @method setPasswordId
+             * @param {Number} id
+             * @param {String} password
+             */
+            setPasswordId(id, password) {
+                return mongoUpdate({ _id: id }, { $set: { password } });
             },
 
             /**

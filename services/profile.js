@@ -113,15 +113,12 @@ const
         }
 
         const pwd = crypto.createHmac('sha256', req.body.password).digest('hex');
-        req.model.user.setPasswordId(res.locals.user._id, pwd, (err) => {
-            if (err) {
-                next(err);
-                return;
-            }
-
+        req.model.__user.setPasswordId(res.locals.user._id, pwd).then(() => {
             res.send({
                 success: true,
             });
+        }).catch(err => {
+            next(err);
         });
     };
 

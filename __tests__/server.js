@@ -464,10 +464,9 @@ describe('Авторизация пользователя (/user/signin) - ', ()
                 agent
                     .post('/user/signin')
                     .send({
-                        email: 'mongo.find.user@email.ru',
+                        email: 'mongo.find.user.mongo.updateone.error@email.ru',
                         password: 'pMBXHsgErq1V',
                     })
-                    .set('Cookie', 'mongo.updateone.error')
                     .expect(500)
                     .end((err, res) => {
                         if (err) {
@@ -488,10 +487,9 @@ describe('Авторизация пользователя (/user/signin) - ', ()
                 agent
                     .post('/user/signin')
                     .send({
-                        email: 'mongo.find.user@email.ru',
+                        email: 'mongo.find.user.nedb.update.error@email.ru',
                         password: 'pMBXHsgErq1V',
                     })
-                    .set('Cookie', 'nedb.update.error')
                     .expect(500)
                     .end((err, res) => {
                         if (err) {
@@ -651,6 +649,25 @@ describe('Запрос данных профиля (/api/profile) - ', () => {
             res => { expect(res.body.errors).toEqual(['Internal server error']); }
         );
     });
+
+    it('Не авторизированный пользователь', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .get('/api/profile')
+                    .expect(403)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Forbidden resource']); }
+        );
+    });
 });
 
 describe('Обновление данных профиля (/api/profile) - ', () => {
@@ -734,6 +751,29 @@ describe('Обновление данных профиля (/api/profile) - ', (
             });
         }).then(
             res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
+    it('Не авторизированный пользователь', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .put('/api/profile')
+                    .send({
+                        email: 'simple@email.ru',
+                        address: '127.0.0.1',
+                    })
+                    .expect(403)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Forbidden resource']); }
         );
     });
 
@@ -854,6 +894,185 @@ describe('Обновление данных профиля (/api/profile) - ', (
             });
         }).then(
             res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+});
+
+describe('Смена пароля (/api/password) - ', () => {
+    afterEach(() => {
+        http.then(server => {
+            server.close();
+        });
+    });
+
+    it('Успешная смена пароля', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/api/password')
+                    .send({
+                        password: 'simple.password',
+                    })
+                    .set('Cookie', 'mongo.find.user')
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => {
+                expect(res.body.success).toEqual(true);
+            }
+        );
+    });
+
+    it('Ошибка в getUserBySession', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/api/password')
+                    .send({
+                        password: 'simple.password',
+                    })
+                    .set('Cookie', 'mongo.find.error')
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
+    it('Не авторизированный пользователь', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/api/password')
+                    .send({
+                        password: 'simple.password',
+                    })
+                    .expect(403)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Forbidden resource']); }
+        );
+    });
+
+    it('Ошибка валидации пароля', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/api/password')
+                    .send({
+                        password: '',
+                    })
+                    .set('Cookie', 'mongo.find.user')
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
+    it('Ошибка в update (mongo)', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/api/password')
+                    .send({
+                        password: 'simple.password',
+                    })
+                    .set('Cookie', 'mongo.find.user.mongo.updateone.error')
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
+    it('Ошибка в update (nedb)', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/api/password')
+                    .send({
+                        password: 'simple.password',
+                    })
+                    .set('Cookie', 'mongo.find.user.nedb.update.error')
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+});
+
+describe('Запрос списка уведомлений об платежах - ', () => {
+    afterEach(() => {
+        http.then(server => {
+            server.close();
+        });
+    });
+
+    it('Успешный запрос списка', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .get('/api/payment')
+                    .set('Cookie', 'mongo.find.user.mongo')
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => {
+                expect(res.body.success).toEqual(true);
+                expect(res.body.payments).toEqual([]);
+                expect(res.body.total).toEqual(0);
+            }
         );
     });
 });

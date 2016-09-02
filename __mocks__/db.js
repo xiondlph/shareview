@@ -18,7 +18,7 @@ const
             limit() {
                 return {
                     toArray() {
-                        var currentUser = user;
+                        var currentUser = Object.assign({}, user);
 
                         if (query.sid) {
                             if (query.sid === 'mongo.find.user.mongo.updateone.error') {
@@ -30,28 +30,46 @@ const
                                 currentUser._id = 'nedb.update.error';
                                 return Promise.resolve([currentUser]);
                             }
+
                             currentUser._id = query.sid;
-                        }
-
-                        if (query.sid === 'mongo.find.user') {
-                            return Promise.resolve([currentUser]);
-                        }
-
-                        if (query.email === 'mongo.find.user@email.ru') {
-                            return Promise.resolve([currentUser]);
                         }
 
                         if (query.sid === 'mongo.find.error') {
                             return Promise.reject(Error('Mongo error (find)'));
                         }
 
+                        if (query.sid === 'mongo.find.user') {
+                            return Promise.resolve([currentUser]);
+                        }
+
                         if (query.email === 'mongo.find.error@email.ru') {
                             return Promise.reject(Error('Mongo error (find)'));
+                        }
+
+                        if (query.email === 'mongo.find.user@email.ru') {
+                            return Promise.resolve([currentUser]);
+                        }
+
+                        if (query.email === 'mongo.find.user.mongo.updateone.error@email.ru') {
+                            currentUser._id = 'mongo.updateone.error';
+                            return Promise.resolve([currentUser]);
+                        }
+
+                        if (query.email === 'mongo.find.user.nedb.update.error@email.ru') {
+                            currentUser._id = 'nedb.update.error';
+                            return Promise.resolve([currentUser]);
                         }
 
                         return Promise.resolve([]);
                     },
                 };
+            },
+            toArray() {
+                console.log(query);
+                return Promise.resolve([]);
+            },
+            count() {
+                return Promise.resolve(0);
             },
         };
     },

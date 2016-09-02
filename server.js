@@ -88,7 +88,7 @@ app.put('/api/profile', services.profile.set);
 app.post('/api/password', services.profile.password);
 
 // Payment (api)...
-app.get('/api/payment', models.payment, services.payment.list);
+app.get('/api/payment', models.payment, models.__payment, services.payment.list);
 
 // Обработка запроса уведовления от ЯД
 app.post('/ym_notification', models.payment, services.payment.notification);
