@@ -1052,12 +1052,12 @@ describe('Запрос списка уведомлений об платежах
         });
     });
 
-    it('Успешный запрос списка', () => {
+    it('Успешное получение списка', () => {
         return new Promise((resolve, reject) => {
             request.then(agent => {
                 agent
                     .get('/api/payment')
-                    .set('Cookie', 'mongo.find.user.mongo')
+                    .set('Cookie', 'mongo.find.user')
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
@@ -1073,6 +1073,45 @@ describe('Запрос списка уведомлений об платежах
                 expect(res.body.payments).toEqual([]);
                 expect(res.body.total).toEqual(0);
             }
+        );
+    });
+
+    it('Ошибка в getUserBySession', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .get('/api/payment')
+                    .set('Cookie', 'mongo.find.error')
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
+    it('Не авторизированный пользователь', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .get('/api/payment')
+                    .expect(403)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Forbidden resource']); }
         );
     });
 });

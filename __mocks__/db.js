@@ -65,7 +65,6 @@ const
                 };
             },
             toArray() {
-                console.log(query);
                 return Promise.resolve([]);
             },
             count() {
