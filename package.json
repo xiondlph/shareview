@@ -65,7 +65,10 @@
     "lint-staged"
   ],
   "jest": {
-    "automock": false
+    "automock": false,
+    "setupFiles": [
+      "jest.setup.js"
+    ]
   },
   "dependencies": {
     "babel-register": "^6.11.6",
