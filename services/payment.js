@@ -119,7 +119,8 @@ const
         ].join('&');
         hash = crypto.createHash('sha1').update(hash).digest('hex');
 
-        if (req.body.sha1_hash !== hash || req.body.codepro !== 'false') {
+        if (!req.body.sha1_hash || req.body.sha1_hash !== hash || req.body.codepro !== 'false') {
+            console.log('no');
             res.end();
             return;
         }
@@ -139,7 +140,7 @@ const
                 req.body.withdraw_amount
             );
 
-            req.store.user.updatePeriod(
+            return req.store.user.updatePeriod(
                 user._id,
                 newPeriod)
                 .then(result => {
