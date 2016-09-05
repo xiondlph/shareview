@@ -13,7 +13,7 @@ const
         salt: '9be79a1476b8d6bf4e50d705ff34b4c8b775c61c0deb2d37805f5ecb9fd96551',
         sid: '3fy7m_5CdLUAaboAcdcTMAAblz2OZr4Y',
     },
-    find = (query) => {
+    find = query => {
         return {
             limit() {
                 return {
@@ -28,6 +28,16 @@ const
 
                             if (query.sid === 'mongo.find.user.nedb.update.error') {
                                 currentUser._id = 'nedb.update.error';
+                                return Promise.resolve([currentUser]);
+                            }
+
+                            if (query.sid === 'mongo.find.user.mongo.find.error') {
+                                currentUser._id = 'mongo.find.error';
+                                return Promise.resolve([currentUser]);
+                            }
+
+                            if (query.sid === 'mongo.find.user.mongo.count.error') {
+                                currentUser._id = 'mongo.count.error';
                                 return Promise.resolve([currentUser]);
                             }
 
@@ -65,13 +75,22 @@ const
                 };
             },
             toArray() {
+                if (query.label === 'mongo.find.error') {
+                    return Promise.reject(Error('Mongo error (find)'));
+                }
+
                 return Promise.resolve([]);
             },
             count() {
+                if (query.label === 'mongo.count.error') {
+                    return Promise.reject(Error('Mongo error (count)'));
+                }
+
                 return Promise.resolve(0);
             },
         };
     },
+
     insertOne = record => {
         if (record.email === 'mongo.insertone.error@email.ru') {
             return Promise.reject(Error('Mongo error (insertOne)'));
@@ -121,8 +140,14 @@ const
     },
     init = new Promise((resolve) => {
         resolve();
-    });
+    }),
+
+    ObjectID = (id) => {
+        return id;
+    };
 
 export default db;
 
 export { init };
+
+export { ObjectID };

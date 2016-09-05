@@ -31,6 +31,17 @@ const
          */
         req.model.__payment = {
             /**
+             * Добавление нового уведомления
+             *
+             * @method add
+             * @param {Object} data
+             */
+            add(data) {
+                return db.collection('payments')
+                    .insertOne(data);
+            },
+
+            /**
              * Получение списка уведомлений пользователя по email
              *
              * @method listById

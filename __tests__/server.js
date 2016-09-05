@@ -671,12 +671,6 @@ describe('Запрос данных профиля (/api/profile) - ', () => {
 });
 
 describe('Обновление данных профиля (/api/profile) - ', () => {
-    afterEach(() => {
-        http.then(server => {
-            server.close();
-        });
-    });
-
     it('Успешное получение данных', () => {
         return new Promise((resolve, reject) => {
             request.then(agent => {
@@ -899,12 +893,6 @@ describe('Обновление данных профиля (/api/profile) - ', (
 });
 
 describe('Смена пароля (/api/password) - ', () => {
-    afterEach(() => {
-        http.then(server => {
-            server.close();
-        });
-    });
-
     it('Успешная смена пароля', () => {
         return new Promise((resolve, reject) => {
             request.then(agent => {
@@ -1046,12 +1034,6 @@ describe('Смена пароля (/api/password) - ', () => {
 });
 
 describe('Запрос списка уведомлений об платежах - ', () => {
-    afterEach(() => {
-        http.then(server => {
-            server.close();
-        });
-    });
-
     it('Успешное получение списка', () => {
         return new Promise((resolve, reject) => {
             request.then(agent => {
@@ -1112,6 +1094,103 @@ describe('Запрос списка уведомлений об платежах
             });
         }).then(
             res => { expect(res.body.errors).toEqual(['Forbidden resource']); }
+        );
+    });
+
+    it('Ошибка в listById(find)', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .get('/api/payment')
+                    .set('Cookie', 'mongo.find.user.mongo.find.error')
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+
+    it('Ошибка в listById(count)', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .get('/api/payment')
+                    .set('Cookie', 'mongo.find.user.mongo.count.error')
+                    .expect(500)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => { expect(res.body.errors).toEqual(['Internal server error']); }
+        );
+    });
+});
+
+describe('Уведомление об ЯД платеже - ', () => {
+    afterEach(() => {
+        http.then(server => {
+            server.close();
+        });
+    });
+
+    it('Успешное уведомление', () => {
+        return new Promise((resolve, reject) => {
+            request.then(agent => {
+                agent
+                    .post('/ym_notification')
+                    .send({
+                        notification_type: 'card-incoming',
+                        zip: '',
+                        amount: '980.00',
+                        firstname: '',
+                        codepro: 'false',
+                        withdraw_amount: '1000.00',
+                        city: '',
+                        unaccepted: 'false',
+                        label: '57aaf7e7a6f9ca27ffad21a3',
+                        building: '',
+                        lastname: '',
+                        datetime: '2016-09-05T09:51:06Z',
+                        suite: '',
+                        sender: '',
+                        phone: '',
+                        sha1_hash: '4040f832f8817f16c24df4b7fecafd691ed0586c',
+                        street: '',
+                        flat: '',
+                        fathersname: '',
+                        operation_label: '1f5f538f-0002-5000-8034-557be6293496',
+                        operation_id: '526384266906100012',
+                        currency: '643',
+                        email: 'ivan@car-radar.ru',
+                        _requests: 10000,
+                        _quantity: 10000,
+                        _id: '57cd4011499b7612cfe85c7a',
+                    })
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(res);
+                    });
+            });
+        }).then(
+            res => {
+                expect(res.body).toEqual({});
+            }
         );
     });
 });

@@ -7,7 +7,7 @@
  */
 
 // Объявление модулей
-import db from '../db';
+import { db, ObjectID } from '../db';
 
 const
     /**
@@ -23,6 +23,9 @@ const
         if (!req.model) {
             req.model = {};
         }
+
+        // Интеграция ObjectID
+        req.model.ObjectID = ObjectID;
 
         /**
          * Объект модели данных

@@ -18,10 +18,13 @@ function logPayment(params) {
     const stringifyParams = JSON.stringify(params, null, '\t');
 
     // Запись данных уведобления в лог файл
-    fs.open(`${process.env.APPPATH}/log/payment.log`, 'a', (e, id) => {
-        fs.write(id, `${stringifyParams}\n`, null, 'utf8', () => {
-            fs.close(id);
-        });
+    fs.access(`${process.env.APPPATH}/log/`, fs.R_OK | fs.W_OK, (fErr) => {
+        if (!fErr) {
+            const fd = fs.openSync(`${process.env.APPPATH}/log/payment.log`, 'a');
+
+            fs.writeSync(fd, `${stringifyParams}\n`, null, 'utf8');
+            fs.closeSync(fd);
+        }
     });
 }
 
@@ -91,7 +94,6 @@ const
      * @param {Object} req Объект запроса сервера
      * @param {Object} res Объект ответа сервера
      * @param {Function} next
-     * .0
      */
     notification = (req, res, next) => {
         var currentPeriod,
@@ -122,64 +124,44 @@ const
             return;
         }
 
-        req.model.user.getUserById(
-            new req.model.ObjectID(req.body.label),
-            (err, user) => {
-                if (err) {
-                    next(err);
-                    return;
-                }
+        req.model.__user.getUserById(
+            new req.model.ObjectID(req.body.label)
+        ).then(user => {
+            if (!user) {
+                res.end();
+                return;
+            }
 
-                if (!user) {
+            currentPeriod = user.period;
+            newPeriod = getPeriod(
+                currentPeriod,
+                req.body.datetime,
+                req.body.withdraw_amount
+            );
+
+            req.store.user.updatePeriod(
+                user._id,
+                newPeriod)
+                .then(result => {
+                    if (!result.mongoResult.result.nModified) {
+                        res.end();
+                        return;
+                    }
+
+                    req.body._user = result.mongoResult.result.upsertedId;
+                    req.body._lastPeriod = currentPeriod;
+                    req.body._newPeriod = newPeriod;
+
+                    req.model.__payment.add(req.body);
+
+                    // Уведомление об успешном платеже по email
+                    notice(req, res, next, 'Успешный входящий платеж');
+
                     res.end();
-                    return;
-                }
-
-                currentPeriod = user.period;
-                newPeriod = getPeriod(
-                    currentPeriod,
-                    req.body.datetime,
-                    req.body.withdraw_amount
-                );
-
-                req.store.user.updatePeriod(
-                    user._id,
-                    newPeriod,
-                    (err, result) => {
-                        if (err) {
-                            next(err);
-                            return;
-                        }
-
-                        if (!result) {
-                            res.end();
-                            return;
-                        }
-
-                        req.store.user.sync(user._id, (err, result) => {
-                            if (err) {
-                                next(err);
-                                return;
-                            }
-
-                            if (!user.value) {
-                                res.end();
-                                return;
-                            }
-
-                            req.body._user = result.value._id;
-                            req.body._lastPeriod = currentPeriod;
-                            req.body._newPeriod = newPeriod;
-
-                            req.model.payment.add(req.body);
-
-                            // Уведомление об успешном платеже по email
-                            notice(req, res, next, 'Успешный входящий платеж');
-
-                            res.end();
-                        });
-                    });
-            });
+                });
+        }).catch(err => {
+            next(err);
+        });
     },
 
 
@@ -192,8 +174,9 @@ const
      * @param {Function} next
      */
     list = (req, res, next) => {
-        var skip = req.query.start,
-            limit = req.query.limit;
+        const
+            skip = isNaN(+req.query.skip) ? 0 : +req.query.skip,
+            limit = isNaN(+req.query.limit) ? 0 : +req.query.limit;
 
         req.model.__payment.listById(
             res.locals.user._id,

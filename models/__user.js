@@ -80,6 +80,20 @@ const
          */
         req.model.__user = {
             /**
+             * Получения пользователя по id
+             *
+             * @method getUserById
+             * @param {Object} _id
+             */
+            getUserById(_id) {
+                return db.collection('users')
+                    .find({ _id })
+                    .limit(1)
+                    .toArray()
+                    .then(users => { return users.length ? users[0] : null; });
+            },
+
+            /**
              * Получения пользователя по индексу сессии
              *
              * @method getUserBySession
@@ -126,32 +140,32 @@ const
              * Установка хеша текущей сессии для пользователя по id
              *
              * @method setSessionById
-             * @param {Number} id
+             * @param {Object} _id
              * @param {String} sid
              */
-            setSessionById(id, sid) {
-                return mongoUpdate({ _id: id }, { $set: { sid } });
+            setSessionById(_id, sid) {
+                return mongoUpdate({ _id }, { $set: { sid } });
             },
 
             /**
              * Удаление хеша текущей сессии для пользователя по id
              *
              * @method unsetSessionById
-             * @param {Number} id
+             * @param {Object} _id
              */
-            unsetSessionById(id) {
-                return mongoUpdate({ _id: id }, { $unset: { sid: true } });
+            unsetSessionById(_id) {
+                return mongoUpdate({ _id }, { $unset: { sid: true } });
             },
 
             /**
              * Установка нового пароля для пользователя по id
              *
              * @method setPasswordId
-             * @param {Number} id
+             * @param {Object} _id
              * @param {String} password
              */
-            setPasswordId(id, password) {
-                return mongoUpdate({ _id: id }, { $set: { password } });
+            setPasswordId(_id, password) {
+                return mongoUpdate({ _id }, { $set: { password } });
             },
 
             /**
@@ -169,11 +183,22 @@ const
              * Обновление данных пользователя
              *
              * @method update
-             * @param {Number} id
+             * @param {Object} _id
              * @param {Object} data
              */
-            update(id, data) {
-                return mongoUpdate({ _id: id }, { $set: data });
+            update(_id, data) {
+                return mongoUpdate({ _id }, { $set: data });
+            },
+
+            /**
+             * Обновление периода действия аккаунта по Email
+             *
+             * @method updatePeriod
+             * @param {Object} _id
+             * @param {Number} period
+             */
+            updatePeriod(_id, period) {
+                return mongoUpdate({ _id }, { $set: { period } });
             },
         };
 

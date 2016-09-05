@@ -16,7 +16,7 @@ const
     logDB = debug('shareview:mongodb'),
     Server = mongodb.Server,
     Db = mongodb.Db,
-    BSON = mongodb.BSONPure,
+    ObjectID = mongodb.ObjectID,
     mongoAuth = +process.env.DB_AUTH,
     mongoHost = process.env.DB_HOST || 'ds040888.mlab.com',
     mongoPort = process.env.DB_PORT || 40888,
@@ -72,9 +72,9 @@ export default db;
 export { init };
 
 /**
- * Експорт объекта bson
+ * Експорт объекта ObjectID
  *
- * @attribute bson
+ * @attribute ObjectID
  * @type Object
  */
-export { BSON as bson };
+export { ObjectID };
