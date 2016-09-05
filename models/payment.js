@@ -7,7 +7,8 @@
  */
 
 // Объявление модулей
-import { db, ObjectID } from '../db';
+import db from '../db';
+import { ObjectID } from '../db';
 
 const
     /**
@@ -18,11 +19,9 @@ const
      * @param {Object} res Объект ответа сервера
      * @param {Function} next
      */
-    payment = (req, res, next) => {
+    __payment = (req, res, next) => {
         // Инициализация объекта модели
-        if (!req.model) {
-            req.model = {};
-        }
+        req.model = req.model || {};
 
         // Интеграция ObjectID
         req.model.ObjectID = ObjectID;
@@ -34,58 +33,34 @@ const
          * @attribute model.payment
          * @type Object
          */
-        req.model.payment = {
-
-
+        req.model.__payment = {
             /**
              * Добавление нового уведомления
              *
              * @method add
              * @param {Object} data
-             * @param {Function} accept
              */
-            add(data, accept) {
-                db.collection('payments', (err, collection) => {
-                    if (err) {
-                        throw new Error(`Mongo error - ${err.message}`);
-                    }
-
-                    collection.insert(data, (err, payment) => {
-                        if (err) {
-                            throw new Error(`Mongo error - ${err.message}`);
-                        }
-
-                        if (typeof accept === 'function') {
-                            accept(payment);
-                        }
-                    });
-                });
+            add(data) {
+                return db.collection('payments')
+                    .insertOne(data);
             },
-
 
             /**
              * Получение списка уведомлений пользователя по email
              *
-             * @method listByEmail
-             * @param {Function} accept
+             * @method listById
              * @param email
              * @param skip
              * @param limit
              */
-            listByEmail(email, skip = 0, limit = 0, accept) {
-                db.collection('payments', (err, collection) => {
-                    if (err) {
-                        accept(new Error(`Mongo error - ${err.message}`));
-                        return;
-                    }
+            listById(email, skip = 0, limit = 0) {
+                const collection = db.collection('users');
 
-                    collection.find({ label: email }, { sort: { _id: -1 } }).count((err, count) => {
-                        if (err) {
-                            accept(new Error(`Mongo error - ${err.message}`));
-                            return;
-                        }
-
-                        collection.find(
+                return collection
+                    .find({ label: email }, { sort: { _id: -1 } })
+                    .count()
+                    .then(count => {
+                        return collection.find(
                             {
                                 label: email,
                             },
@@ -102,22 +77,19 @@ const
                                 },
                                 skip,
                                 limit,
-                            }).toArray((err, payments) => {
-                                if (err) {
-                                    accept(new Error(`Mongo error - ${err.message}`));
-                                    return;
-                                }
-
-                                if (typeof accept === 'function') {
-                                    accept(null, payments, count);
-                                }
+                            })
+                            .toArray()
+                            .then(payments => {
+                                return {
+                                    payments,
+                                    count,
+                                };
                             });
                     });
-                });
             },
         };
 
         next();
     };
 
-export default payment;
+export default __payment;
