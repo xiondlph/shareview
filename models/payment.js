@@ -7,8 +7,7 @@
  */
 
 // Объявление модулей
-import db from '../db';
-import { ObjectID } from '../db';
+import { db, ObjectID } from '../db';
 
 const
     /**
@@ -19,7 +18,7 @@ const
      * @param {Object} res Объект ответа сервера
      * @param {Function} next
      */
-    __payment = (req, res, next) => {
+    payment = (req, res, next) => {
         // Инициализация объекта модели
         req.model = req.model || {};
 
@@ -33,7 +32,7 @@ const
          * @attribute model.payment
          * @type Object
          */
-        req.model.__payment = {
+        req.model.payment = {
             /**
              * Добавление нового уведомления
              *
@@ -92,4 +91,4 @@ const
         next();
     };
 
-export default __payment;
+export default payment;

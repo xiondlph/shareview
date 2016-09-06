@@ -61,7 +61,7 @@ const
  * @attribute db
  * @type Object
  */
-export default db;
+export { db };
 
 /**
  * Експорт метода инициализации

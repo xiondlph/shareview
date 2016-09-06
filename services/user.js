@@ -8,7 +8,6 @@
 
 // Объявление модулей
 import crypto from 'crypto';
-import nodemailer from 'nodemailer';
 import validator from 'validator';
 import generatePassword from 'password-generator';
 
@@ -33,9 +32,8 @@ const
             throw new Error('Validate error - mail is invalid');
         }
 
-        req.model.__user.getUserByEmail(req.body.email).then(user => {
+        req.model.user.getUserByEmail(req.body.email).then(user => {
             var currentDate = new Date(),
-                transporter,
                 password,
                 data;
 
@@ -62,7 +60,7 @@ const
                 req.body.email
             ).digest('hex');
 
-            return req.model.__user.create(data).then(result => {
+            return req.model.user.create(data).then(result => {
                 res.locals._id = result.insertedId;
                 res.locals.email = data.email;
                 res.locals.password = password;
@@ -73,30 +71,14 @@ const
                         return;
                     }
 
-                    transporter = nodemailer.createTransport({
-                        service: 'Mail.ru',
-                        auth: {
-                            user: 'notification@shareview.ru',
-                            pass: 'XtFyKBXeChHY',
-                        },
-                    });
-
-                    transporter.sendMail({
-                        from: 'SHAREVIEW <notification@shareview.ru>',
+                    req.email({
                         to: data.email,
                         subject: 'Регистрация в сервисе SHAREVIEW',
                         text,
-                        headers: {
-                            'X-Mailer': 'SHAREVIEW',
-                        },
-                        localAddress: '194.87.197.55',
-                    }, (err) => {
-                        if (err) {
-                            next(err);
-                            return;
-                        }
-
+                    }).then(() => {
                         res.send({ success: true });
+                    }).catch(err => {
+                        next(err);
                     });
                 });
             });
@@ -118,8 +100,7 @@ const
      * @param {Function} next
      */
     forgot = (req, res, next) => {
-        var transporter,
-            password,
+        var password,
             pwd;
 
         // Если пользователь авторизован
@@ -135,7 +116,7 @@ const
         password = generatePassword(12, false);
         pwd = crypto.createHmac('sha256', password).digest('hex');
 
-        req.model.__user.setPasswordByEmail(req.body.email, pwd).then(result => {
+        req.model.user.setPasswordByEmail(req.body.email, pwd).then(result => {
             if (!result.mongoResult.result.nModified) {
                 res.send({ success: false });
                 return;
@@ -149,30 +130,14 @@ const
                     return;
                 }
 
-                transporter = nodemailer.createTransport({
-                    service: 'Mail.ru',
-                    auth: {
-                        user: 'notification@shareview.ru',
-                        pass: 'XtFyKBXeChHY',
-                    },
-                });
-
-                transporter.sendMail({
-                    from: 'SHAREVIEW <notification@shareview.ru>',
+                req.email({
                     to: req.body.email,
                     subject: 'Востановления доступа к сервису SHAREVIEW',
                     text,
-                    headers: {
-                        'X-Mailer': 'SHAREVIEW',
-                    },
-                    localAddress: '194.87.197.55',
-                }, (err) => {
-                    if (err) {
-                        next(err);
-                        return;
-                    }
-
+                }).then(() => {
                     res.send({ success: true });
+                }).catch(err => {
+                    next(err);
                 });
             });
         }).catch(
@@ -182,30 +147,9 @@ const
                 }
             }
         );
-    },
-
-    /**
-     * Синхронизация данных пользователя в NeDB с MongoDB
-     *
-     * @method sync
-     * @param {Object} req Объект запроса сервера
-     * @param {Object} res Объект ответа сервера
-     * @param {Function} next
-     */
-    sync = (req, res, next) => {
-        req.store.user.sync(res.locals.user._id, (err, user) => {
-            if (err) {
-                next(err);
-                return;
-            }
-
-            res.locals.user = user.value;
-            next();
-        });
     };
 
 export default {
     create,
     forgot,
-    sync,
 };

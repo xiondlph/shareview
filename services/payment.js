@@ -125,7 +125,7 @@ const
             return;
         }
 
-        req.model.__user.getUserById(
+        req.model.user.getUserById(
             new req.model.ObjectID(req.body.label)
         ).then(user => {
             if (!user) {
@@ -153,7 +153,7 @@ const
                     req.body._lastPeriod = currentPeriod;
                     req.body._newPeriod = newPeriod;
 
-                    req.model.__payment.add(req.body);
+                    req.model.payment.add(req.body);
 
                     // Уведомление об успешном платеже по email
                     notice(req, res, next, 'Успешный входящий платеж');
@@ -179,7 +179,7 @@ const
             skip = isNaN(+req.query.skip) ? 0 : +req.query.skip,
             limit = isNaN(+req.query.limit) ? 0 : +req.query.limit;
 
-        req.model.__payment.listById(
+        req.model.payment.listById(
             res.locals.user._id,
             skip,
             limit)

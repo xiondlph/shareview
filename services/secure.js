@@ -22,7 +22,7 @@ const
      * @param {Function} next
      */
     user = (req, res, next) => {
-        req.model.__user.getUserBySession(req.session.id).then(user => {
+        req.model.user.getUserBySession(req.session.id).then(user => {
             if (user) {
                 res.locals.user = user;
             }
@@ -76,7 +76,7 @@ const
             throw new Error('Validate error - mail is invalid');
         }
 
-        req.model.__user.getUserByEmail(req.body.email).then(user => {
+        req.model.user.getUserByEmail(req.body.email).then(user => {
             if (!user) {
                 res.send({ success: false });
                 return;
@@ -88,7 +88,7 @@ const
                 return;
             }
 
-            return req.model.__user.setSessionById(user._id, req.session.id).then(() => {
+            return req.model.user.setSessionById(user._id, req.session.id).then(() => {
                 res.send({ success: true });
             });
         }).catch(
@@ -115,7 +115,7 @@ const
             return;
         }
 
-        req.model.__user.unsetSessionById(res.locals.user._id).then(() => {
+        req.model.user.unsetSessionById(res.locals.user._id).then(() => {
             res.send({ success: true });
         }).catch(
             err => {

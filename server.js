@@ -70,8 +70,8 @@ app.post('/user/signin', services.secure.signin);
 app.get('/user/signout', services.secure.signout);
 
 // User
-app.post('/user/create', services.user.create);
-app.post('/user/forgot', services.user.forgot);
+app.post('/user/create', utils.mailer.email, services.user.create);
+app.post('/user/forgot', utils.mailer.email, services.user.forgot);
 
 // Review
 app.get('/review', utils.request.api, services.review.get);
