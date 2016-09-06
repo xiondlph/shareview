@@ -28,13 +28,9 @@ const
             }
 
             next();
-        }).catch(
-            err => {
-                if (err) {
-                    next(err);
-                }
-            }
-        );
+        }).catch(err => {
+            next(err);
+        });
     },
 
 
@@ -91,13 +87,9 @@ const
             return req.model.user.setSessionById(user._id, req.session.id).then(() => {
                 res.send({ success: true });
             });
-        }).catch(
-            err => {
-                if (err) {
-                    next(err);
-                }
-            }
-        );
+        }).catch(err => {
+            next(err);
+        });
     },
 
 

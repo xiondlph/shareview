@@ -1,7 +1,7 @@
 /**
  * Модель данных пользователя
  *
- * @module      Model.__User
+ * @module      Model.User
  * @main        Shareview review service
  * @author      Ismax <shukhrat@ismax.ru>
  */

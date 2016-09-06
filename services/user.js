@@ -82,13 +82,9 @@ const
                     });
                 });
             });
-        }).catch(
-            err => {
-                if (err) {
-                    next(err);
-                }
-            }
-        );
+        }).catch(err => {
+            next(err);
+        });
     },
 
     /**
@@ -140,13 +136,9 @@ const
                     next(err);
                 });
             });
-        }).catch(
-            err => {
-                if (err) {
-                    next(err);
-                }
-            }
-        );
+        }).catch(err => {
+            next(err);
+        });
     };
 
 export default {
