@@ -5,7 +5,7 @@
 const
     user = {
         _id: '57bb6e49c6051f12e896d424',
-        email: 'shukhrat@ismax.ru',
+        email: 'simple@user.ru',
         active: false,
         address: '127.0.01',
         period: 1471987657311,

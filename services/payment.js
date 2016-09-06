@@ -120,7 +120,6 @@ const
         hash = crypto.createHash('sha1').update(hash).digest('hex');
 
         if (!req.body.sha1_hash || req.body.sha1_hash !== hash || req.body.codepro !== 'false') {
-            console.log('no');
             res.end();
             return;
         }
