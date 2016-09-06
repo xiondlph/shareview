@@ -146,7 +146,7 @@ const
         return id;
     };
 
-export default db;
+export { db };
 
 export { init };
 

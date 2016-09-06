@@ -62,7 +62,8 @@
     ]
   },
   "pre-commit": [
-    "lint-staged"
+    "lint-staged",
+    "test"
   ],
   "jest": {
     "automock": false,

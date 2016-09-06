@@ -8,7 +8,7 @@
 
 // Объявление модулей
 import Nedb from 'nedb';
-import db from '../db';
+import { db } from '../db';
 
 const
     // Локальное хранилище пользователей
