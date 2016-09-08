@@ -1,4 +1,6 @@
 # shareview
 review service
 
-## API методы
+# Роуты
+## Регистрация пользователя
+url: `/user/create`
