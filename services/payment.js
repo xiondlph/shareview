@@ -1,7 +1,7 @@
 /**
  * Payment сервис
  *
- * @module      Payment
+ * @module      Service.Payment
  * @main        Shareview review service
  * @author      Ismax <shukhrat@ismax.ru>
  */

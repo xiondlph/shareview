@@ -62,7 +62,7 @@ const
     /**
      * Экспорт методов модели данных системы безопастности
      *
-     * @method __User
+     * @method user
      * @param {Object} req - Объект запроса сервера
      * @param {Object} res - Объект ответа сервера
      * @param {Function} next - Следующий слой обработки запроса
