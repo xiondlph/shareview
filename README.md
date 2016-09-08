@@ -60,13 +60,13 @@ POST `/user/forgot`
 **Входные данные**
 ```js
 {
-    email: 'simple@email.com'\
+    email: 'simple@email.com'
 }
 ```
 
 **Выходные данные**
 ```js
-// Успешная сброс пароля
+// Успешный сброс пароля
 {
     success: true
 }
