@@ -19,6 +19,7 @@
   },
 
   "opts": {
+    "destination": "doc",
     "template": "node_modules/docdash"
   }
 }
