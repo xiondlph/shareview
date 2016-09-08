@@ -3,4 +3,18 @@ review service
 
 # Роуты
 ## Регистрация пользователя
-url: `/user/create`
+POST: `/user/create`
+
+**Входные данные**
+```js
+{
+    email
+}
+```
+
+**Выходные данные**
+```js
+{
+    success: true
+}
+```
