@@ -53,3 +53,28 @@ POST: `/user/signin`
     success: false
 }
 ```
+
+## Сброс пароля
+POST `/user/forgot`
+
+**Входные данные**
+```js
+{
+    email: 'simple@email.com'\
+}
+```
+
+**Выходные данные**
+```js
+// Успешная сброс пароля
+{
+    success: true
+}
+```
+
+```js
+// Пользователь не найден
+{
+    success: false
+}
+```
