@@ -8,13 +8,22 @@ POST: `/user/create`
 **Входные данные**
 ```js
 {
-    email
+    email: 'simple@email.com'
 }
 ```
 
 **Выходные данные**
 ```js
+// Успешная регистрация
 {
     success: true
+}
+```
+
+```js
+// Пользователь с таким email уже есть
+{
+    success: false,
+    exist: true
 }
 ```
