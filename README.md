@@ -1,5 +1,5 @@
-# shareview
-review service
+# Shareview
+Сервис отзывов
 
 # Сообщения об ошибках
 
