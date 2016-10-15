@@ -13,7 +13,7 @@ import validator from 'validator';
 const
     // Обновление данных профиля
     updateProfile = (req, res, next, data) => {
-        req.model.__user.update(res.locals.user._id, data).then(() => {
+        req.model.user.update(res.locals.user._id, data).then(() => {
             res.send({
                 success: true,
             });
@@ -24,7 +24,7 @@ const
 
     // Проверка дубликатов mail
     isExistByEmail = (req, res) => {
-        return req.model.__user.getUserByEmail(req.body.email).then(user => {
+        return req.model.user.getUserByEmail(req.body.email).then(user => {
             return (user && req.body.email !== res.locals.user.email);
         });
     },
@@ -113,7 +113,7 @@ const
         }
 
         const pwd = crypto.createHmac('sha256', req.body.password).digest('hex');
-        req.model.__user.setPasswordId(res.locals.user._id, pwd).then(() => {
+        req.model.user.setPasswordId(res.locals.user._id, pwd).then(() => {
             res.send({
                 success: true,
             });

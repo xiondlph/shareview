@@ -18,7 +18,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             request.then(agent => {
                 agent
                     .post('/user/create')
-                    .send({ email: 'simple@email.ru' })
+                    .send({ email: 'simple@user.ru' })
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
@@ -38,7 +38,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             request.then(agent => {
                 agent
                     .post('/user/create')
-                    .send({ email: 'simple@email.ru' })
+                    .send({ email: 'simple@user.ru' })
                     .set('Cookie', 'mongo.find.user')
                     .expect(200)
                     .end((err, res) => {
@@ -59,7 +59,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             request.then(agent => {
                 agent
                     .post('/user/create')
-                    .send({ email: 'simple@email.ru' })
+                    .send({ email: 'simple@user.ru' })
                     .set('Cookie', 'mongo.find.error')
                     .expect(500)
                     .end((err, res) => {
@@ -80,7 +80,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             request.then(agent => {
                 agent
                     .post('/user/create')
-                    .send({ email: 'Invalid email' })
+                    .send({ email: 'invalid.email' })
                     .expect(500)
                     .end((err, res) => {
                         if (err) {
@@ -182,7 +182,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
             request.then(agent => {
                 agent
                     .post('/user/forgot')
-                    .send({ email: 'simple@email.ru' })
+                    .send({ email: 'simple@user.ru' })
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
@@ -202,7 +202,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
             request.then(agent => {
                 agent
                     .post('/user/forgot')
-                    .send({ email: 'simple@email.ru' })
+                    .send({ email: 'simple@user.ru' })
                     .set('Cookie', 'mongo.find.user')
                     .expect(200)
                     .end((err, res) => {
@@ -223,7 +223,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
             request.then(agent => {
                 agent
                     .post('/user/forgot')
-                    .send({ email: 'simple@email.ru' })
+                    .send({ email: 'simple@user.ru' })
                     .set('Cookie', 'mongo.find.error')
                     .expect(500)
                     .end((err, res) => {
@@ -244,7 +244,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
             request.then(agent => {
                 agent
                     .post('/user/forgot')
-                    .send({ email: 'Invalid email' })
+                    .send({ email: 'invalid.email' })
                     .expect(500)
                     .end((err, res) => {
                         if (err) {
@@ -625,7 +625,7 @@ describe('Запрос данных профиля (/api/profile) - ', () => {
         }).then(
             res => {
                 expect(res.body.success).toEqual(true);
-                expect(res.body.profile.email).toEqual('shukhrat@ismax.ru');
+                expect(res.body.profile.email).toEqual('simple@user.ru');
             }
         );
     });
@@ -677,7 +677,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
                 agent
                     .put('/api/profile')
                     .send({
-                        email: 'simple@email.ru',
+                        email: 'simple@user.ru',
                         address: '127.0.0.1',
                     })
                     .set('Cookie', 'mongo.find.user')
@@ -730,7 +730,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
                 agent
                     .put('/api/profile')
                     .send({
-                        email: 'simple@email.ru',
+                        email: 'simple@user.ru',
                         address: '127.0.0.1',
                     })
                     .set('Cookie', 'mongo.find.error')
@@ -754,7 +754,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
                 agent
                     .put('/api/profile')
                     .send({
-                        email: 'simple@email.ru',
+                        email: 'simple@user.ru',
                         address: '127.0.0.1',
                     })
                     .expect(403)
@@ -777,7 +777,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
                 agent
                     .put('/api/profile')
                     .send({
-                        email: 'Invalid email',
+                        email: 'invalid.email',
                         address: '127.0.0.1',
                     })
                     .set('Cookie', 'mongo.find.user')
@@ -801,8 +801,8 @@ describe('Обновление данных профиля (/api/profile) - ', (
                 agent
                     .put('/api/profile')
                     .send({
-                        email: 'simple@email.ru',
-                        address: 'Invalid IP',
+                        email: 'simple@user.ru',
+                        address: 'invalid.ip',
                     })
                     .set('Cookie', 'mongo.find.user')
                     .expect(500)
@@ -1033,7 +1033,7 @@ describe('Смена пароля (/api/password) - ', () => {
     });
 });
 
-describe('Запрос списка уведомлений об платежах - ', () => {
+describe('Запрос списка уведомлений об платежах (/api/payment) - ', () => {
     it('Успешное получение списка', () => {
         return new Promise((resolve, reject) => {
             request.then(agent => {
@@ -1138,46 +1138,46 @@ describe('Запрос списка уведомлений об платежах
     });
 });
 
-describe('Уведомление об ЯД платеже - ', () => {
+describe('Уведомление о платеже Яндекс.Деньги (/ym_notification) - ', () => {
+    const
+        simplePayment = {
+            notification_type: 'card-incoming',
+            zip: '',
+            amount: '980.00',
+            firstname: '',
+            codepro: 'false',
+            withdraw_amount: '1000.00',
+            city: '',
+            unaccepted: 'false',
+            label: '57bb6e49c6051f12e896d424',
+            building: '',
+            lastname: '',
+            datetime: '2016-09-05T09:51:06Z',
+            suite: '',
+            sender: '',
+            phone: '',
+            sha1_hash: '891cdecd248ce5dc4914adf9f6efd2f354ebdb2f',
+            street: '',
+            flat: '',
+            fathersname: '',
+            operation_label: '1f5f538f-0002-5000-8034-557be6293496',
+            operation_id: '526384266906100012',
+            currency: '643',
+            email: 'simple@user.ru',
+        };
+
     afterEach(() => {
         http.then(server => {
             server.close();
         });
     });
 
-    it('Успешное уведомление', () => {
+    it('Успешное уведомление о платеже', () => {
         return new Promise((resolve, reject) => {
             request.then(agent => {
                 agent
                     .post('/ym_notification')
-                    .send({
-                        notification_type: 'card-incoming',
-                        zip: '',
-                        amount: '980.00',
-                        firstname: '',
-                        codepro: 'false',
-                        withdraw_amount: '1000.00',
-                        city: '',
-                        unaccepted: 'false',
-                        label: '57aaf7e7a6f9ca27ffad21a3',
-                        building: '',
-                        lastname: '',
-                        datetime: '2016-09-05T09:51:06Z',
-                        suite: '',
-                        sender: '',
-                        phone: '',
-                        sha1_hash: '4040f832f8817f16c24df4b7fecafd691ed0586c',
-                        street: '',
-                        flat: '',
-                        fathersname: '',
-                        operation_label: '1f5f538f-0002-5000-8034-557be6293496',
-                        operation_id: '526384266906100012',
-                        currency: '643',
-                        email: 'ivan@car-radar.ru',
-                        _requests: 10000,
-                        _quantity: 10000,
-                        _id: '57cd4011499b7612cfe85c7a',
-                    })
+                    .send(simplePayment)
                     .expect(200)
                     .end((err, res) => {
                         if (err) {

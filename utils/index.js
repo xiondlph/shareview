@@ -8,8 +8,10 @@
 
 
 // Объявление модулей
+import mailer from './mailer';
 import request from './request';
 
 export default {
+    mailer,
     request,
 };

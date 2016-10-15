@@ -6,7 +6,6 @@
  * @author      Ismax <admin@ismax.ru>
  */
 
-
 // Объявление модулей
 import http from 'http';
 

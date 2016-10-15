@@ -1,14 +1,14 @@
 /**
  * Модель данных пользователя
  *
- * @module      Model.__User
+ * @module      Model.User
  * @main        Shareview review service
  * @author      Ismax <shukhrat@ismax.ru>
  */
 
 // Объявление модулей
 import Nedb from 'nedb';
-import db from '../db';
+import { db } from '../db';
 
 const
     // Локальное хранилище пользователей
@@ -62,12 +62,12 @@ const
     /**
      * Экспорт методов модели данных системы безопастности
      *
-     * @method __User
+     * @method user
      * @param {Object} req - Объект запроса сервера
      * @param {Object} res - Объект ответа сервера
      * @param {Function} next - Следующий слой обработки запроса
      */
-    __user = (req, res, next) => {
+    user = (req, res, next) => {
         // Инициализация объекта модели
         req.model = req.model || {};
 
@@ -78,7 +78,7 @@ const
          * @attribute model.user
          * @type Object
          */
-        req.model.__user = {
+        req.model.user = {
             /**
              * Получения пользователя по id
              *
@@ -205,4 +205,4 @@ const
         next();
     };
 
-export default __user;
+export default user;
