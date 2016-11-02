@@ -1,12 +1,25 @@
 {
   "source": {
     "include": [
+        "models/index.js",
         "models/user.js",
-        "models/payment.js"
+        "models/payment.js",
+
+        "services/index.js",
+        "services/payment.js",
+        "services/profile.js",
+        "services/review.js",
+        "services/secure.js",
+        "services/user.js",
+
+        "utils/index.js",
+        "utils/mailer.js",
+        "utils/request.js"
     ]
   },
 
   "opts": {
+    "destination": "doc",
     "template": "node_modules/docdash"
   }
 }

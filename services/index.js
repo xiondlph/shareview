@@ -1,7 +1,7 @@
 /**
  * Сервисы
  *
- * @module      Services
+ * @module      Service
  * @main        Shareview review service
  * @author      Ismax <shukhrat@ismax.ru>
  */
