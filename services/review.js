@@ -21,7 +21,7 @@ const
      */
     get = (req, res) => {
         var modelId,
-            query = querystring.stringify(req.query),
+            query,
             page = 1;
 
         res.header('Access-Control-Allow-Origin', '*');
@@ -41,6 +41,7 @@ const
         }
 
         req.query.count = 1;
+        query = querystring.stringify(req.query);
         req.api(`/v1/search.xml?${query}`, (err, status, data) => {
             if (err || status !== 200) {
                 res.send([]);
@@ -54,9 +55,9 @@ const
                 }
 
                 if (+result['search-result'].count &&
-                    result['search-result']['search-item'][0].model
+                    result['search-result']['search-item'].model
                 ) {
-                    modelId = result['search-result']['search-item'][0].model.id;
+                    modelId = result['search-result']['search-item'].model.id;
                     req.api(
                         `/v1/model/${modelId}/opinion.xml?page=${page}`,
                         (err, status, data) => {
