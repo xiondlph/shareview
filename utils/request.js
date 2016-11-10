@@ -41,7 +41,7 @@ const
                 method: 'GET',
                 headers: {
                     Host: 'market.icsystem.ru',
-                    'X-Ismax-Key': '85d1fb3b78dfab1d14aebdb44d78eb9ff6b9811515e0698078ad93d7477dc370',
+                    'X-Ismax-Key': '08e212273409793c3199f9cf1a02e2261f78dfd5bb4e5c8776a48299cab0041f',
                     'X-Forwarded-Proto': 'http',
                     'X-Forwarded-for': req.headers['x-forwarded-for'],
                 },
