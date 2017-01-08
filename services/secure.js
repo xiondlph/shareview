@@ -87,6 +87,8 @@ const
             return req.model.user.setSessionById(user._id, req.session.id).then(() => {
                 res.send({
                     success: true,
+
+                    // Данные пользователя при авторизации
                     profile: {
                         email: user.email,
                         address: user.address,
