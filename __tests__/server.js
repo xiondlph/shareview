@@ -360,7 +360,10 @@ describe('Авторизация пользователя (/user/signin) - ', ()
                     });
             });
         }).then(
-            res => { expect(res.body.success).toEqual(true); }
+            res => {
+                expect(res.body.success).toEqual(true);
+                expect(res.body.profile.email).toEqual('simple@user.ru');
+            }
         );
     });
 

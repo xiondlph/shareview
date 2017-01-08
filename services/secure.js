@@ -85,7 +85,15 @@ const
             }
 
             return req.model.user.setSessionById(user._id, req.session.id).then(() => {
-                res.send({ success: true });
+                res.send({
+                    success: true,
+                    profile: {
+                        email: user.email,
+                        address: user.address,
+                        key: user.salt,
+                        period: user.period,
+                    },
+                });
             });
         }).catch(err => {
             next(err);
