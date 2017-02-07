@@ -9,7 +9,6 @@
 
 // Объявление модулей
 import querystring from 'querystring';
-import { parseString } from 'xml2js';
 
 const
     /**
@@ -20,8 +19,10 @@ const
      * @param {Object} res Объект ответа сервера
      */
     get = (req, res) => {
-        var modelId,
-            query,
+        var result,
+            reviews,
+            modelId,
+            query = querystring.stringify(req.query),
             page = 1;
 
         res.header('Access-Control-Allow-Origin', '*');
@@ -41,47 +42,31 @@ const
         }
 
         req.query.count = 1;
-        query = querystring.stringify(req.query);
-        req.api(`/v1/search.xml?${query}`, (err, status, data) => {
+        req.api(`/v1/search.json?${query}`, (err, status, data) => {
             if (err || status !== 200) {
                 res.send([]);
                 return;
             }
 
-            parseString(data, { mergeAttrs: true, explicitArray: false }, (err, result) => {
-                if (err) {
-                    res.send([]);
-                    return;
-                }
+            result = JSON.parse(data);
 
-                if (+result['search-result'].count &&
-                    result['search-result']['search-item'].model
-                ) {
-                    modelId = result['search-result']['search-item'].model.id;
-                    req.api(
-                        `/v1/model/${modelId}/opinion.xml?page=${page}`,
-                        (err, status, data) => {
-                            if (err || status !== 200) {
-                                res.send([]);
-                                return;
-                            }
+            if (result.searchResult.results.length > 0 && result.searchResult.results[0].model) {
+                modelId = result.searchResult.results[0].model.id;
+                req.api(
+                    `/v1/model/${modelId}/opinion.json?page=${page}`,
+                    (err, status, data) => {
+                        if (err || status !== 200) {
+                            res.send([]);
+                            return;
+                        }
 
-                            parseString(data, {
-                                mergeAttrs: true,
-                                explicitArray: false,
-                            }, (err, reviews) => {
-                                if (err) {
-                                    res.send([]);
-                                    return;
-                                }
+                        reviews = JSON.parse(data);
 
-                                res.send(reviews);
-                            });
-                        });
-                } else {
-                    res.send([]);
-                }
-            });
+                        res.send(reviews);
+                    });
+            } else {
+                res.send([]);
+            }
         });
     };
 
