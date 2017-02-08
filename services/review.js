@@ -12,7 +12,7 @@ import querystring from 'querystring';
 
 const
     /**
-     * Получение данных профиля
+     * Получение отзывов
      *
      * @method get
      * @param {Object} req Объект запроса сервера
