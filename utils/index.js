@@ -10,8 +10,10 @@
 // Объявление модулей
 import mailer from './mailer';
 import request from './request';
+import caching from './caching';
 
 export default {
     mailer,
     request,
+    caching,
 };

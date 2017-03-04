@@ -35,15 +35,16 @@ const
             var request;
 
             request = http.request({
-                host: '127.0.0.1',
-                port: 3000,
+                host: '92.53.124.125',
+                // host: '127.0.0.1',
+                // port: 3000,
                 path: url,
                 method: 'GET',
                 headers: {
                     Host: 'market.icsystem.ru',
                     'X-Ismax-Key': '08e212273409793c3199f9cf1a02e2261f78dfd5bb4e5c8776a48299cab0041f',
-                    'X-Forwarded-Proto': 'http',
-                    'X-Forwarded-for': req.headers['x-forwarded-for'],
+                    // 'X-Forwarded-Proto': 'http',
+                    // 'X-Forwarded-for': req.headers['x-forwarded-for'],
                 },
             }, (response) => {
                 var data = '';
