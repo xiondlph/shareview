@@ -360,3 +360,38 @@ describe('Тестирование метода getUserByEmail', () => {
         });
     });
 });
+
+describe('Тестирование метода create', () => {
+    it('Успешное выполнение метода create', (done) => {
+        const
+            user = require('../user').default,
+            req = httpMocks.createRequest(),
+            res = httpMocks.createResponse();
+
+        jest.mock('../../db', () => {
+            return {
+                db: {
+                    collection() {
+                        return {
+                            insertOne() {
+                                return new Promise(resolve => {
+                                    resolve({
+                                        insertedId: 'insertedId',
+                                    });
+                                });
+                            },
+                        };
+                    },
+                },
+            };
+        });
+
+        user(req, res, () => {
+            expect(req.model.user.create({})).toBeDefined();
+            req.model.user.create({}).then(result => {
+                expect(result).toEqual({ insertedId: 'insertedId' });
+                done();
+            });
+        });
+    });
+});
