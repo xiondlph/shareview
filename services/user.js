@@ -60,6 +60,7 @@ const
                 req.body.email
             ).digest('hex');
 
+            /* eslint no-shadow: ["error", { "allow": ["err"] }] */
             return req.model.user.create(data).then(result => {
                 res.locals._id = result.insertedId;
                 res.locals.email = data.email;
@@ -112,6 +113,7 @@ const
         password = generatePassword(12, false);
         pwd = crypto.createHmac('sha256', password).digest('hex');
 
+        /* eslint no-shadow: ["error", { "allow": ["err"] }] */
         req.model.user.setPasswordByEmail(req.body.email, pwd).then(result => {
             if (!result.mongoResult.result.nModified) {
                 res.send({ success: false });
