@@ -7,52 +7,9 @@
  */
 
 // Объявление модулей
-import Nedb from 'nedb';
 import { db } from '../db';
 
 const
-    // Локальное хранилище пользователей
-    store = new Nedb({ filename: `${process.env.APPPATH}/store/users.json`, autoload: true }),
-
-    nedbInsert = (user, mongoResult) => {
-        return new Promise((resolve, reject) => {
-            user._id = mongoResult.insertedId.toString();
-            store.insert(user, (err, nedbResult) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
-
-                store.loadDatabase();
-                resolve({
-                    mongoResult,
-                    nedbResult,
-                });
-            });
-        });
-    },
-
-    nedbUpdate = (query, data, mongoResult) => {
-        return new Promise((resolve, reject) => {
-            if (query._id) {
-                query._id = query._id.toString();
-            }
-
-            store.update(query, data, (err, nedbResult) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
-
-                store.loadDatabase();
-                resolve({
-                    mongoResult,
-                    nedbResult,
-                });
-            });
-        });
-    },
-
     mongoUpdate = (query, data) => {
         return db.collection('users')
             .updateOne(query, data)
@@ -127,13 +84,12 @@ const
              * Создание нового пользователя
              *
              * @method create
-             * @param {Object} user
+             * @param {Object} data данные нового пользователя
              * @return {Promise}
              */
-            create(user) {
+            create(data) {
                 return db.collection('users')
-                    .insertOne(user)
-                    .then(mongoResult => { return nedbInsert(user, mongoResult); });
+                    .insertOne(data);
             },
 
             /**
