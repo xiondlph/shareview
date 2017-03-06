@@ -22,10 +22,11 @@ const
      * @param {Object} res Объект ответа сервера
      */
     grabYMReview = (req, res) => {
-        var result,
+        const query = querystring.stringify(req.query);
+
+        let result,
             reviews,
             modelId,
-            query = querystring.stringify(req.query),
             page = 1;
 
         res.header('Access-Control-Allow-Origin', '*');
@@ -53,6 +54,7 @@ const
 
             result = JSON.parse(data);
 
+            /* eslint no-shadow: ["error", { "allow": ["err", "status", "data"] }] */
             if (result.searchResult.results.length > 0 && result.searchResult.results[0].model) {
                 modelId = result.searchResult.results[0].model.id;
                 req.api(

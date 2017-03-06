@@ -12,8 +12,7 @@ import { db } from '../db';
 const
     mongoUpdate = (query, data) => {
         return db.collection('users')
-            .updateOne(query, data)
-            .then(mongoResult => { return nedbUpdate(query, data, mongoResult); });
+            .updateOne(query, data);
     },
 
     /**
