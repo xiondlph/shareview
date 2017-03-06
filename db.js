@@ -32,6 +32,7 @@ const
      */
     init = new Promise((resolve) => {
         // Соединение с БД
+        /* eslint no-shadow: ["error", { "allow": ["db", "err"] }] */
         db.open((err, db) => {
             if (err) {
                 throw new Error(`Mongo error - ${err.message}`);
