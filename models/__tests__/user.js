@@ -394,4 +394,96 @@ describe('Тестирование метода create', () => {
             });
         });
     });
+    
+    it('Выполнение метода create c ошибкой', (done) => {
+        const
+            user = require('../user').default,
+            req = httpMocks.createRequest(),
+            res = httpMocks.createResponse();
+
+        jest.mock('../../db', () => {
+            return {
+                db: {
+                    collection() {
+                        return {
+                            insertOne() {
+                                return new Promise((resolve, reject) => {
+                                    reject(new Error('create - error'));
+                                });
+                            },
+                        };
+                    },
+                },
+            };
+        });
+
+        user(req, res, () => {
+            req.model.user.create({}).catch(result => {
+                expect(result.message).toBe('create - error');
+                done();
+            });
+        });
+    });
 });
+
+describe('Тестирование метода setSessionById', () => {
+    it('Успешное выполнение метода setSessionById', (done) => {
+        const
+            user = require('../user').default,
+            req = httpMocks.createRequest(),
+            res = httpMocks.createResponse();
+
+        jest.mock('../../db', () => {
+            return {
+                db: {
+                    collection() {
+                        return {
+                            updateOne() {
+                                return new Promise(resolve => {
+                                    resolve();
+                                });
+                            },
+                        };
+                    },
+                },
+            };
+        });
+
+        user(req, res, () => {
+            req.model.user.setSessionById({}).then(() => {
+                done();
+            });
+        });
+    });
+
+    it('Выполнение метода setSessionById c ошибкой', (done) => {
+        const
+            user = require('../user').default,
+            req = httpMocks.createRequest(),
+            res = httpMocks.createResponse();
+
+        jest.mock('../../db', () => {
+            return {
+                db: {
+                    collection() {
+                        return {
+                            updateOne() {
+                                return new Promise((resolve, reject) => {
+                                    reject(new Error('setSessionById - error'));
+                                });
+                            },
+                        };
+                    },
+                },
+            };
+        });
+
+        user(req, res, () => {
+            req.model.user.setSessionById({}).catch(result => {
+                expect(result.message).toBe('setSessionById - error');
+                done();
+            });
+        });
+    });
+});
+
