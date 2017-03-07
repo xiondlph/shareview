@@ -32,7 +32,11 @@ const
          * Выполенение отправки сообщения по Email
          *
          * @method email
-         * @param {Object} options
+         * @param {String} from
+         * @param {String} to
+         * @param {String} subject
+         * @param {String} text
+         * @returns {Promise}
          */
         req.email = ({
             from = 'SHAREVIEW <notification@shareview.ru>',
