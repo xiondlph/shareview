@@ -4,7 +4,7 @@
 
 import httpMocks from 'node-mocks-http';
 
-/* eslint max-len: ["error", 120] */
+/* eslint max-len: ["error", 130] */
 describe('Тестирование метода add', () => {
     it('Успешное выполнение метода add', (done) => {
         const
@@ -18,12 +18,11 @@ describe('Тестирование метода add', () => {
                     collection() {
                         return {
                             insertOne(data) {
-                                return new Promise((resolve, reject) => {
-                                    if (data !== 'data') {
-                                        reject(new Error('add - insertOne - error invalid options'));
-                                        return;
-                                    }
+                                if (data !== 'data') {
+                                    throw new Error('add.insertOne.error - invalid data argument');
+                                }
 
+                                return new Promise(resolve => {
                                     resolve();
                                 });
                             },
@@ -35,9 +34,6 @@ describe('Тестирование метода add', () => {
 
         payment(req, res, () => {
             req.model.payment.add('data').then(() => {
-                done();
-            }).catch((err) => {
-                expect(err).toEqual(null);
                 done();
             });
         });
@@ -55,13 +51,12 @@ describe('Тестирование метода add', () => {
                     collection() {
                         return {
                             insertOne(data) {
-                                return new Promise((resolve, reject) => {
-                                    if (data !== 'data') {
-                                        reject(new Error('add - insertOne - error invalid options'));
-                                        return;
-                                    }
+                                if (data !== 'data') {
+                                    throw new Error('add.insertOne.error - invalid data argument');
+                                }
 
-                                    reject(new Error('add - error'));
+                                return new Promise((resolve, reject) => {
+                                    reject(new Error('add.error'));
                                 });
                             },
                         };
@@ -72,7 +67,7 @@ describe('Тестирование метода add', () => {
 
         payment(req, res, () => {
             req.model.payment.add('data').catch(result => {
-                expect(result.message).toEqual('add - error');
+                expect(result.message).toEqual('add.error');
                 done();
             });
         });
@@ -91,45 +86,77 @@ describe('Тестирование метода listById', () => {
                 db: {
                     collection() {
                         return {
-                            find(query, data) {
-                                return {
-                                    count() {
-                                        return new Promise((resolve, reject) => {
-                                            if (
-                                                query.label !== 'email' ||
-                                                !data.sort ||
-                                                data.sort._id !== -1
-                                            ) {
-                                                reject(new Error('listById - find - error invalid options'));
-                                                return;
-                                            }
+                            find: jest.fn()
+                                .mockImplementationOnce((query, data) => {
+                                    if (query.label !== 'email') {
+                                        throw new Error('listById.find.error - invalid query property "label"');
+                                    }
 
-                                            resolve(0);
-                                        });
-                                    },
-                                    toArray() {
-                                        return new Promise((resolve, reject) => {
-                                            if (
-                                                query.label !== 'email' ||
-                                                !data.fields ||
-                                                data.fields.datetime !== 1 ||
-                                                data.fields.withdraw_amount !== 1 ||
-                                                data.fields._lastPeriod !== 1 ||
-                                                data.fields._newPeriod !== 1 ||
-                                                !data.sort ||
-                                                data.sort._id !== -1 ||
-                                                data.skip !== 0 ||
-                                                data.limit !== 0
-                                            ) {
-                                                reject(new Error('listById - find - error invalid options'));
-                                                return;
-                                            }
+                                    if (!data.sort) {
+                                        throw new Error('listById.find.error - invalid data property "sort"');
+                                    }
 
-                                            resolve([]);
-                                        });
-                                    },
-                                };
-                            },
+                                    if (data.sort._id !== -1) {
+                                        throw new Error('listById.find.error - invalid data property "sort._id"');
+                                    }
+
+                                    return {
+                                        count() {
+                                            return new Promise(resolve => {
+                                                resolve(0);
+                                            });
+                                        },
+                                    };
+                                })
+                                .mockImplementationOnce((query, data) => {
+                                    if (query.label !== 'email') {
+                                        throw new Error('listById.find.error - invalid query property "label"');
+                                    }
+
+                                    if (!data.fields) {
+                                        throw new Error('listById.find.error - invalid data property "fields"');
+                                    }
+
+                                    if (data.fields.datetime !== 1) {
+                                        throw new Error('listById.find.error - invalid data property "fields.datetime"');
+                                    }
+
+                                    if (data.fields.withdraw_amount !== 1) {
+                                        throw new Error('listById.find.error - invalid data property "fields.withdraw_amount"');
+                                    }
+
+                                    if (data.fields._lastPeriod !== 1) {
+                                        throw new Error('listById.find.error - invalid data property "fields._lastPeriod"');
+                                    }
+
+                                    if (data.fields._newPeriod !== 1) {
+                                        throw new Error('listById.find.error - invalid data property "fields._newPeriod"');
+                                    }
+
+                                    if (!data.sort) {
+                                        throw new Error('listById.find.error - invalid data property "sort"');
+                                    }
+
+                                    if (data.sort._id !== -1) {
+                                        throw new Error('listById.find.error - invalid data property "sort._id"');
+                                    }
+
+                                    if (data.skip !== 0) {
+                                        throw new Error('listById.find.error - invalid data property "skip"');
+                                    }
+
+                                    if (data.limit !== 0) {
+                                        throw new Error('listById.find.error - invalid data property "limit"');
+                                    }
+
+                                    return {
+                                        toArray() {
+                                            return new Promise(resolve => {
+                                                resolve([]);
+                                            });
+                                        },
+                                    };
+                                }),
                         };
                     },
                 },
@@ -139,9 +166,6 @@ describe('Тестирование метода listById', () => {
         payment(req, res, () => {
             req.model.payment.listById('email').then(result => {
                 expect(result).toEqual({ payments: [], count: 0 });
-                done();
-            }).catch((err) => {
-                expect(err).toEqual(null);
                 done();
             });
         });
@@ -158,45 +182,77 @@ describe('Тестирование метода listById', () => {
                 db: {
                     collection() {
                         return {
-                            find(query, data) {
-                                return {
-                                    count() {
-                                        return new Promise((resolve, reject) => {
-                                            if (
-                                                query.label !== 'email' ||
-                                                !data.sort ||
-                                                data.sort._id !== -1
-                                            ) {
-                                                reject(new Error('listById - find - error invalid options'));
-                                                return;
-                                            }
+                            find: jest.fn()
+                                .mockImplementationOnce((query, data) => {
+                                    if (query.label !== 'email') {
+                                        throw new Error('listById.find.error - invalid query property "label"');
+                                    }
 
-                                            reject(new Error('listById - count - error'));
-                                        });
-                                    },
-                                    toArray() {
-                                        return new Promise((resolve, reject) => {
-                                            if (
-                                                query.label !== 'email' ||
-                                                !data.fields ||
-                                                data.fields.datetime !== 1 ||
-                                                data.fields.withdraw_amount !== 1 ||
-                                                data.fields._lastPeriod !== 1 ||
-                                                data.fields._newPeriod !== 1 ||
-                                                !data.sort ||
-                                                data.sort._id !== -1 ||
-                                                data.skip !== 0 ||
-                                                data.limit !== 0
-                                            ) {
-                                                reject(new Error('listById - find - error invalid options'));
-                                                return;
-                                            }
+                                    if (!data.sort) {
+                                        throw new Error('listById.find.error - invalid data property "sort"');
+                                    }
 
-                                            resolve([]);
-                                        });
-                                    },
-                                };
-                            },
+                                    if (data.sort._id !== -1) {
+                                        throw new Error('listById.find.error - invalid data property "sort._id"');
+                                    }
+
+                                    return {
+                                        count() {
+                                            return new Promise((resolve, reject) => {
+                                                reject(new Error('listById.count - error'));
+                                            });
+                                        },
+                                    };
+                                })
+                                .mockImplementationOnce((query, data) => {
+                                    if (query.label !== 'email') {
+                                        throw new Error('listById.find.error - invalid query property "label"');
+                                    }
+
+                                    if (!data.fields) {
+                                        throw new Error('listById.find.error - invalid data property "fields"');
+                                    }
+
+                                    if (data.fields.datetime !== 1) {
+                                        throw new Error('listById.find.error - invalid data property "fields.datetime"');
+                                    }
+
+                                    if (data.fields.withdraw_amount !== 1) {
+                                        throw new Error('listById.find.error - invalid data property "fields.withdraw_amount"');
+                                    }
+
+                                    if (data.fields._lastPeriod !== 1) {
+                                        throw new Error('listById.find.error - invalid data property "fields._lastPeriod"');
+                                    }
+
+                                    if (data.fields._newPeriod !== 1) {
+                                        throw new Error('listById.find.error - invalid data property "fields._newPeriod"');
+                                    }
+
+                                    if (!data.sort) {
+                                        throw new Error('listById.find.error - invalid data property "sort"');
+                                    }
+
+                                    if (data.sort._id !== -1) {
+                                        throw new Error('listById.find.error - invalid data property "sort._id"');
+                                    }
+
+                                    if (data.skip !== 0) {
+                                        throw new Error('listById.find.error - invalid data property "skip"');
+                                    }
+
+                                    if (data.limit !== 0) {
+                                        throw new Error('listById.find.error - invalid data property "limit"');
+                                    }
+
+                                    return {
+                                        toArray() {
+                                            return new Promise(resolve => {
+                                                resolve([]);
+                                            });
+                                        },
+                                    };
+                                }),
                         };
                     },
                 },
@@ -205,7 +261,7 @@ describe('Тестирование метода listById', () => {
 
         payment(req, res, () => {
             req.model.payment.listById('email').catch(result => {
-                expect(result.message).toEqual('listById - count - error');
+                expect(result.message).toEqual('listById.count - error');
                 done();
             });
         });
@@ -222,45 +278,77 @@ describe('Тестирование метода listById', () => {
                 db: {
                     collection() {
                         return {
-                            find(query, data) {
-                                return {
-                                    count() {
-                                        return new Promise((resolve, reject) => {
-                                            if (
-                                                query.label !== 'email' ||
-                                                !data.sort ||
-                                                data.sort._id !== -1
-                                            ) {
-                                                reject(new Error('listById - find - error invalid options'));
-                                                return;
-                                            }
+                            find: jest.fn()
+                                .mockImplementationOnce((query, data) => {
+                                    if (query.label !== 'email') {
+                                        throw new Error('listById.find.error - invalid query property "label"');
+                                    }
 
-                                            resolve(0);
-                                        });
-                                    },
-                                    toArray() {
-                                        return new Promise((resolve, reject) => {
-                                            if (
-                                                query.label !== 'email' ||
-                                                !data.fields ||
-                                                data.fields.datetime !== 1 ||
-                                                data.fields.withdraw_amount !== 1 ||
-                                                data.fields._lastPeriod !== 1 ||
-                                                data.fields._newPeriod !== 1 ||
-                                                !data.sort ||
-                                                data.sort._id !== -1 ||
-                                                data.skip !== 0 ||
-                                                data.limit !== 0
-                                            ) {
-                                                reject(new Error('listById - find - error invalid options'));
-                                                return;
-                                            }
+                                    if (!data.sort) {
+                                        throw new Error('listById.find.error - invalid data property "sort"');
+                                    }
 
-                                            reject(new Error('listById - toArray - error'));
-                                        });
-                                    },
-                                };
-                            },
+                                    if (data.sort._id !== -1) {
+                                        throw new Error('listById.find.error - invalid data property "sort._id"');
+                                    }
+
+                                    return {
+                                        count() {
+                                            return new Promise(resolve => {
+                                                resolve(0);
+                                            });
+                                        },
+                                    };
+                                })
+                                .mockImplementationOnce((query, data) => {
+                                    if (query.label !== 'email') {
+                                        throw new Error('listById.find.error - invalid query property "label"');
+                                    }
+
+                                    if (!data.fields) {
+                                        throw new Error('listById.find.error - invalid data property "fields"');
+                                    }
+
+                                    if (data.fields.datetime !== 1) {
+                                        throw new Error('listById.find.error - invalid data property "fields.datetime"');
+                                    }
+
+                                    if (data.fields.withdraw_amount !== 1) {
+                                        throw new Error('listById.find.error - invalid data property "fields.withdraw_amount"');
+                                    }
+
+                                    if (data.fields._lastPeriod !== 1) {
+                                        throw new Error('listById.find.error - invalid data property "fields._lastPeriod"');
+                                    }
+
+                                    if (data.fields._newPeriod !== 1) {
+                                        throw new Error('listById.find.error - invalid data property "fields._newPeriod"');
+                                    }
+
+                                    if (!data.sort) {
+                                        throw new Error('listById.find.error - invalid data property "sort"');
+                                    }
+
+                                    if (data.sort._id !== -1) {
+                                        throw new Error('listById.find.error - invalid data property "sort._id"');
+                                    }
+
+                                    if (data.skip !== 0) {
+                                        throw new Error('listById.find.error - invalid data property "skip"');
+                                    }
+
+                                    if (data.limit !== 0) {
+                                        throw new Error('listById.find.error - invalid data property "limit"');
+                                    }
+
+                                    return {
+                                        toArray() {
+                                            return new Promise((resolve, reject) => {
+                                                reject(new Error('listById.toArray - error'));
+                                            });
+                                        },
+                                    };
+                                }),
                         };
                     },
                 },
@@ -269,7 +357,7 @@ describe('Тестирование метода listById', () => {
 
         payment(req, res, () => {
             req.model.payment.listById('email').catch(result => {
-                expect(result.message).toEqual('listById - toArray - error');
+                expect(result.message).toEqual('listById.toArray - error');
                 done();
             });
         });
