@@ -4,7 +4,7 @@
 
 import httpMocks from 'node-mocks-http';
 
-/* eslint max-len: ["error", 120] */
+/* eslint max-len: ["error", 130] */
 describe('Тестирование метода getUserById', () => {
     it('Успешное выполнение метода getUserById', (done) => {
         const
@@ -19,13 +19,13 @@ describe('Тестирование метода getUserById', () => {
                         return {
                             find(query) {
                                 if (query._id !== '_id') {
-                                    throw new Error('getUserById - find - error invalid query');
+                                    throw new Error('getUserById.find.error - invalid query property "_id"');
                                 }
 
                                 return {
                                     limit(count) {
                                         if (count !== 1) {
-                                            throw new Error('getUserById - limit - error invalid count');
+                                            throw new Error('getUserById.limit.error - invalid count');
                                         }
 
                                         return {
@@ -67,13 +67,13 @@ describe('Тестирование метода getUserById', () => {
                         return {
                             find(query) {
                                 if (query._id !== '_id') {
-                                    throw new Error('getUserById - find - error invalid query');
+                                    throw new Error('getUserById.find.error - invalid query property "_id"');
                                 }
 
                                 return {
                                     limit(count) {
                                         if (count !== 1) {
-                                            throw new Error('getUserById - limit - error invalid count');
+                                            throw new Error('getUserById.limit.error - invalid count');
                                         }
 
                                         return {
@@ -113,19 +113,19 @@ describe('Тестирование метода getUserById', () => {
                         return {
                             find(query) {
                                 if (query._id !== '_id') {
-                                    throw new Error('getUserById - find - error invalid query');
+                                    throw new Error('getUserById.find.error - invalid query property "_id"');
                                 }
 
                                 return {
                                     limit(count) {
                                         if (count !== 1) {
-                                            throw new Error('getUserById - limit - error invalid count');
+                                            throw new Error('getUserById.limit.error - invalid count');
                                         }
 
                                         return {
                                             toArray() {
                                                 return new Promise((resolve, reject) => {
-                                                    reject(new Error('getUserById - error'));
+                                                    reject(new Error('getUserById.error'));
                                                 });
                                             },
                                         };
@@ -140,7 +140,7 @@ describe('Тестирование метода getUserById', () => {
 
         user(req, res, () => {
             req.model.user.getUserById('_id').catch(result => {
-                expect(result.message).toEqual('getUserById - error');
+                expect(result.message).toEqual('getUserById.error');
                 done();
             });
         });
@@ -161,13 +161,13 @@ describe('Тестирование метода getUserBySession', () => {
                         return {
                             find(query) {
                                 if (query.sid !== 'sid') {
-                                    throw new Error('getUserBySession - find - error invalid query');
+                                    throw new Error('getUserBySession.find.error - invalid query property "sid"');
                                 }
 
                                 return {
                                     limit(count) {
                                         if (count !== 1) {
-                                            throw new Error('getUserBySession - limit - error invalid count');
+                                            throw new Error('getUserBySession.limit.error - invalid count');
                                         }
 
                                         return {
@@ -209,13 +209,13 @@ describe('Тестирование метода getUserBySession', () => {
                         return {
                             find(query) {
                                 if (query.sid !== 'sid') {
-                                    throw new Error('getUserBySession - find - error invalid query');
+                                    throw new Error('getUserBySession.find.error - invalid query property "sid"');
                                 }
 
                                 return {
                                     limit(count) {
                                         if (count !== 1) {
-                                            throw new Error('getUserBySession - limit - error invalid count');
+                                            throw new Error('getUserBySession.limit.error - invalid count');
                                         }
 
                                         return {
@@ -255,19 +255,19 @@ describe('Тестирование метода getUserBySession', () => {
                         return {
                             find(query) {
                                 if (query.sid !== 'sid') {
-                                    throw new Error('getUserBySession - find - error invalid query');
+                                    throw new Error('getUserBySession.find.error - invalid query property "sid"');
                                 }
 
                                 return {
                                     limit(count) {
                                         if (count !== 1) {
-                                            throw new Error('getUserBySession - limit - error invalid count');
+                                            throw new Error('getUserBySession.limit.error - invalid count');
                                         }
 
                                         return {
                                             toArray() {
                                                 return new Promise((resolve, reject) => {
-                                                    reject(new Error('getUserBySession - error'));
+                                                    reject(new Error('getUserBySession.error'));
                                                 });
                                             },
                                         };
@@ -282,7 +282,7 @@ describe('Тестирование метода getUserBySession', () => {
 
         user(req, res, () => {
             req.model.user.getUserBySession('sid').catch(result => {
-                expect(result.message).toEqual('getUserBySession - error');
+                expect(result.message).toEqual('getUserBySession.error');
                 done();
             });
         });
@@ -303,13 +303,13 @@ describe('Тестирование метода getUserByEmail', () => {
                         return {
                             find(query) {
                                 if (query.email !== 'email') {
-                                    throw new Error('getUserByEmail - find - error invalid query');
+                                    throw new Error('getUserByEmail.find.error - invalid query property "email"');
                                 }
 
                                 return {
                                     limit(count) {
                                         if (count !== 1) {
-                                            throw new Error('getUserByEmail - limit - error invalid count');
+                                            throw new Error('getUserByEmail.limit.error - invalid count');
                                         }
 
                                         return {
@@ -351,13 +351,13 @@ describe('Тестирование метода getUserByEmail', () => {
                         return {
                             find(query) {
                                 if (query.email !== 'email') {
-                                    throw new Error('getUserByEmail - find - error invalid query');
+                                    throw new Error('getUserByEmail.find.error - invalid query property "email"');
                                 }
 
                                 return {
                                     limit(count) {
                                         if (count !== 1) {
-                                            throw new Error('getUserByEmail - limit - error invalid count');
+                                            throw new Error('getUserByEmail.limit.error - invalid count');
                                         }
 
                                         return {
@@ -397,19 +397,19 @@ describe('Тестирование метода getUserByEmail', () => {
                         return {
                             find(query) {
                                 if (query.email !== 'email') {
-                                    throw new Error('getUserByEmail - find - error invalid query');
+                                    throw new Error('getUserByEmail.find.error - invalid query property "email"');
                                 }
 
                                 return {
                                     limit(count) {
                                         if (count !== 1) {
-                                            throw new Error('getUserByEmail - limit - error invalid count');
+                                            throw new Error('getUserByEmail.limit.error - invalid count');
                                         }
 
                                         return {
                                             toArray() {
                                                 return new Promise((resolve, reject) => {
-                                                    reject(new Error('getUserByEmail - error'));
+                                                    reject(new Error('getUserByEmail.error'));
                                                 });
                                             },
                                         };
@@ -424,7 +424,7 @@ describe('Тестирование метода getUserByEmail', () => {
 
         user(req, res, () => {
             req.model.user.getUserByEmail('email').catch(result => {
-                expect(result.message).toEqual('getUserByEmail - error');
+                expect(result.message).toEqual('getUserByEmail.error');
                 done();
             });
         });
@@ -444,12 +444,11 @@ describe('Тестирование метода create', () => {
                     collection() {
                         return {
                             insertOne(data) {
-                                return new Promise((resolve, reject) => {
-                                    if (typeof data !== 'object') {
-                                        reject(new Error('create - insertOne - error invalid options'));
-                                        return;
-                                    }
+                                if (typeof data !== 'object') {
+                                    throw new Error('create.insertOne.error - invalid argument type "data"');
+                                }
 
+                                return new Promise(resolve => {
                                     resolve({
                                         insertedId: 'insertedId',
                                     });
@@ -464,9 +463,6 @@ describe('Тестирование метода create', () => {
         user(req, res, () => {
             req.model.user.create({}).then(result => {
                 expect(result).toEqual({ insertedId: 'insertedId' });
-                done();
-            }).catch((err) => {
-                expect(err).toEqual(null);
                 done();
             });
         });
@@ -484,13 +480,12 @@ describe('Тестирование метода create', () => {
                     collection() {
                         return {
                             insertOne(data) {
-                                return new Promise((resolve, reject) => {
-                                    if (typeof data !== 'object') {
-                                        reject(new Error('create - insertOne - error invalid options'));
-                                        return;
-                                    }
+                                if (typeof data !== 'object') {
+                                    throw new Error('create.insertOne.error - invalid argument type "data"');
+                                }
 
-                                    reject(new Error('create - error'));
+                                return new Promise((resolve, reject) => {
+                                    reject(new Error('create.error'));
                                 });
                             },
                         };
@@ -501,7 +496,7 @@ describe('Тестирование метода create', () => {
 
         user(req, res, () => {
             req.model.user.create({}).catch(result => {
-                expect(result.message).toEqual('create - error');
+                expect(result.message).toEqual('create.error');
                 done();
             });
         });
@@ -521,16 +516,15 @@ describe('Тестирование метода setSessionById', () => {
                     collection() {
                         return {
                             updateOne(query, data) {
-                                return new Promise((resolve, reject) => {
-                                    if (
-                                        query._id !== '_id' ||
-                                        !data.$set ||
-                                        data.$set.sid !== 'sid'
-                                    ) {
-                                        reject(new Error('setSessionById - updateOne - error invalid options'));
-                                        return;
-                                    }
+                                if (query._id !== '_id') {
+                                    throw new Error('setSessionById.updateOne.error - invalid query property "_id"');
+                                }
 
+                                if (!data.$set || data.$set.sid !== 'sid') {
+                                    throw new Error('setSessionById.updateOne.error - invalid data property "$set.sid"');
+                                }
+
+                                return new Promise(resolve => {
                                     resolve();
                                 });
                             },
@@ -542,9 +536,6 @@ describe('Тестирование метода setSessionById', () => {
 
         user(req, res, () => {
             req.model.user.setSessionById('_id', 'sid').then(() => {
-                done();
-            }).catch((err) => {
-                expect(err).toEqual(null);
                 done();
             });
         });
@@ -562,17 +553,16 @@ describe('Тестирование метода setSessionById', () => {
                     collection() {
                         return {
                             updateOne(query, data) {
-                                return new Promise((resolve, reject) => {
-                                    if (
-                                        query._id !== '_id' ||
-                                        !data.$set ||
-                                        data.$set.sid !== 'sid'
-                                    ) {
-                                        reject(new Error('setSessionById - updateOne - error invalid options'));
-                                        return;
-                                    }
+                                if (query._id !== '_id') {
+                                    throw new Error('setSessionById.updateOne.error - invalid query property "_id"');
+                                }
 
-                                    reject(new Error('setSessionById - error'));
+                                if (!data.$set || data.$set.sid !== 'sid') {
+                                    throw new Error('setSessionById.updateOne.error - invalid data property "$set.sid"');
+                                }
+
+                                return new Promise((resolve, reject) => {
+                                    reject(new Error('setSessionById.error'));
                                 });
                             },
                         };
@@ -583,7 +573,7 @@ describe('Тестирование метода setSessionById', () => {
 
         user(req, res, () => {
             req.model.user.setSessionById('_id', 'sid').catch(result => {
-                expect(result.message).toEqual('setSessionById - error');
+                expect(result.message).toEqual('setSessionById.error');
                 done();
             });
         });
@@ -603,16 +593,15 @@ describe('Тестирование метода unsetSessionById', () => {
                     collection() {
                         return {
                             updateOne(query, data) {
-                                return new Promise((resolve, reject) => {
-                                    if (
-                                        query._id !== '_id' ||
-                                        !data.$unset ||
-                                        data.$unset.sid !== true
-                                    ) {
-                                        reject(new Error('unsetSessionById - updateOne - error invalid options'));
-                                        return;
-                                    }
+                                if (query._id !== '_id') {
+                                    throw new Error('unsetSessionById.updateOne.error - invalid query property "_id"');
+                                }
 
+                                if (!data.$unset || data.$unset.sid !== true) {
+                                    throw new Error('unsetSessionById.updateOne.error - invalid data property "$unset.sid"');
+                                }
+
+                                return new Promise(resolve => {
                                     resolve();
                                 });
                             },
@@ -624,9 +613,6 @@ describe('Тестирование метода unsetSessionById', () => {
 
         user(req, res, () => {
             req.model.user.unsetSessionById('_id').then(() => {
-                done();
-            }).catch((err) => {
-                expect(err).toEqual(null);
                 done();
             });
         });
@@ -644,17 +630,16 @@ describe('Тестирование метода unsetSessionById', () => {
                     collection() {
                         return {
                             updateOne(query, data) {
-                                return new Promise((resolve, reject) => {
-                                    if (
-                                        query._id !== '_id' ||
-                                        !data.$unset ||
-                                        data.$unset.sid !== true
-                                    ) {
-                                        reject(new Error('unsetSessionById - updateOne - error invalid options'));
-                                        return;
-                                    }
+                                if (query._id !== '_id') {
+                                    throw new Error('unsetSessionById.updateOne.error - invalid query property "_id"');
+                                }
 
-                                    reject(new Error('unsetSessionById - error'));
+                                if (!data.$unset || data.$unset.sid !== true) {
+                                    throw new Error('unsetSessionById.updateOne.error - invalid data property "$unset.sid"');
+                                }
+
+                                return new Promise((resolve, reject) => {
+                                    reject(new Error('unsetSessionById.error'));
                                 });
                             },
                         };
@@ -665,7 +650,7 @@ describe('Тестирование метода unsetSessionById', () => {
 
         user(req, res, () => {
             req.model.user.unsetSessionById('_id').catch(result => {
-                expect(result.message).toEqual('unsetSessionById - error');
+                expect(result.message).toEqual('unsetSessionById.error');
                 done();
             });
         });
@@ -685,16 +670,15 @@ describe('Тестирование метода setPasswordId', () => {
                     collection() {
                         return {
                             updateOne(query, data) {
-                                return new Promise((resolve, reject) => {
-                                    if (
-                                        query._id !== '_id' ||
-                                        !data.$set ||
-                                        data.$set.password !== 'password'
-                                    ) {
-                                        reject(new Error('setPasswordId - updateOne - error invalid options'));
-                                        return;
-                                    }
+                                if (query._id !== '_id') {
+                                    throw new Error('setPasswordId.updateOne.error - invalid query property "_id"');
+                                }
 
+                                if (!data.$set || data.$set.password !== 'password') {
+                                    throw new Error('setPasswordId.updateOne.error - invalid data property "$set.password"');
+                                }
+
+                                return new Promise(resolve => {
                                     resolve();
                                 });
                             },
@@ -706,9 +690,6 @@ describe('Тестирование метода setPasswordId', () => {
 
         user(req, res, () => {
             req.model.user.setPasswordId('_id', 'password').then(() => {
-                done();
-            }).catch((err) => {
-                expect(err).toEqual(null);
                 done();
             });
         });
@@ -726,17 +707,16 @@ describe('Тестирование метода setPasswordId', () => {
                     collection() {
                         return {
                             updateOne(query, data) {
-                                return new Promise((resolve, reject) => {
-                                    if (
-                                        query._id !== '_id' ||
-                                        !data.$set ||
-                                        data.$set.password !== 'password'
-                                    ) {
-                                        reject(new Error('setPasswordId - updateOne - error invalid options'));
-                                        return;
-                                    }
+                                if (query._id !== '_id') {
+                                    throw new Error('setPasswordId.updateOne.error - invalid query property "_id"');
+                                }
 
-                                    reject(new Error('setPasswordId - error'));
+                                if (!data.$set || data.$set.password !== 'password') {
+                                    throw new Error('setPasswordId.updateOne.error - invalid data property "$set.password"');
+                                }
+
+                                return new Promise((resolve, reject) => {
+                                    reject(new Error('setPasswordId.error'));
                                 });
                             },
                         };
@@ -747,7 +727,7 @@ describe('Тестирование метода setPasswordId', () => {
 
         user(req, res, () => {
             req.model.user.setPasswordId('_id', 'password').catch(result => {
-                expect(result.message).toEqual('setPasswordId - error');
+                expect(result.message).toEqual('setPasswordId.error');
                 done();
             });
         });
@@ -767,16 +747,15 @@ describe('Тестирование метода setPasswordByEmail', () => {
                     collection() {
                         return {
                             updateOne(query, data) {
-                                return new Promise((resolve, reject) => {
-                                    if (
-                                        query.email !== 'email' ||
-                                        !data.$set ||
-                                        data.$set.password !== 'password'
-                                    ) {
-                                        reject(new Error('setPasswordByEmail - updateOne - error invalid options'));
-                                        return;
-                                    }
+                                if (query.email !== 'email') {
+                                    throw new Error('setPasswordByEmail.updateOne.error - invalid query property "email"');
+                                }
 
+                                if (!data.$set || data.$set.password !== 'password') {
+                                    throw new Error('setPasswordByEmail.updateOne.error - invalid data property "$set.password"');
+                                }
+
+                                return new Promise(resolve => {
                                     resolve();
                                 });
                             },
@@ -788,9 +767,6 @@ describe('Тестирование метода setPasswordByEmail', () => {
 
         user(req, res, () => {
             req.model.user.setPasswordByEmail('email', 'password').then(() => {
-                done();
-            }).catch((err) => {
-                expect(err).toEqual(null);
                 done();
             });
         });
@@ -808,17 +784,16 @@ describe('Тестирование метода setPasswordByEmail', () => {
                     collection() {
                         return {
                             updateOne(query, data) {
-                                return new Promise((resolve, reject) => {
-                                    if (
-                                        query.email !== 'email' ||
-                                        !data.$set ||
-                                        data.$set.password !== 'password'
-                                    ) {
-                                        reject(new Error('setPasswordByEmail - updateOne - error invalid options'));
-                                        return;
-                                    }
+                                if (query.email !== 'email') {
+                                    throw new Error('setPasswordByEmail.updateOne.error - invalid query property "email"');
+                                }
 
-                                    reject(new Error('setPasswordByEmail - error'));
+                                if (!data.$set || data.$set.password !== 'password') {
+                                    throw new Error('setPasswordByEmail.updateOne.error - invalid data property "$set.password"');
+                                }
+
+                                return new Promise((resolve, reject) => {
+                                    reject(new Error('setPasswordByEmail.error'));
                                 });
                             },
                         };
@@ -829,7 +804,7 @@ describe('Тестирование метода setPasswordByEmail', () => {
 
         user(req, res, () => {
             req.model.user.setPasswordByEmail('email', 'password').catch(result => {
-                expect(result.message).toEqual('setPasswordByEmail - error');
+                expect(result.message).toEqual('setPasswordByEmail.error');
                 done();
             });
         });
@@ -849,15 +824,15 @@ describe('Тестирование метода update', () => {
                     collection() {
                         return {
                             updateOne(query, data) {
-                                return new Promise((resolve, reject) => {
-                                    if (
-                                        query._id !== '_id' ||
-                                        data.$set !== 'data'
-                                    ) {
-                                        reject(new Error('update - updateOne - error invalid options'));
-                                        return;
-                                    }
+                                if (query._id !== '_id') {
+                                    throw new Error('update.updateOne.error - invalid query property "_id"');
+                                }
 
+                                if (data.$set !== 'data') {
+                                    throw new Error('update.updateOne.error - invalid data property "$set"');
+                                }
+
+                                return new Promise(resolve => {
                                     resolve();
                                 });
                             },
@@ -869,9 +844,6 @@ describe('Тестирование метода update', () => {
 
         user(req, res, () => {
             req.model.user.update('_id', 'data').then(() => {
-                done();
-            }).catch((err) => {
-                expect(err).toEqual(null);
                 done();
             });
         });
@@ -889,16 +861,16 @@ describe('Тестирование метода update', () => {
                     collection() {
                         return {
                             updateOne(query, data) {
-                                return new Promise((resolve, reject) => {
-                                    if (
-                                        query._id !== '_id' ||
-                                        data.$set !== 'data'
-                                    ) {
-                                        reject(new Error('update - updateOne - error invalid options'));
-                                        return;
-                                    }
+                                if (query._id !== '_id') {
+                                    throw new Error('update.updateOne.error - invalid query property "_id"');
+                                }
 
-                                    reject(new Error('update - error'));
+                                if (data.$set !== 'data') {
+                                    throw new Error('update.updateOne.error - invalid data property "$set"');
+                                }
+
+                                return new Promise((resolve, reject) => {
+                                    reject(new Error('update.error'));
                                 });
                             },
                         };
@@ -909,7 +881,7 @@ describe('Тестирование метода update', () => {
 
         user(req, res, () => {
             req.model.user.update('_id', 'data').catch(result => {
-                expect(result.message).toEqual('update - error');
+                expect(result.message).toEqual('update.error');
                 done();
             });
         });
@@ -929,16 +901,15 @@ describe('Тестирование метода updatePeriod', () => {
                     collection() {
                         return {
                             updateOne(query, data) {
-                                return new Promise((resolve, reject) => {
-                                    if (
-                                        query._id !== '_id' ||
-                                        !data.$set ||
-                                        data.$set.period !== 'period'
-                                    ) {
-                                        reject(new Error('updatePeriod - updateOne - error invalid options'));
-                                        return;
-                                    }
+                                if (query._id !== '_id') {
+                                    throw new Error('updatePeriod.updateOne.error invalid query property "_id"');
+                                }
 
+                                if (!data.$set || data.$set.period !== 'period') {
+                                    throw new Error('updatePeriod.updateOne.error invalid data property "$set.period"');
+                                }
+
+                                return new Promise(resolve => {
                                     resolve();
                                 });
                             },
@@ -950,9 +921,6 @@ describe('Тестирование метода updatePeriod', () => {
 
         user(req, res, () => {
             req.model.user.updatePeriod('_id', 'period').then(() => {
-                done();
-            }).catch((err) => {
-                expect(err).toEqual(null);
                 done();
             });
         });
@@ -970,17 +938,16 @@ describe('Тестирование метода updatePeriod', () => {
                     collection() {
                         return {
                             updateOne(query, data) {
-                                return new Promise((resolve, reject) => {
-                                    if (
-                                        query._id !== '_id' ||
-                                        !data.$set ||
-                                        data.$set.period !== 'period'
-                                    ) {
-                                        reject(new Error('updatePeriod - updateOne - error invalid options'));
-                                        return;
-                                    }
+                                if (query._id !== '_id') {
+                                    throw new Error('updatePeriod.updateOne.error invalid query property "_id"');
+                                }
 
-                                    reject(new Error('updatePeriod - error'));
+                                if (!data.$set || data.$set.period !== 'period') {
+                                    throw new Error('updatePeriod.updateOne.error invalid data property "$set.period"');
+                                }
+
+                                return new Promise((resolve, reject) => {
+                                    reject(new Error('updatePeriod.error'));
                                 });
                             },
                         };
@@ -991,7 +958,7 @@ describe('Тестирование метода updatePeriod', () => {
 
         user(req, res, () => {
             req.model.user.updatePeriod('_id', 'period').catch(result => {
-                expect(result.message).toEqual('updatePeriod - error');
+                expect(result.message).toEqual('updatePeriod.error');
                 done();
             });
         });
