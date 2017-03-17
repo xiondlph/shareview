@@ -4,6 +4,7 @@
 
 import httpMocks from 'node-mocks-http';
 
+/* eslint max-len: ["error", 130] */
 describe('Тестирование метода email', () => {
     it('Успешное выполнение метода email', (done) => {
         const
@@ -16,28 +17,49 @@ describe('Тестирование метода email', () => {
             return {
                 /* eslint no-shadow: ["error", { "allow": ["opt"] }] */
                 createTransport(opt) {
-                    if (
-                        !opt.auth ||
-                        opt.auth.user !== 'notification@shareview.ru' ||
-                        opt.auth.pass !== 'XtFyKBXeChHY'
-                    ) {
-                        throw Error('createTransport options invalid');
+                    if (!opt.auth) {
+                        throw new Error('email.createTransport opt property invalid "auth"');
+                    }
+
+                    if (opt.auth.user !== 'notification@shareview.ru') {
+                        throw new Error('email.createTransport opt property invalid "auth.user"');
+                    }
+
+                    if (opt.auth.pass !== 'XtFyKBXeChHY') {
+                        throw new Error('email.createTransport opt property invalid "auth.pass"');
                     }
 
                     return {
                         sendMail(opt, cb) {
-                            if (
-                                opt.from !== 'SHAREVIEW <notification@shareview.ru>' ||
-                                opt.to !== 'user@simple.com' ||
-                                opt.subject !== 'Simple subject' ||
-                                opt.text !== 'Simple text' ||
-                                !opt.headers || opt.headers['X-Mailer'] !== 'SHAREVIEW' ||
-                                opt.localAddress !== '194.87.197.55'
-                            ) {
-                                cb(Error('sendMail options invalid'));
-                            } else {
-                                cb();
+                            if (opt.from !== 'SHAREVIEW <notification@shareview.ru>') {
+                                throw new Error('email.sendMail opt property invalid "from"');
                             }
+
+                            if (opt.to !== 'user@simple.com') {
+                                throw new Error('email.sendMail opt property invalid "to"');
+                            }
+
+                            if (opt.subject !== 'Simple subject') {
+                                throw new Error('email.sendMail opt property invalid "subject"');
+                            }
+
+                            if (opt.text !== 'Simple text') {
+                                throw new Error('email.sendMail opt property invalid "text"');
+                            }
+
+                            if (!opt.headers) {
+                                throw new Error('email.sendMail opt property invalid "headers"');
+                            }
+
+                            if (opt.headers['X-Mailer'] !== 'SHAREVIEW') {
+                                throw new Error('email.sendMail opt property invalid "headers[X-Mailer]"');
+                            }
+
+                            if (opt.localAddress !== '194.87.197.55') {
+                                throw new Error('email.sendMail opt property invalid "localAddress');
+                            }
+
+                            cb();
                         },
                     };
                 },
@@ -52,7 +74,7 @@ describe('Тестирование метода email', () => {
             }).then(() => {
                 done();
             }).catch((err) => {
-                expect(err).toEqual(null);
+                expect(err.message).toEqual(null);
                 done();
             });
         });
@@ -69,28 +91,49 @@ describe('Тестирование метода email', () => {
             return {
                 /* eslint no-shadow: ["error", { "allow": ["opt"] }] */
                 createTransport(opt) {
-                    if (
-                        !opt.auth ||
-                        opt.auth.user !== 'notification@shareview.ru' ||
-                        opt.auth.pass !== 'XtFyKBXeChHY'
-                    ) {
-                        throw Error('createTransport options invalid');
+                    if (!opt.auth) {
+                        throw new Error('email.createTransport opt property invalid "auth"');
+                    }
+
+                    if (opt.auth.user !== 'notification@shareview.ru') {
+                        throw new Error('email.createTransport opt property invalid "auth.user"');
+                    }
+
+                    if (opt.auth.pass !== 'XtFyKBXeChHY') {
+                        throw new Error('email.createTransport opt property invalid "auth.pass"');
                     }
 
                     return {
                         sendMail(opt, cb) {
-                            if (
-                                opt.from !== 'SHAREVIEW <notification@shareview.ru>' ||
-                                opt.to !== 'user@simple.com' ||
-                                opt.subject !== 'Simple subject' ||
-                                opt.text !== 'Simple text' ||
-                                !opt.headers || opt.headers['X-Mailer'] !== 'SHAREVIEW' ||
-                                opt.localAddress !== '194.87.197.55'
-                            ) {
-                                cb(Error('sendMail options invalid'));
-                            } else {
-                                cb(Error('sendMail error'));
+                            if (opt.from !== 'SHAREVIEW <notification@shareview.ru>') {
+                                throw new Error('email.sendMail opt property invalid "from"');
                             }
+
+                            if (opt.to !== 'user@simple.com') {
+                                throw new Error('email.sendMail opt property invalid "to"');
+                            }
+
+                            if (opt.subject !== 'Simple subject') {
+                                throw new Error('email.sendMail opt property invalid "subject"');
+                            }
+
+                            if (opt.text !== 'Simple text') {
+                                throw new Error('email.sendMail opt property invalid "text"');
+                            }
+
+                            if (!opt.headers) {
+                                throw new Error('email.sendMail opt property invalid "headers"');
+                            }
+
+                            if (opt.headers['X-Mailer'] !== 'SHAREVIEW') {
+                                throw new Error('email.sendMail opt property invalid "headers[X-Mailer]"');
+                            }
+
+                            if (opt.localAddress !== '194.87.197.55') {
+                                throw new Error('email.sendMail opt property invalid "localAddress');
+                            }
+
+                            cb(Error('email.error'));
                         },
                     };
                 },
@@ -103,7 +146,7 @@ describe('Тестирование метода email', () => {
                 subject: 'Simple subject',
                 text: 'Simple text',
             }).catch((err) => {
-                expect(err.message).toEqual('sendMail error');
+                expect(err.message).toEqual('email.error');
                 done();
             });
         });
