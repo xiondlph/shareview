@@ -6,6 +6,10 @@ import httpMocks from 'node-mocks-http';
 
 /* eslint max-len: ["error", 130] */
 describe('Тестирование метода email', () => {
+    beforeEach(() => {
+        jest.resetModules();
+    });
+
     it('Успешное выполнение метода email', (done) => {
         const
             utils = require('../index').default,

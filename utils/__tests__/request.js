@@ -6,6 +6,10 @@ import httpMocks from 'node-mocks-http';
 
 /* eslint max-len: ["error", 130] */
 describe('Тестирование метода api', () => {
+    beforeEach(() => {
+        jest.resetModules();
+    });
+
     it('Успешное выполнение метода api', (done) => {
         const
             utils = require('../index').default,
@@ -92,7 +96,7 @@ describe('Тестирование метода api', () => {
         });
     });
 
-    it('Выполнение метода apiс ошибкой', (done) => {
+    it('Выполнение метода api с ошибкой', (done) => {
         const
             utils = require('../index').default,
             req = httpMocks.createRequest(),

@@ -6,6 +6,10 @@ import httpMocks from 'node-mocks-http';
 
 /* eslint max-len: ["error", 130] */
 describe('Тестирование метода getUserById', () => {
+    beforeEach(() => {
+        jest.resetModules();
+    });
+
     it('Успешное выполнение метода getUserById', (done) => {
         const
             user = require('../user').default,
@@ -148,6 +152,10 @@ describe('Тестирование метода getUserById', () => {
 });
 
 describe('Тестирование метода getUserBySession', () => {
+    beforeEach(() => {
+        jest.resetModules();
+    });
+
     it('Успешное выполнение метода getUserBySession', (done) => {
         const
             user = require('../user').default,
@@ -290,6 +298,10 @@ describe('Тестирование метода getUserBySession', () => {
 });
 
 describe('Тестирование метода getUserByEmail', () => {
+    beforeEach(() => {
+        jest.resetModules();
+    });
+
     it('Успешное выполнение метода getUserByEmail', (done) => {
         const
             user = require('../user').default,
@@ -432,6 +444,10 @@ describe('Тестирование метода getUserByEmail', () => {
 });
 
 describe('Тестирование метода create', () => {
+    beforeEach(() => {
+        jest.resetModules();
+    });
+
     it('Успешное выполнение метода create', (done) => {
         const
             user = require('../user').default,
@@ -504,6 +520,10 @@ describe('Тестирование метода create', () => {
 });
 
 describe('Тестирование метода setSessionById', () => {
+    beforeEach(() => {
+        jest.resetModules();
+    });
+
     it('Успешное выполнение метода setSessionById', (done) => {
         const
             user = require('../user').default,
@@ -581,6 +601,10 @@ describe('Тестирование метода setSessionById', () => {
 });
 
 describe('Тестирование метода unsetSessionById', () => {
+    beforeEach(() => {
+        jest.resetModules();
+    });
+
     it('Успешное выполнение метода unsetSessionById', (done) => {
         const
             user = require('../user').default,
@@ -658,6 +682,10 @@ describe('Тестирование метода unsetSessionById', () => {
 });
 
 describe('Тестирование метода setPasswordId', () => {
+    beforeEach(() => {
+        jest.resetModules();
+    });
+
     it('Успешное выполнение метода setPasswordId', (done) => {
         const
             user = require('../user').default,
@@ -735,6 +763,10 @@ describe('Тестирование метода setPasswordId', () => {
 });
 
 describe('Тестирование метода setPasswordByEmail', () => {
+    beforeEach(() => {
+        jest.resetModules();
+    });
+
     it('Успешное выполнение метода setPasswordByEmail', (done) => {
         const
             user = require('../user').default,
@@ -812,6 +844,10 @@ describe('Тестирование метода setPasswordByEmail', () => {
 });
 
 describe('Тестирование метода update', () => {
+    beforeEach(() => {
+        jest.resetModules();
+    });
+
     it('Успешное выполнение метода update', (done) => {
         const
             user = require('../user').default,
@@ -889,6 +925,10 @@ describe('Тестирование метода update', () => {
 });
 
 describe('Тестирование метода updatePeriod', () => {
+    beforeEach(() => {
+        jest.resetModules();
+    });
+
     it('Успешное выполнение метода updatePeriod', (done) => {
         const
             user = require('../user').default,

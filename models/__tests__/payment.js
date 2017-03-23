@@ -6,6 +6,10 @@ import httpMocks from 'node-mocks-http';
 
 /* eslint max-len: ["error", 130] */
 describe('Тестирование метода add', () => {
+    beforeEach(() => {
+        jest.resetModules();
+    });
+
     it('Успешное выполнение метода add', (done) => {
         const
             payment = require('../payment').default,
@@ -75,6 +79,10 @@ describe('Тестирование метода add', () => {
 });
 
 describe('Тестирование метода listById', () => {
+    beforeEach(() => {
+        jest.resetModules();
+    });
+
     it('Успешное выполнение метода listById', (done) => {
         const
             payment = require('../payment').default,
