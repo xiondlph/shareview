@@ -68,7 +68,7 @@
   "jest": {
     "automock": false,
     "setupFiles": [
-      "jest.setup.js"
+      "./jest.setup.js"
     ]
   },
   "dependencies": {
@@ -96,7 +96,7 @@
     "eslint-plugin-import": "^1.12.0",
     "eslint-plugin-jsx-a11y": "^2.0.1",
     "eslint-plugin-react": "^6.0.0",
-    "jest-cli": "^14.1.0",
+    "jest": "^19.0.2",
     "jsdoc": "^3.4.0",
     "lint-staged": "^2.0.3",
     "node-mocks-http": "^1.6.1",
