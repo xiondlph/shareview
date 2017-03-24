@@ -7,7 +7,7 @@ import EventEmitter from 'events';
 
 /* eslint max-len: ["error", 130] */
 describe('Тестирование метода create', () => {
-    it('Успешное выполнение метода create', (done) => {
+    it('Успешное выполнение метода create', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -18,52 +18,52 @@ describe('Тестирование метода create', () => {
         req.model = {
             user: {
                 getUserByEmail(email) {
-                    expect(email).toEqual('user@simple.com');
+                    expect(email).toBe('fake@user.com');
 
-                    return new Promise(resolve => {
-                        resolve();
-                    });
+                    return {
+                        then(cb) { cb(); },
+                    };
                 },
 
                 create(data) {
-                    expect(data.email).toEqual('user@simple.com');
-                    expect(data.active).toEqual(false);
-                    expect(data.address).toEqual('127.0.0.1');
-                    expect(data.period).toBeDefined();
-                    expect(data.password).toBeDefined();
-                    expect(data.salt).toBeDefined();
+                    expect(data).toHaveProperty('email', 'fake@user.com');
+                    expect(data).toHaveProperty('active', false);
+                    expect(data).toHaveProperty('address', '127.0.0.1');
+                    expect(data).toHaveProperty('period');
+                    expect(data).toHaveProperty('password');
+                    expect(data).toHaveProperty('salt');
 
-                    return new Promise(resolve => {
-                        resolve({
-                            insertedId: 'insertedId',
-                        });
-                    });
+                    return {
+                        then(cb) {
+                            cb({ insertedId: 'fake.inserted.id' });
+                        },
+                    };
                 },
             },
         };
 
         req.email = (opt) => {
-            expect(opt.to).toEqual('user@simple.com');
-            expect(opt.subject).toEqual('Регистрация в сервисе SHAREVIEW');
-            expect(opt.text).toEqual('Simple text');
+            expect(opt).toHaveProperty('to', 'fake@user.com');
+            expect(opt).toHaveProperty('subject', 'Регистрация в сервисе SHAREVIEW');
+            expect(opt).toHaveProperty('text', 'Simple text');
 
-            return new Promise(resolve => {
-                resolve();
-            });
+            return {
+                then(cb) { cb(); },
+            };
         };
 
         req.body = {
-            email: 'user@simple.com',
+            email: 'fake@user.com',
         };
 
         req.ip = '127.0.0.1';
         res.locals = {};
 
         res.on('render', () => {
-            expect(res._getRenderView()).toEqual('mail/register');
-            expect(res.locals._id).toEqual('insertedId');
-            expect(res.locals.email).toEqual('user@simple.com');
-            expect(res.locals.password).toBeDefined();
+            expect(res._getRenderView()).toBe('mail/register');
+            expect(res).toHaveProperty('locals._id', 'fake.inserted.id');
+            expect(res).toHaveProperty('locals.email', 'fake@user.com');
+            expect(res).toHaveProperty('locals.password');
 
             res._getRenderData()(null, 'Simple text');
         });
@@ -74,13 +74,10 @@ describe('Тестирование метода create', () => {
         });
 
         // Вызов метода create
-        user.create(req, res, (err) => {
-            expect(err).toEqual(null);
-            done();
-        });
+        user.create(req, res);
     });
 
-    it('Выполнение метода create если пользователь авторизован', (done) => {
+    it('Выполнение метода create если пользователь авторизован', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -89,7 +86,11 @@ describe('Тестирование метода create', () => {
             });
 
         res.locals = {
-            user: {}, // Признак авторизированности пользователя
+
+            // Признак авторизированности пользователя
+            user: {
+                email: 'fake@user.com',
+            },
         };
 
         res.on('send', () => {
@@ -101,28 +102,25 @@ describe('Тестирование метода create', () => {
         user.create(req, res);
     });
 
-    it('Выполнение метода create с ошибкой валидации по email', (done) => {
+    it('Выполнение метода create с ошибкой валидации по email', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
             res = httpMocks.createResponse();
 
         req.body = {
-            email: 'user@simple',
+            email: 'fake.invalid.user.email',
         };
 
         res.locals = {};
 
         // Вызов метода create с перехватом исключения
-        try {
+        expect(() => {
             user.create(req, res);
-        } catch (err) {
-            expect(err.message).toEqual('Validate error - mail is invalid');
-            done();
-        }
+        }).toThrow('Validate error - mail is invalid');
     });
 
-    it('Выполнение метода create для существующего пользователя', (done) => {
+    it('Выполнение метода create для существующего пользователя', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -132,20 +130,20 @@ describe('Тестирование метода create', () => {
 
         req.model = {
             user: {
-                getUserByEmail(email) {
-                    expect(email).toEqual('user@simple.com');
-
-                    return new Promise(resolve => {
-                        resolve({
-                            email: 'user@simple.com',
-                        });
-                    });
+                getUserByEmail() {
+                    return {
+                        then(cb) {
+                            cb({
+                                email: 'fake@user.com',
+                            });
+                        },
+                    };
                 },
             },
         };
 
         req.body = {
-            email: 'user@simple.com',
+            email: 'fake@user.com',
         };
 
         res.locals = {};
@@ -156,93 +154,74 @@ describe('Тестирование метода create', () => {
         });
 
         // Вызов метода create
-        user.create(req, res, (err) => {
-            expect(err).toEqual(null);
-            done();
-        });
+        user.create(req, res);
     });
 
-    it('Выполнение метода create с ошибкой в вызове "req.model.user.getUserByEmail"', (done) => {
+    it('Выполнение метода create с ошибкой в вызове "req.model.user.getUserByEmail"', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
-            res = httpMocks.createResponse({
-                eventEmitter: EventEmitter,
-            });
+            res = httpMocks.createResponse();
 
         req.model = {
             user: {
-                getUserByEmail(email) {
-                    expect(email).toEqual('user@simple.com');
-
+                getUserByEmail() {
                     return new Promise((resolve, reject) => {
-                        reject('req.model.user.getUserByEmail.error');
+                        reject(Error('req.model.user.getUserByEmail.error'));
                     });
                 },
             },
         };
 
         req.body = {
-            email: 'user@simple.com',
+            email: 'fake@user.com',
         };
 
         res.locals = {};
 
         // Вызов метода create
         user.create(req, res, (err) => {
-            expect(err).toEqual('req.model.user.getUserByEmail.error');
+            expect(err).toEqual(Error('req.model.user.getUserByEmail.error'));
             done();
         });
     });
 
-    it('Выполнение метода create с ошибкой в вызове "req.model.user.create"', (done) => {
+    it('Выполнение метода create с ошибкой в вызове "req.model.user.create"', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
-            res = httpMocks.createResponse({
-                eventEmitter: EventEmitter,
-            });
+            res = httpMocks.createResponse();
 
         req.model = {
             user: {
-                getUserByEmail(email) {
-                    expect(email).toEqual('user@simple.com');
-
+                getUserByEmail() {
                     return new Promise(resolve => {
                         resolve();
                     });
                 },
 
-                create(data) {
-                    expect(data.email).toEqual('user@simple.com');
-                    expect(data.active).toEqual(false);
-                    expect(data.address).toEqual('127.0.0.1');
-                    expect(data.period).toBeDefined();
-                    expect(data.password).toBeDefined();
-                    expect(data.salt).toBeDefined();
-
+                create() {
                     return new Promise((resolve, reject) => {
-                        reject('req.model.user.create');
+                        reject(Error('req.model.user.create'));
                     });
                 },
             },
         };
 
         req.body = {
-            email: 'user@simple.com',
+            email: 'fake@user.com',
         };
 
-        req.ip = '127.0.0.1';
         res.locals = {};
 
         // Вызов метода create
         user.create(req, res, (err) => {
-            expect(err).toEqual('req.model.user.create');
+            expect(err).toEqual(Error('req.model.user.create'));
             done();
         });
     });
 
-    it('Выполнение метода create с ошибкой в вызове "res.render"', (done) => {
+    it('Выполнение метода create с ошибкой в вызове "res.render"', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -252,25 +231,16 @@ describe('Тестирование метода create', () => {
 
         req.model = {
             user: {
-                getUserByEmail(email) {
-                    expect(email).toEqual('user@simple.com');
-
+                getUserByEmail() {
                     return new Promise(resolve => {
                         resolve();
                     });
                 },
 
-                create(data) {
-                    expect(data.email).toEqual('user@simple.com');
-                    expect(data.active).toEqual(false);
-                    expect(data.address).toEqual('127.0.0.1');
-                    expect(data.period).toBeDefined();
-                    expect(data.password).toBeDefined();
-                    expect(data.salt).toBeDefined();
-
+                create() {
                     return new Promise(resolve => {
                         resolve({
-                            insertedId: 'insertedId',
+                            insertedId: 'fake.inserted.id',
                         });
                     });
                 },
@@ -278,29 +248,23 @@ describe('Тестирование метода create', () => {
         };
 
         req.body = {
-            email: 'user@simple.com',
+            email: 'fake@user.com',
         };
 
-        req.ip = '127.0.0.1';
         res.locals = {};
 
         res.on('render', () => {
-            expect(res._getRenderView()).toEqual('mail/register');
-            expect(res.locals._id).toEqual('insertedId');
-            expect(res.locals.email).toEqual('user@simple.com');
-            expect(res.locals.password).toBeDefined();
-
-            res._getRenderData()('res.render.error');
+            res._getRenderData()(Error('res.render.error'));
         });
 
         // Вызов метода create
         user.create(req, res, (err) => {
-            expect(err).toEqual('res.render.error');
+            expect(err).toEqual(Error('res.render.error'));
             done();
         });
     });
 
-    it('Выполнение метода create с ошибкой в вызове "res.email"', (done) => {
+    it('Выполнение метода create с ошибкой в вызове "res.email"', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -310,67 +274,48 @@ describe('Тестирование метода create', () => {
 
         req.model = {
             user: {
-                getUserByEmail(email) {
-                    expect(email).toEqual('user@simple.com');
-
+                getUserByEmail() {
                     return new Promise(resolve => {
                         resolve();
                     });
                 },
 
-                create(data) {
-                    expect(data.email).toEqual('user@simple.com');
-                    expect(data.active).toEqual(false);
-                    expect(data.address).toEqual('127.0.0.1');
-                    expect(data.period).toBeDefined();
-                    expect(data.password).toBeDefined();
-                    expect(data.salt).toBeDefined();
-
+                create() {
                     return new Promise(resolve => {
                         resolve({
-                            insertedId: 'insertedId',
+                            insertedId: 'fake.inserted.id',
                         });
                     });
                 },
             },
         };
 
-        req.email = (opt) => {
-            expect(opt.to).toEqual('user@simple.com');
-            expect(opt.subject).toEqual('Регистрация в сервисе SHAREVIEW');
-            expect(opt.text).toEqual('Simple text');
-
+        req.email = () => {
             return new Promise((resolve, reject) => {
-                reject('req.email.error');
+                reject(Error('req.email.error'));
             });
         };
 
         req.body = {
-            email: 'user@simple.com',
+            email: 'fake@user.com',
         };
 
-        req.ip = '127.0.0.1';
         res.locals = {};
 
         res.on('render', () => {
-            expect(res._getRenderView()).toEqual('mail/register');
-            expect(res.locals._id).toEqual('insertedId');
-            expect(res.locals.email).toEqual('user@simple.com');
-            expect(res.locals.password).toBeDefined();
-
             res._getRenderData()(null, 'Simple text');
         });
 
         // Вызов метода create
         user.create(req, res, (err) => {
-            expect(err).toEqual('req.email.error');
+            expect(err).toEqual(Error('req.email.error'));
             done();
         });
     });
 });
 
 describe('Тестирование метода forgot', () => {
-    it('Успешное выполнение метода forgot', (done) => {
+    it('Успешное выполнение метода forgot', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -381,41 +326,43 @@ describe('Тестирование метода forgot', () => {
         req.model = {
             user: {
                 setPasswordByEmail(email, pwd) {
-                    expect(email).toEqual('user@simple.com');
+                    expect(email).toEqual('fake@user.com');
                     expect(pwd).toBeDefined();
 
-                    return new Promise(resolve => {
-                        resolve({
-                            mongoResult: {
-                                result: {
-                                    nModified: 1,
+                    return {
+                        then(cb) {
+                            cb({
+                                mongoResult: {
+                                    result: {
+                                        nModified: 1,
+                                    },
                                 },
-                            },
-                        });
-                    });
+                            });
+                        },
+                    };
                 },
             },
         };
 
         req.email = (opt) => {
-            expect(opt.to).toEqual('user@simple.com');
-            expect(opt.subject).toEqual('Востановления доступа к сервису SHAREVIEW');
-            expect(opt.text).toEqual('Simple text');
+            expect(opt).toHaveProperty('to', 'fake@user.com');
+            expect(opt).toHaveProperty('subject', 'Востановления доступа к сервису SHAREVIEW');
+            expect(opt).toHaveProperty('text', 'Simple text');
 
-            return new Promise(resolve => {
-                resolve();
-            });
+            return {
+                then(cb) { cb(); },
+            };
         };
 
         req.body = {
-            email: 'user@simple.com',
+            email: 'fake@user.com',
         };
 
         res.locals = {};
 
         res.on('render', () => {
-            expect(res._getRenderView()).toEqual('mail/forgot');
-            expect(res.locals.password).toBeDefined();
+            expect(res._getRenderView()).toBe('mail/forgot');
+            expect(res).toHaveProperty('locals.password');
 
             res._getRenderData()(null, 'Simple text');
         });
@@ -426,13 +373,10 @@ describe('Тестирование метода forgot', () => {
         });
 
         // Вызов метода forgot
-        user.forgot(req, res, (err) => {
-            expect(err).toEqual(null);
-            done();
-        });
+        user.forgot(req, res);
     });
 
-    it('Выполнение метода forgot если пользователь авторизован', (done) => {
+    it('Выполнение метода forgot если пользователь авторизован', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -441,7 +385,11 @@ describe('Тестирование метода forgot', () => {
             });
 
         res.locals = {
-            user: {}, // Признак авторизированности пользователя
+
+            // Признак авторизированности пользователя
+            user: {
+                email: 'fake@user.com',
+            },
         };
 
         res.on('send', () => {
@@ -453,28 +401,25 @@ describe('Тестирование метода forgot', () => {
         user.forgot(req, res);
     });
 
-    it('Выполнение метода forgot с ошибкой валидации по email', (done) => {
+    it('Выполнение метода forgot с ошибкой валидации по email', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
             res = httpMocks.createResponse();
 
         req.body = {
-            email: 'user@simple',
+            email: 'fake.invalid.user.email',
         };
 
         res.locals = {};
 
-        // Вызов метода forgot с перехватом исключения
-        try {
-            user.forgot(req, res);
-        } catch (err) {
-            expect(err.message).toEqual('Validate error - mail is invalid');
-            done();
-        }
+        // Вызов метода create с перехватом исключения
+        expect(() => {
+            user.create(req, res);
+        }).toThrow('Validate error - mail is invalid');
     });
 
-    it('Выполнение метода forgot с ошибкой в вызове "req.model.user.setPasswordByEmail"', (done) => {
+    it('Выполнение метода forgot с ошибкой в вызове "req.model.user.setPasswordByEmail"', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -484,30 +429,28 @@ describe('Тестирование метода forgot', () => {
 
         req.model = {
             user: {
-                setPasswordByEmail(email) {
-                    expect(email).toEqual('user@simple.com');
-
+                setPasswordByEmail() {
                     return new Promise((resolve, reject) => {
-                        reject('req.model.user.setPasswordByEmail.error');
+                        reject(Error('req.model.user.setPasswordByEmail.error'));
                     });
                 },
             },
         };
 
         req.body = {
-            email: 'user@simple.com',
+            email: 'fake@user.com',
         };
 
         res.locals = {};
 
         // Вызов метода forgot
         user.forgot(req, res, (err) => {
-            expect(err).toEqual('req.model.user.setPasswordByEmail.error');
+            expect(err).toEqual(Error('req.model.user.setPasswordByEmail.error'));
             done();
         });
     });
 
-    it('Выполнение метода forgot с ошибкой в вызове "res.render"', (done) => {
+    it('Выполнение метода forgot с ошибкой в вызове "res.render"', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -517,10 +460,7 @@ describe('Тестирование метода forgot', () => {
 
         req.model = {
             user: {
-                setPasswordByEmail(email, pwd) {
-                    expect(email).toEqual('user@simple.com');
-                    expect(pwd).toBeDefined();
-
+                setPasswordByEmail() {
                     return new Promise(resolve => {
                         resolve({
                             mongoResult: {
@@ -535,26 +475,23 @@ describe('Тестирование метода forgot', () => {
         };
 
         req.body = {
-            email: 'user@simple.com',
+            email: 'fake@user.com',
         };
 
         res.locals = {};
 
         res.on('render', () => {
-            expect(res._getRenderView()).toEqual('mail/forgot');
-            expect(res.locals.password).toBeDefined();
-
-            res._getRenderData()('res.render.error');
+            res._getRenderData()(Error('res.render.error'));
         });
 
         // Вызов метода forgot
         user.forgot(req, res, (err) => {
-            expect(err).toEqual('res.render.error');
+            expect(err).toEqual(Error('res.render.error'));
             done();
         });
     });
 
-    it('Выполнение метода forgot с ошибкой в вызове "res.email', (done) => {
+    it('Выполнение метода forgot с ошибкой в вызове "res.email', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -564,10 +501,7 @@ describe('Тестирование метода forgot', () => {
 
         req.model = {
             user: {
-                setPasswordByEmail(email, pwd) {
-                    expect(email).toEqual('user@simple.com');
-                    expect(pwd).toBeDefined();
-
+                setPasswordByEmail() {
                     return new Promise(resolve => {
                         resolve({
                             mongoResult: {
@@ -581,26 +515,19 @@ describe('Тестирование метода forgot', () => {
             },
         };
 
-        req.email = (opt) => {
-            expect(opt.to).toEqual('user@simple.com');
-            expect(opt.subject).toEqual('Востановления доступа к сервису SHAREVIEW');
-            expect(opt.text).toEqual('Simple text');
-
+        req.email = () => {
             return new Promise((resolve, reject) => {
-                reject('req.email.error');
+                reject(Error('req.email.error'));
             });
         };
 
         req.body = {
-            email: 'user@simple.com',
+            email: 'fake@user.com',
         };
 
         res.locals = {};
 
         res.on('render', () => {
-            expect(res._getRenderView()).toEqual('mail/forgot');
-            expect(res.locals.password).toBeDefined();
-
             res._getRenderData()(null, 'Simple text');
         });
 
@@ -611,7 +538,7 @@ describe('Тестирование метода forgot', () => {
 
         // Вызов метода forgot
         user.forgot(req, res, (err) => {
-            expect(err).toEqual('req.email.error');
+            expect(err).toEqual(Error('req.email.error'));
             done();
         });
     });
