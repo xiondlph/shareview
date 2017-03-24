@@ -180,7 +180,7 @@ describe('Тестирование метода create', () => {
         res.locals = {};
 
         // Вызов метода create
-        user.create(req, res, (err) => {
+        user.create(req, res, err => {
             expect(err).toEqual(Error('req.model.user.getUserByEmail.error'));
             done();
         });
@@ -215,7 +215,7 @@ describe('Тестирование метода create', () => {
         res.locals = {};
 
         // Вызов метода create
-        user.create(req, res, (err) => {
+        user.create(req, res, err => {
             expect(err).toEqual(Error('req.model.user.create'));
             done();
         });
@@ -258,7 +258,7 @@ describe('Тестирование метода create', () => {
         });
 
         // Вызов метода create
-        user.create(req, res, (err) => {
+        user.create(req, res, err => {
             expect(err).toEqual(Error('res.render.error'));
             done();
         });
@@ -307,7 +307,7 @@ describe('Тестирование метода create', () => {
         });
 
         // Вызов метода create
-        user.create(req, res, (err) => {
+        user.create(req, res, err => {
             expect(err).toEqual(Error('req.email.error'));
             done();
         });
@@ -444,7 +444,7 @@ describe('Тестирование метода forgot', () => {
         res.locals = {};
 
         // Вызов метода forgot
-        user.forgot(req, res, (err) => {
+        user.forgot(req, res, err => {
             expect(err).toEqual(Error('req.model.user.setPasswordByEmail.error'));
             done();
         });
@@ -485,7 +485,7 @@ describe('Тестирование метода forgot', () => {
         });
 
         // Вызов метода forgot
-        user.forgot(req, res, (err) => {
+        user.forgot(req, res, err => {
             expect(err).toEqual(Error('res.render.error'));
             done();
         });
@@ -537,7 +537,7 @@ describe('Тестирование метода forgot', () => {
         });
 
         // Вызов метода forgot
-        user.forgot(req, res, (err) => {
+        user.forgot(req, res, err => {
             expect(err).toEqual(Error('req.email.error'));
             done();
         });
