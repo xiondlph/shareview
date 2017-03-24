@@ -7,70 +7,66 @@ import EventEmitter from 'events';
 
 /* eslint max-len: ["error", 130] */
 describe('Тестирование метода user', () => {
-    it('Успешное выполнение метода user', (done) => {
+    it('Успешное выполнение метода user', done => {
         const
             secure = require('../secure').default,
             req = httpMocks.createRequest(),
-            res = httpMocks.createResponse({
-                eventEmitter: EventEmitter,
-            });
+            res = httpMocks.createResponse();
 
         req.model = {
             user: {
                 getUserBySession(sessionId) {
-                    expect(sessionId).toEqual('sessionId');
+                    expect(sessionId).toEqual('fake.session.id');
 
-                    return new Promise(resolve => {
-                        resolve('user'); // Признак авторизированности пользователя
-                    });
+                    return {
+                        then(cb) {
+                            // Признак авторизированности пользователя
+                            cb({
+                                email: 'fake@user.com',
+                            });
+                        },
+                    };
                 },
             },
         };
 
         req.session = {
-            id: 'sessionId',
+            id: 'fake.session.id',
         };
 
         res.locals = {};
 
         // Вызов метода user
-        secure.user(req, res, (err) => {
-            expect(err).toBeUndefined();
-            expect(res.locals).toEqual({ user: 'user' });
+        secure.user(req, res, () => {
+            expect(res.locals).toEqual({ user: { email: 'fake@user.com' } });
 
             done();
         });
     });
 
-    it('Выполнение метода user с ошибкой в вызове "req.model.user.getUserBySession"', (done) => {
+    it('Выполнение метода user с ошибкой в вызове "req.model.user.getUserBySession"', done => {
         const
             secure = require('../secure').default,
             req = httpMocks.createRequest(),
-            res = httpMocks.createResponse({
-                eventEmitter: EventEmitter,
-            });
+            res = httpMocks.createResponse();
 
         req.model = {
             user: {
-                getUserBySession(sessionId) {
-                    expect(sessionId).toEqual('sessionId');
-
+                getUserBySession() {
                     return new Promise((resolve, reject) => {
-                        reject('req.model.user.getUserBySession.error');
+                        reject(Error('req.model.user.getUserBySession.error'));
                     });
                 },
             },
         };
 
         req.session = {
-            id: 'sessionId',
+            id: 'fake.session.id',
         };
 
-        res.locals = {};
-
         // Вызов метода user
-        secure.user(req, res, (err) => {
-            expect(err).toEqual('req.model.user.getUserBySession.error');
+        secure.user(req, res, err => {
+            expect(err).toEqual(Error('req.model.user.getUserBySession.error'));
 
             done();
         });
@@ -78,16 +74,18 @@ describe('Тестирование метода user', () => {
 });
 
 describe('Тестирование метода auth', () => {
-    it('Выполнение метода auth для авторизированного пользователя', (done) => {
+    it('Выполнение метода auth для авторизированного пользователя', done => {
         const
             secure = require('../secure').default,
             req = httpMocks.createRequest(),
-            res = httpMocks.createResponse({
-                eventEmitter: EventEmitter,
-            });
+            res = httpMocks.createResponse();
 
         res.locals = {
-            user: 'user', // Признак авторизированности пользователя
+
+            // Признак авторизированности пользователя
+            user: {
+                email: 'fake@user.com',
+            },
         };
 
         // Вызов метода auth
@@ -118,7 +116,7 @@ describe('Тестирование метода auth', () => {
 });
 
 describe('Тестирование метода signin', () => {
-    it('Успешное выполнение метода signin', (done) => {
+    it('Успешное выполнение метода signin', done => {
         const
             secure = require('../secure').default,
             req = httpMocks.createRequest(),
@@ -129,41 +127,43 @@ describe('Тестирование метода signin', () => {
         req.model = {
             user: {
                 getUserByEmail(email) {
-                    expect(email).toEqual('user@simple.com');
+                    expect(email).toEqual('fake@user.com');
 
-                    return new Promise(resolve => {
-                        resolve({
-                            _id: '_id',
+                    return {
+                        then(cb) {
+                            cb({
+                                _id: 'fake_id',
 
-                            // Захешеный "password"
-                            password: 'e56a207acd1e6714735487c199c6f095844b7cc8e5971d86c003a7b6f36ef51e',
+                                // Захешеный "fake.password"
+                                password: 'cf1a63230b18ca6299394958b885096d0fe86c85b3870364706d488e57788e4a',
 
-                            email: 'email',
-                            address: 'address',
-                            salt: 'salt',
-                            period: 'period',
-                        });
-                    });
+                                email: 'fake.email',
+                                address: 'fake.address',
+                                salt: 'fake.salt',
+                                period: 'fake.period',
+                            });
+                        },
+                    };
                 },
 
                 setSessionById(_id, sessionId) {
-                    expect(_id).toEqual('_id');
-                    expect(sessionId).toEqual('sessionId');
+                    expect(_id).toEqual('fake_id');
+                    expect(sessionId).toEqual('fake.session.id');
 
-                    return new Promise(resolve => {
-                        resolve();
-                    });
+                    return {
+                        then(cb) { cb(); },
+                    };
                 },
             },
         };
 
         req.session = {
-            id: 'sessionId',
+            id: 'fake.session.id',
         };
 
         req.body = {
-            email: 'user@simple.com',
-            password: 'password',
+            email: 'fake@user.com',
+            password: 'fake.password',
         };
 
         res.locals = {};
@@ -172,10 +172,10 @@ describe('Тестирование метода signin', () => {
             expect(res._getData()).toEqual({
                 success: true,
                 profile: {
-                    email: 'email',
-                    address: 'address',
-                    key: 'salt',
-                    period: 'period',
+                    email: 'fake.email',
+                    address: 'fake.address',
+                    key: 'fake.salt',
+                    period: 'fake.period',
                 },
             });
 
@@ -183,13 +183,10 @@ describe('Тестирование метода signin', () => {
         });
 
         // Вызов метода user
-        secure.signin(req, res, (err) => {
-            expect(err).toEqual(null);
-            done();
-        });
+        secure.signin(req, res);
     });
 
-    it('Выполнение метода signin если пользователь авторизован', (done) => {
+    it('Выполнение метода signin если пользователь авторизован', done => {
         const
             secure = require('../secure').default,
             req = httpMocks.createRequest(),
@@ -198,7 +195,11 @@ describe('Тестирование метода signin', () => {
             });
 
         res.locals = {
-            user: 'user', // Признак авторизированности пользователя
+
+            // Признак авторизированности пользователя
+            user: {
+                email: 'fake@user.com',
+            },
         };
 
         res.on('send', () => {
@@ -210,28 +211,25 @@ describe('Тестирование метода signin', () => {
         secure.signin(req, res);
     });
 
-    it('Выполнение метода signin с ошибкой валидации по email', (done) => {
+    it('Выполнение метода signin с ошибкой валидации по email', () => {
         const
             secure = require('../secure').default,
             req = httpMocks.createRequest(),
             res = httpMocks.createResponse();
 
         req.body = {
-            email: 'user@simple',
+            email: 'fake.invalid.user.email',
         };
 
         res.locals = {};
 
-        // Вызов метода signin с перехватом исключения
-        try {
+        // Вызов метода create с перехватом исключения
+        expect(() => {
             secure.signin(req, res);
-        } catch (err) {
-            expect(err.message).toEqual('Validate error - mail is invalid');
-            done();
-        }
+        }).toThrow('Validate error - mail is invalid');
     });
 
-    it('Выполнение метода signin с ошибкой в вызове "req.model.user.getUserByEmail"', (done) => {
+    it('Выполнение метода signin с ошибкой в вызове "req.model.user.getUserByEmail"', done => {
         const
             secure = require('../secure').default,
             req = httpMocks.createRequest(),
@@ -239,30 +237,28 @@ describe('Тестирование метода signin', () => {
 
         req.model = {
             user: {
-                getUserByEmail(email) {
-                    expect(email).toEqual('user@simple.com');
-
+                getUserByEmail() {
                     return new Promise((resolve, reject) => {
-                        reject('req.model.user.getUserByEmail.error');
+                        reject(Error('req.model.user.getUserByEmail.error'));
                     });
                 },
             },
         };
 
         req.body = {
-            email: 'user@simple.com',
+            email: 'fake@user.com',
         };
 
         res.locals = {};
 
         // Вызов метода signin
-        secure.signin(req, res, (err) => {
-            expect(err).toEqual('req.model.user.getUserByEmail.error');
+        secure.signin(req, res, err => {
+            expect(err).toEqual(Error('req.model.user.getUserByEmail.error'));
             done();
         });
     });
 
-    it('Выполнение метода signin с ошибкой в вызове "req.model.user.setSessionById"', (done) => {
+    it('Выполнение метода signin с ошибкой в вызове "req.model.user.setSessionById"', done => {
         const
             secure = require('../secure').default,
             req = httpMocks.createRequest(),
@@ -270,49 +266,44 @@ describe('Тестирование метода signin', () => {
 
         req.model = {
             user: {
-                getUserByEmail(email) {
-                    expect(email).toEqual('user@simple.com');
-
+                getUserByEmail() {
                     return new Promise(resolve => {
                         resolve({
-                            _id: '_id',
+                            _id: 'fake_id',
 
-                            // Захешеный "password"
-                            password: 'e56a207acd1e6714735487c199c6f095844b7cc8e5971d86c003a7b6f36ef51e',
+                            // Захешеный "fake.password"
+                            password: 'cf1a63230b18ca6299394958b885096d0fe86c85b3870364706d488e57788e4a',
 
-                            email: 'email',
-                            address: 'address',
-                            salt: 'salt',
-                            period: 'period',
+                            email: 'fake.email',
+                            address: 'fake.address',
+                            salt: 'fake.salt',
+                            period: 'fake.period',
                         });
                     });
                 },
 
-                setSessionById(_id, sessionId) {
-                    expect(_id).toEqual('_id');
-                    expect(sessionId).toEqual('sessionId');
-
+                setSessionById() {
                     return new Promise((resolve, reject) => {
-                        reject('req.model.user.setSessionById.error');
+                        reject(Error('req.model.user.setSessionById.error'));
                     });
                 },
             },
         };
 
         req.session = {
-            id: 'sessionId',
+            id: 'fake.session.id',
         };
 
         req.body = {
-            email: 'user@simple.com',
-            password: 'password',
+            email: 'fake@user.com',
+            password: 'fake.password',
         };
 
         res.locals = {};
 
         // Вызов метода user
-        secure.signin(req, res, (err) => {
-            expect(err).toEqual('req.model.user.setSessionById.error');
+        secure.signin(req, res, err => {
+            expect(err).toEqual(Error('req.model.user.setSessionById.error'));
             done();
         });
     });
