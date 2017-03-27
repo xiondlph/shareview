@@ -10,7 +10,7 @@ describe('Тестирование метода email', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода email', (done) => {
+    it('Успешное выполнение метода email', done => {
         const
             utils = require('../index').default,
             req = httpMocks.createRequest(),
@@ -21,47 +21,17 @@ describe('Тестирование метода email', () => {
             return {
                 /* eslint no-shadow: ["error", { "allow": ["opt"] }] */
                 createTransport(opt) {
-                    if (!opt.auth) {
-                        throw new Error('email.createTransport opt property invalid "auth"');
-                    }
-
-                    if (opt.auth.user !== 'notification@shareview.ru') {
-                        throw new Error('email.createTransport opt property invalid "auth.user"');
-                    }
-
-                    if (opt.auth.pass !== 'XtFyKBXeChHY') {
-                        throw new Error('email.createTransport opt property invalid "auth.pass"');
-                    }
+                    expect(opt).toHaveProperty('auth.user', 'notification@shareview.ru');
+                    expect(opt).toHaveProperty('auth.pass', 'XtFyKBXeChHY');
 
                     return {
                         sendMail(opt, cb) {
-                            if (opt.from !== 'SHAREVIEW <notification@shareview.ru>') {
-                                throw new Error('email.sendMail opt property invalid "from"');
-                            }
-
-                            if (opt.to !== 'user@simple.com') {
-                                throw new Error('email.sendMail opt property invalid "to"');
-                            }
-
-                            if (opt.subject !== 'Simple subject') {
-                                throw new Error('email.sendMail opt property invalid "subject"');
-                            }
-
-                            if (opt.text !== 'Simple text') {
-                                throw new Error('email.sendMail opt property invalid "text"');
-                            }
-
-                            if (!opt.headers) {
-                                throw new Error('email.sendMail opt property invalid "headers"');
-                            }
-
-                            if (opt.headers['X-Mailer'] !== 'SHAREVIEW') {
-                                throw new Error('email.sendMail opt property invalid "headers[X-Mailer]"');
-                            }
-
-                            if (opt.localAddress !== '194.87.197.55') {
-                                throw new Error('email.sendMail opt property invalid "localAddress');
-                            }
+                            expect(opt).toHaveProperty('from', 'SHAREVIEW <notification@shareview.ru>');
+                            expect(opt).toHaveProperty('to', 'fake@user.com');
+                            expect(opt).toHaveProperty('subject', 'Simple subject');
+                            expect(opt).toHaveProperty('text', 'Simple text');
+                            expect(opt).toHaveProperty('headers.X-Mailer', 'SHAREVIEW');
+                            expect(opt).toHaveProperty('localAddress', '194.87.197.55');
 
                             cb();
                         },
@@ -72,19 +42,19 @@ describe('Тестирование метода email', () => {
 
         utils.mailer.email(req, res, () => {
             req.email({
-                to: 'user@simple.com',
+                to: 'fake@user.com',
                 subject: 'Simple subject',
                 text: 'Simple text',
             }).then(() => {
                 done();
-            }).catch((err) => {
-                expect(err.message).toEqual(null);
+            }).catch(err => {
+                expect(err).toBeNull();
                 done();
             });
         });
     });
 
-    it('Выполнение метода email с ошибкой', (done) => {
+    it('Выполнение метода email с ошибкой', done => {
         const
             utils = require('../index').default,
             req = httpMocks.createRequest(),
@@ -93,50 +63,9 @@ describe('Тестирование метода email', () => {
 
         jest.mock('nodemailer', () => {
             return {
-                /* eslint no-shadow: ["error", { "allow": ["opt"] }] */
-                createTransport(opt) {
-                    if (!opt.auth) {
-                        throw new Error('email.createTransport opt property invalid "auth"');
-                    }
-
-                    if (opt.auth.user !== 'notification@shareview.ru') {
-                        throw new Error('email.createTransport opt property invalid "auth.user"');
-                    }
-
-                    if (opt.auth.pass !== 'XtFyKBXeChHY') {
-                        throw new Error('email.createTransport opt property invalid "auth.pass"');
-                    }
-
+                createTransport() {
                     return {
                         sendMail(opt, cb) {
-                            if (opt.from !== 'SHAREVIEW <notification@shareview.ru>') {
-                                throw new Error('email.sendMail opt property invalid "from"');
-                            }
-
-                            if (opt.to !== 'user@simple.com') {
-                                throw new Error('email.sendMail opt property invalid "to"');
-                            }
-
-                            if (opt.subject !== 'Simple subject') {
-                                throw new Error('email.sendMail opt property invalid "subject"');
-                            }
-
-                            if (opt.text !== 'Simple text') {
-                                throw new Error('email.sendMail opt property invalid "text"');
-                            }
-
-                            if (!opt.headers) {
-                                throw new Error('email.sendMail opt property invalid "headers"');
-                            }
-
-                            if (opt.headers['X-Mailer'] !== 'SHAREVIEW') {
-                                throw new Error('email.sendMail opt property invalid "headers[X-Mailer]"');
-                            }
-
-                            if (opt.localAddress !== '194.87.197.55') {
-                                throw new Error('email.sendMail opt property invalid "localAddress');
-                            }
-
                             cb(Error('email.error'));
                         },
                     };
@@ -146,11 +75,11 @@ describe('Тестирование метода email', () => {
 
         utils.mailer.email(req, res, () => {
             req.email({
-                to: 'user@simple.com',
+                to: 'fake@user.com',
                 subject: 'Simple subject',
                 text: 'Simple text',
-            }).catch((err) => {
-                expect(err.message).toEqual('email.error');
+            }).catch(err => {
+                expect(err).toEqual(Error('email.error'));
                 done();
             });
         });
