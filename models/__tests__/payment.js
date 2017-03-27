@@ -22,7 +22,7 @@ describe('Тестирование метода add', () => {
                     collection() {
                         return {
                             insertOne(data) {
-                                expect(data).toBe('fake.data');
+                                expect(data).toEqual({ label: 'fake@email.com' });
 
                                 return new Promise(resolve => {
                                     resolve();
@@ -35,7 +35,7 @@ describe('Тестирование метода add', () => {
         });
 
         payment(req, res, () => {
-            req.model.payment.add('fake.data').then(() => {
+            req.model.payment.add({ label: 'fake@email.com' }).then(() => {
                 done();
             });
         });
@@ -64,7 +64,7 @@ describe('Тестирование метода add', () => {
         });
 
         payment(req, res, () => {
-            req.model.payment.add('fake.data').catch(result => {
+            req.model.payment.add({ label: 'fake@email.com' }).catch(result => {
                 expect(result).toEqual(Error('add.error'));
                 done();
             });
@@ -90,7 +90,7 @@ describe('Тестирование метода listById', () => {
                         return {
                             find: jest.fn()
                                 .mockImplementationOnce((query, data) => {
-                                    expect(query).toHaveProperty('label', 'email');
+                                    expect(query).toHaveProperty('label', 'fake@email.com');
                                     expect(data).toHaveProperty('sort._id', -1);
 
                                     return {
@@ -102,7 +102,7 @@ describe('Тестирование метода listById', () => {
                                     };
                                 })
                                 .mockImplementationOnce((query, data) => {
-                                    expect(query).toHaveProperty('label', 'email');
+                                    expect(query).toHaveProperty('label', 'fake@email.com');
                                     expect(data).toHaveProperty('fields.datetime', 1);
                                     expect(data).toHaveProperty('fields.withdraw_amount', 1);
                                     expect(data).toHaveProperty('fields._lastPeriod', 1);
@@ -126,7 +126,7 @@ describe('Тестирование метода listById', () => {
         });
 
         payment(req, res, () => {
-            req.model.payment.listById('email').then(result => {
+            req.model.payment.listById('fake@email.com').then(result => {
                 expect(result).toEqual({ payments: [], count: 0 });
                 done();
             });
@@ -161,7 +161,7 @@ describe('Тестирование метода listById', () => {
         });
 
         payment(req, res, () => {
-            req.model.payment.listById('email').catch(result => {
+            req.model.payment.listById('fake@email.com').catch(result => {
                 expect(result).toEqual(Error('listById.count - error'));
                 done();
             });
@@ -205,7 +205,7 @@ describe('Тестирование метода listById', () => {
         });
 
         payment(req, res, () => {
-            req.model.payment.listById('email').catch(result => {
+            req.model.payment.listById('fake@email.com').catch(result => {
                 expect(result).toEqual(Error('listById.toArray - error'));
                 done();
             });
