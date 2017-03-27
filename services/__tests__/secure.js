@@ -211,7 +211,7 @@ describe('Тестирование метода signin', () => {
         secure.signin(req, res);
     });
 
-    it('Выполнение метода signin с ошибкой валидации по email', () => {
+    it('Выполнение метода signin с ошибкой валидации по email', done => {
         const
             secure = require('../secure').default,
             req = httpMocks.createRequest(),
@@ -224,9 +224,10 @@ describe('Тестирование метода signin', () => {
         res.locals = {};
 
         // Вызов метода create с перехватом исключения
-        expect(() => {
-            secure.signin(req, res);
-        }).toThrow('Validate error - mail is invalid');
+        secure.signin(req, res, err => {
+            expect(err).toEqual(Error('Validate error - email is invalid'));
+            done();
+        });
     });
 
     it('Выполнение метода signin с ошибкой в вызове "req.model.user.getUserByEmail"', done => {

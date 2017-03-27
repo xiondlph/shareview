@@ -28,15 +28,12 @@ const
             return;
         }
 
-        if (!validator.isEmail(req.body.email)) {
-            throw new Error('Validate error - mail is invalid');
+        if (!req.body.email || !validator.isEmail(req.body.email)) {
+            next(Error('Validate error - email is invalid'));
+            return;
         }
 
         req.model.user.getUserByEmail(req.body.email).then(user => {
-            var currentDate = new Date(),
-                password,
-                data;
-
             if (user) {
                 res.send({
                     success: false,
@@ -45,13 +42,15 @@ const
                 return;
             }
 
-            password = generatePassword(12, false);
-            data = {
-                email: req.body.email,
-                active: false,
-                address: req.ip,
-                period: currentDate.setDate(currentDate.getDate() + 1),
-            };
+            const
+                currentDate = new Date(),
+                password = generatePassword(12, false),
+                data = {
+                    email: req.body.email,
+                    active: false,
+                    address: req.ip,
+                    period: currentDate.setDate(currentDate.getDate() + 1),
+                };
 
             // Шифрование
             data.password = crypto.createHmac('sha256', password).digest('hex');
@@ -97,21 +96,20 @@ const
      * @param {Function} next
      */
     forgot = (req, res, next) => {
-        var password,
-            pwd;
-
         // Если пользователь авторизован
         if (res.locals.user) {
             res.send({ success: false });
             return;
         }
 
-        if (!validator.isEmail(req.body.email)) {
-            throw new Error('Validate error - mail is invalid');
+        if (!req.body.email || !validator.isEmail(req.body.email)) {
+            next(Error('Validate error - email is invalid'));
+            return;
         }
 
-        password = generatePassword(12, false);
-        pwd = crypto.createHmac('sha256', password).digest('hex');
+        const
+            password = generatePassword(12, false),
+            pwd = crypto.createHmac('sha256', password).digest('hex');
 
         /* eslint no-shadow: ["error", { "allow": ["err"] }] */
         req.model.user.setPasswordByEmail(req.body.email, pwd).then(result => {

@@ -12,7 +12,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import session from 'express-session';
 import fs from 'fs';
-import exception from './exception';
+import './exception';
 import { init as db } from './db';
 import models from './models';
 import services from './services';
@@ -22,6 +22,8 @@ const
     app = express(),
     log = debug('shareview:server'),
     PORT = +process.env.PORT || 3001,
+
+    // TODO: Перенести в ./exception
     logError = err => {
         // err.stack.message = `httpException: ${err.stack.message}`;
 
@@ -111,19 +113,17 @@ app.use((err, req, res, next) => {
     logError(err);
 });
 
-export default () => {
-    return new Promise((resolve) => {
-        // Запуск web сервера на порту 3001/4001
-        db.then(() => {
-            const server = app.listen(PORT, () => {
-                log(`Listening on port ${PORT}`);
-                resolve(server);
-            });
-
-            //  database.ensureIndex('models', {
-            //     name: 'text',
-            // });
+export default new Promise(resolve => {
+    // Запуск web сервера на порту 3001/4001
+    db.then(() => {
+        const server = app.listen(PORT, () => {
+            log(`Listening on port ${PORT}`);
+            resolve(server);
         });
+
+        //  database.ensureIndex('models', {
+        //     name: 'text',
+        // });
     });
-};
+});
 

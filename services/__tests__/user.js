@@ -102,7 +102,7 @@ describe('Тестирование метода create', () => {
         user.create(req, res);
     });
 
-    it('Выполнение метода create с ошибкой валидации по email', () => {
+    it('Выполнение метода create с ошибкой валидации по email', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -115,9 +115,10 @@ describe('Тестирование метода create', () => {
         res.locals = {};
 
         // Вызов метода create с перехватом исключения
-        expect(() => {
-            user.create(req, res);
-        }).toThrow('Validate error - mail is invalid');
+        user.create(req, res, err => {
+            expect(err).toEqual(Error('Validate error - email is invalid'));
+            done();
+        });
     });
 
     it('Выполнение метода create для существующего пользователя', done => {
@@ -401,7 +402,7 @@ describe('Тестирование метода forgot', () => {
         user.forgot(req, res);
     });
 
-    it('Выполнение метода forgot с ошибкой валидации по email', () => {
+    it('Выполнение метода forgot с ошибкой валидации по email', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -414,9 +415,10 @@ describe('Тестирование метода forgot', () => {
         res.locals = {};
 
         // Вызов метода create с перехватом исключения
-        expect(() => {
-            user.create(req, res);
-        }).toThrow('Validate error - mail is invalid');
+        user.create(req, res, err => {
+            expect(err).toEqual(Error('Validate error - email is invalid'));
+            done();
+        });
     });
 
     it('Выполнение метода forgot с ошибкой в вызове "req.model.user.setPasswordByEmail"', done => {

@@ -69,7 +69,8 @@ const
         }
 
         if (!req.body.email || !validator.isEmail(req.body.email)) {
-            throw new Error('Validate error - mail is invalid');
+            next(Error('Validate error - email is invalid'));
+            return;
         }
 
         req.model.user.getUserByEmail(req.body.email).then(result => {
