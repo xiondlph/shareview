@@ -62,7 +62,7 @@ const
 
         if (req.body.address) {
             if (!validator.isIP(req.body.address)) {
-                next(new Error('Validate error - address is invalid'));
+                next(Error('Validate error - address is invalid'));
                 return;
             }
 
@@ -71,7 +71,7 @@ const
 
         if (req.body.email) {
             if (!validator.isEmail(req.body.email)) {
-                next(new Error('Validate error - mail is invalid'));
+                next(Error('Validate error - mail is invalid'));
                 return;
             }
 
