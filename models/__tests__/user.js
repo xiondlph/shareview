@@ -10,7 +10,7 @@ describe('Тестирование метода getUserById', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода getUserById', (done) => {
+    it('Успешное выполнение метода getUserById', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -22,21 +22,17 @@ describe('Тестирование метода getUserById', () => {
                     collection() {
                         return {
                             find(query) {
-                                if (query._id !== '_id') {
-                                    throw new Error('getUserById.find.error - invalid query property "_id"');
-                                }
+                                expect(query).toHaveProperty('_id', 'fake._id');
 
                                 return {
                                     limit(count) {
-                                        if (count !== 1) {
-                                            throw new Error('getUserById.limit.error - invalid count');
-                                        }
+                                        expect(count).toBe(1);
 
                                         return {
                                             toArray() {
                                                 return new Promise(resolve => {
                                                     resolve([{
-                                                        name: 'user',
+                                                        email: 'fake@user.com',
                                                     }]);
                                                 });
                                             },
@@ -51,14 +47,14 @@ describe('Тестирование метода getUserById', () => {
         });
 
         user(req, res, () => {
-            req.model.user.getUserById('_id').then(result => {
-                expect(result).toEqual({ name: 'user' });
+            req.model.user.getUserById('fake._id').then(result => {
+                expect(result).toEqual({ email: 'fake@user.com' });
                 done();
             });
         });
     });
 
-    it('Успешное выполнение метода getUserById с пустым ответом', (done) => {
+    it('Успешное выполнение метода getUserById с пустым ответом', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -69,17 +65,9 @@ describe('Тестирование метода getUserById', () => {
                 db: {
                     collection() {
                         return {
-                            find(query) {
-                                if (query._id !== '_id') {
-                                    throw new Error('getUserById.find.error - invalid query property "_id"');
-                                }
-
+                            find() {
                                 return {
-                                    limit(count) {
-                                        if (count !== 1) {
-                                            throw new Error('getUserById.limit.error - invalid count');
-                                        }
-
+                                    limit() {
                                         return {
                                             toArray() {
                                                 return new Promise(resolve => {
@@ -97,7 +85,7 @@ describe('Тестирование метода getUserById', () => {
         });
 
         user(req, res, () => {
-            req.model.user.getUserById('_id').then(result => {
+            req.model.user.getUserById('fake._id').then(result => {
                 expect(result).toEqual(null);
                 done();
             });
@@ -115,21 +103,13 @@ describe('Тестирование метода getUserById', () => {
                 db: {
                     collection() {
                         return {
-                            find(query) {
-                                if (query._id !== '_id') {
-                                    throw new Error('getUserById.find.error - invalid query property "_id"');
-                                }
-
+                            find() {
                                 return {
-                                    limit(count) {
-                                        if (count !== 1) {
-                                            throw new Error('getUserById.limit.error - invalid count');
-                                        }
-
+                                    limit() {
                                         return {
                                             toArray() {
                                                 return new Promise((resolve, reject) => {
-                                                    reject(new Error('getUserById.error'));
+                                                    reject(Error('getUserById.error'));
                                                 });
                                             },
                                         };
@@ -143,8 +123,8 @@ describe('Тестирование метода getUserById', () => {
         });
 
         user(req, res, () => {
-            req.model.user.getUserById('_id').catch(result => {
-                expect(result.message).toEqual('getUserById.error');
+            req.model.user.getUserById('fake._id').catch(result => {
+                expect(result).toEqual(Error('getUserById.error'));
                 done();
             });
         });
@@ -156,7 +136,7 @@ describe('Тестирование метода getUserBySession', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода getUserBySession', (done) => {
+    it('Успешное выполнение метода getUserBySession', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -168,21 +148,17 @@ describe('Тестирование метода getUserBySession', () => {
                     collection() {
                         return {
                             find(query) {
-                                if (query.sid !== 'sid') {
-                                    throw new Error('getUserBySession.find.error - invalid query property "sid"');
-                                }
+                                expect(query).toHaveProperty('sid', 'fake.sid');
 
                                 return {
                                     limit(count) {
-                                        if (count !== 1) {
-                                            throw new Error('getUserBySession.limit.error - invalid count');
-                                        }
+                                        expect(count).toBe(1);
 
                                         return {
                                             toArray() {
                                                 return new Promise(resolve => {
                                                     resolve([{
-                                                        name: 'user',
+                                                        email: 'fake@user.com',
                                                     }]);
                                                 });
                                             },
@@ -197,14 +173,14 @@ describe('Тестирование метода getUserBySession', () => {
         });
 
         user(req, res, () => {
-            req.model.user.getUserBySession('sid').then(result => {
-                expect(result).toEqual({ name: 'user' });
+            req.model.user.getUserBySession('fake.sid').then(result => {
+                expect(result).toEqual({ email: 'fake@user.com' });
                 done();
             });
         });
     });
 
-    it('Успешное выполнение метода getUserBySession с пустым ответом', (done) => {
+    it('Успешное выполнение метода getUserBySession с пустым ответом', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -215,17 +191,9 @@ describe('Тестирование метода getUserBySession', () => {
                 db: {
                     collection() {
                         return {
-                            find(query) {
-                                if (query.sid !== 'sid') {
-                                    throw new Error('getUserBySession.find.error - invalid query property "sid"');
-                                }
-
+                            find() {
                                 return {
-                                    limit(count) {
-                                        if (count !== 1) {
-                                            throw new Error('getUserBySession.limit.error - invalid count');
-                                        }
-
+                                    limit() {
                                         return {
                                             toArray() {
                                                 return new Promise(resolve => {
@@ -243,14 +211,14 @@ describe('Тестирование метода getUserBySession', () => {
         });
 
         user(req, res, () => {
-            req.model.user.getUserBySession('sid').then(result => {
+            req.model.user.getUserBySession('fake.sid').then(result => {
                 expect(result).toEqual(null);
                 done();
             });
         });
     });
 
-    it('Выполнение метода getUserBySession с ошибкой', (done) => {
+    it('Выполнение метода getUserBySession с ошибкой', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -261,21 +229,13 @@ describe('Тестирование метода getUserBySession', () => {
                 db: {
                     collection() {
                         return {
-                            find(query) {
-                                if (query.sid !== 'sid') {
-                                    throw new Error('getUserBySession.find.error - invalid query property "sid"');
-                                }
-
+                            find() {
                                 return {
-                                    limit(count) {
-                                        if (count !== 1) {
-                                            throw new Error('getUserBySession.limit.error - invalid count');
-                                        }
-
+                                    limit() {
                                         return {
                                             toArray() {
                                                 return new Promise((resolve, reject) => {
-                                                    reject(new Error('getUserBySession.error'));
+                                                    reject(Error('getUserBySession.error'));
                                                 });
                                             },
                                         };
@@ -289,8 +249,8 @@ describe('Тестирование метода getUserBySession', () => {
         });
 
         user(req, res, () => {
-            req.model.user.getUserBySession('sid').catch(result => {
-                expect(result.message).toEqual('getUserBySession.error');
+            req.model.user.getUserBySession('fake.sid').catch(result => {
+                expect(result).toEqual(Error('getUserBySession.error'));
                 done();
             });
         });
@@ -302,7 +262,7 @@ describe('Тестирование метода getUserByEmail', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода getUserByEmail', (done) => {
+    it('Успешное выполнение метода getUserByEmail', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -314,21 +274,17 @@ describe('Тестирование метода getUserByEmail', () => {
                     collection() {
                         return {
                             find(query) {
-                                if (query.email !== 'email') {
-                                    throw new Error('getUserByEmail.find.error - invalid query property "email"');
-                                }
+                                expect(query).toHaveProperty('email', 'fake@email.com');
 
                                 return {
                                     limit(count) {
-                                        if (count !== 1) {
-                                            throw new Error('getUserByEmail.limit.error - invalid count');
-                                        }
+                                        expect(count).toBe(1);
 
                                         return {
                                             toArray() {
                                                 return new Promise(resolve => {
                                                     resolve([{
-                                                        name: 'user',
+                                                        email: 'fake@user.com',
                                                     }]);
                                                 });
                                             },
@@ -343,14 +299,14 @@ describe('Тестирование метода getUserByEmail', () => {
         });
 
         user(req, res, () => {
-            req.model.user.getUserByEmail('email').then(result => {
-                expect(result).toEqual({ name: 'user' });
+            req.model.user.getUserByEmail('fake@email.com').then(result => {
+                expect(result).toEqual({ email: 'fake@user.com' });
                 done();
             });
         });
     });
 
-    it('Успешное выполнение метода getUserByEmail с пустым ответом', (done) => {
+    it('Успешное выполнение метода getUserByEmail с пустым ответом', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -361,17 +317,9 @@ describe('Тестирование метода getUserByEmail', () => {
                 db: {
                     collection() {
                         return {
-                            find(query) {
-                                if (query.email !== 'email') {
-                                    throw new Error('getUserByEmail.find.error - invalid query property "email"');
-                                }
-
+                            find() {
                                 return {
-                                    limit(count) {
-                                        if (count !== 1) {
-                                            throw new Error('getUserByEmail.limit.error - invalid count');
-                                        }
-
+                                    limit() {
                                         return {
                                             toArray() {
                                                 return new Promise(resolve => {
@@ -389,14 +337,14 @@ describe('Тестирование метода getUserByEmail', () => {
         });
 
         user(req, res, () => {
-            req.model.user.getUserByEmail('email').then(result => {
+            req.model.user.getUserByEmail('fake@email.com').then(result => {
                 expect(result).toEqual(null);
                 done();
             });
         });
     });
 
-    it('Выполнение метода getUserByEmail с ошибкой', (done) => {
+    it('Выполнение метода getUserByEmail с ошибкой', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -407,21 +355,13 @@ describe('Тестирование метода getUserByEmail', () => {
                 db: {
                     collection() {
                         return {
-                            find(query) {
-                                if (query.email !== 'email') {
-                                    throw new Error('getUserByEmail.find.error - invalid query property "email"');
-                                }
-
+                            find() {
                                 return {
-                                    limit(count) {
-                                        if (count !== 1) {
-                                            throw new Error('getUserByEmail.limit.error - invalid count');
-                                        }
-
+                                    limit() {
                                         return {
                                             toArray() {
                                                 return new Promise((resolve, reject) => {
-                                                    reject(new Error('getUserByEmail.error'));
+                                                    reject(Error('getUserByEmail.error'));
                                                 });
                                             },
                                         };
@@ -435,8 +375,8 @@ describe('Тестирование метода getUserByEmail', () => {
         });
 
         user(req, res, () => {
-            req.model.user.getUserByEmail('email').catch(result => {
-                expect(result.message).toEqual('getUserByEmail.error');
+            req.model.user.getUserByEmail('fake@email.com').catch(result => {
+                expect(result).toEqual(Error('getUserByEmail.error'));
                 done();
             });
         });
@@ -448,7 +388,7 @@ describe('Тестирование метода create', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода create', (done) => {
+    it('Успешное выполнение метода create', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -460,13 +400,13 @@ describe('Тестирование метода create', () => {
                     collection() {
                         return {
                             insertOne(data) {
-                                if (typeof data !== 'object') {
-                                    throw new Error('create.insertOne.error - invalid argument type "data"');
-                                }
+                                expect(data).toEqual({
+                                    email: 'fake@user.com',
+                                });
 
                                 return new Promise(resolve => {
                                     resolve({
-                                        insertedId: 'insertedId',
+                                        insertedId: 'fake.inserted.id',
                                     });
                                 });
                             },
@@ -477,14 +417,14 @@ describe('Тестирование метода create', () => {
         });
 
         user(req, res, () => {
-            req.model.user.create({}).then(result => {
-                expect(result).toEqual({ insertedId: 'insertedId' });
+            req.model.user.create({ email: 'fake@user.com' }).then(result => {
+                expect(result).toEqual({ insertedId: 'fake.inserted.id' });
                 done();
             });
         });
     });
 
-    it('Выполнение метода create c ошибкой', (done) => {
+    it('Выполнение метода create c ошибкой', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -495,13 +435,9 @@ describe('Тестирование метода create', () => {
                 db: {
                     collection() {
                         return {
-                            insertOne(data) {
-                                if (typeof data !== 'object') {
-                                    throw new Error('create.insertOne.error - invalid argument type "data"');
-                                }
-
+                            insertOne() {
                                 return new Promise((resolve, reject) => {
-                                    reject(new Error('create.error'));
+                                    reject(Error('create.error'));
                                 });
                             },
                         };
@@ -511,8 +447,8 @@ describe('Тестирование метода create', () => {
         });
 
         user(req, res, () => {
-            req.model.user.create({}).catch(result => {
-                expect(result.message).toEqual('create.error');
+            req.model.user.create({ email: 'fake@user.com' }).catch(result => {
+                expect(result).toEqual(Error('create.error'));
                 done();
             });
         });
@@ -524,7 +460,7 @@ describe('Тестирование метода setSessionById', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода setSessionById', (done) => {
+    it('Успешное выполнение метода setSessionById', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -536,13 +472,8 @@ describe('Тестирование метода setSessionById', () => {
                     collection() {
                         return {
                             updateOne(query, data) {
-                                if (query._id !== '_id') {
-                                    throw new Error('setSessionById.updateOne.error - invalid query property "_id"');
-                                }
-
-                                if (!data.$set || data.$set.sid !== 'sid') {
-                                    throw new Error('setSessionById.updateOne.error - invalid data property "$set.sid"');
-                                }
+                                expect(query).toHaveProperty('_id', 'fake._id');
+                                expect(data).toHaveProperty('$set.sid', 'fake.sid');
 
                                 return new Promise(resolve => {
                                     resolve();
@@ -555,13 +486,13 @@ describe('Тестирование метода setSessionById', () => {
         });
 
         user(req, res, () => {
-            req.model.user.setSessionById('_id', 'sid').then(() => {
+            req.model.user.setSessionById('fake._id', 'fake.sid').then(() => {
                 done();
             });
         });
     });
 
-    it('Выполнение метода setSessionById c ошибкой', (done) => {
+    it('Выполнение метода setSessionById c ошибкой', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -572,17 +503,9 @@ describe('Тестирование метода setSessionById', () => {
                 db: {
                     collection() {
                         return {
-                            updateOne(query, data) {
-                                if (query._id !== '_id') {
-                                    throw new Error('setSessionById.updateOne.error - invalid query property "_id"');
-                                }
-
-                                if (!data.$set || data.$set.sid !== 'sid') {
-                                    throw new Error('setSessionById.updateOne.error - invalid data property "$set.sid"');
-                                }
-
+                            updateOne() {
                                 return new Promise((resolve, reject) => {
-                                    reject(new Error('setSessionById.error'));
+                                    reject(Error('setSessionById.error'));
                                 });
                             },
                         };
@@ -592,8 +515,8 @@ describe('Тестирование метода setSessionById', () => {
         });
 
         user(req, res, () => {
-            req.model.user.setSessionById('_id', 'sid').catch(result => {
-                expect(result.message).toEqual('setSessionById.error');
+            req.model.user.setSessionById('fake._id', 'fake.sid').catch(result => {
+                expect(result).toEqual(Error('setSessionById.error'));
                 done();
             });
         });
@@ -605,7 +528,7 @@ describe('Тестирование метода unsetSessionById', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода unsetSessionById', (done) => {
+    it('Успешное выполнение метода unsetSessionById', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -617,13 +540,8 @@ describe('Тестирование метода unsetSessionById', () => {
                     collection() {
                         return {
                             updateOne(query, data) {
-                                if (query._id !== '_id') {
-                                    throw new Error('unsetSessionById.updateOne.error - invalid query property "_id"');
-                                }
-
-                                if (!data.$unset || data.$unset.sid !== true) {
-                                    throw new Error('unsetSessionById.updateOne.error - invalid data property "$unset.sid"');
-                                }
+                                expect(query).toHaveProperty('_id', 'fake._id');
+                                expect(data).toHaveProperty('$unset.sid', true);
 
                                 return new Promise(resolve => {
                                     resolve();
@@ -636,13 +554,13 @@ describe('Тестирование метода unsetSessionById', () => {
         });
 
         user(req, res, () => {
-            req.model.user.unsetSessionById('_id').then(() => {
+            req.model.user.unsetSessionById('fake._id').then(() => {
                 done();
             });
         });
     });
 
-    it('Выполнение метода unsetSessionById c ошибкой', (done) => {
+    it('Выполнение метода unsetSessionById c ошибкой', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -653,17 +571,9 @@ describe('Тестирование метода unsetSessionById', () => {
                 db: {
                     collection() {
                         return {
-                            updateOne(query, data) {
-                                if (query._id !== '_id') {
-                                    throw new Error('unsetSessionById.updateOne.error - invalid query property "_id"');
-                                }
-
-                                if (!data.$unset || data.$unset.sid !== true) {
-                                    throw new Error('unsetSessionById.updateOne.error - invalid data property "$unset.sid"');
-                                }
-
+                            updateOne() {
                                 return new Promise((resolve, reject) => {
-                                    reject(new Error('unsetSessionById.error'));
+                                    reject(Error('unsetSessionById.error'));
                                 });
                             },
                         };
@@ -673,8 +583,8 @@ describe('Тестирование метода unsetSessionById', () => {
         });
 
         user(req, res, () => {
-            req.model.user.unsetSessionById('_id').catch(result => {
-                expect(result.message).toEqual('unsetSessionById.error');
+            req.model.user.unsetSessionById('fake._id').catch(result => {
+                expect(result).toEqual(Error('unsetSessionById.error'));
                 done();
             });
         });
@@ -686,7 +596,7 @@ describe('Тестирование метода setPasswordId', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода setPasswordId', (done) => {
+    it('Успешное выполнение метода setPasswordId', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -698,13 +608,8 @@ describe('Тестирование метода setPasswordId', () => {
                     collection() {
                         return {
                             updateOne(query, data) {
-                                if (query._id !== '_id') {
-                                    throw new Error('setPasswordId.updateOne.error - invalid query property "_id"');
-                                }
-
-                                if (!data.$set || data.$set.password !== 'password') {
-                                    throw new Error('setPasswordId.updateOne.error - invalid data property "$set.password"');
-                                }
+                                expect(query).toHaveProperty('_id', 'fake._id');
+                                expect(data).toHaveProperty('$set.password', 'fake.password');
 
                                 return new Promise(resolve => {
                                     resolve();
@@ -717,13 +622,13 @@ describe('Тестирование метода setPasswordId', () => {
         });
 
         user(req, res, () => {
-            req.model.user.setPasswordId('_id', 'password').then(() => {
+            req.model.user.setPasswordId('fake._id', 'fake.password').then(() => {
                 done();
             });
         });
     });
 
-    it('Выполнение метода setPasswordId c ошибкой', (done) => {
+    it('Выполнение метода setPasswordId c ошибкой', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -734,17 +639,9 @@ describe('Тестирование метода setPasswordId', () => {
                 db: {
                     collection() {
                         return {
-                            updateOne(query, data) {
-                                if (query._id !== '_id') {
-                                    throw new Error('setPasswordId.updateOne.error - invalid query property "_id"');
-                                }
-
-                                if (!data.$set || data.$set.password !== 'password') {
-                                    throw new Error('setPasswordId.updateOne.error - invalid data property "$set.password"');
-                                }
-
+                            updateOne() {
                                 return new Promise((resolve, reject) => {
-                                    reject(new Error('setPasswordId.error'));
+                                    reject(Error('setPasswordId.error'));
                                 });
                             },
                         };
@@ -754,8 +651,8 @@ describe('Тестирование метода setPasswordId', () => {
         });
 
         user(req, res, () => {
-            req.model.user.setPasswordId('_id', 'password').catch(result => {
-                expect(result.message).toEqual('setPasswordId.error');
+            req.model.user.setPasswordId('fake._id', 'fake.password').catch(result => {
+                expect(result).toEqual(Error('setPasswordId.error'));
                 done();
             });
         });
@@ -767,7 +664,7 @@ describe('Тестирование метода setPasswordByEmail', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода setPasswordByEmail', (done) => {
+    it('Успешное выполнение метода setPasswordByEmail', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -779,13 +676,8 @@ describe('Тестирование метода setPasswordByEmail', () => {
                     collection() {
                         return {
                             updateOne(query, data) {
-                                if (query.email !== 'email') {
-                                    throw new Error('setPasswordByEmail.updateOne.error - invalid query property "email"');
-                                }
-
-                                if (!data.$set || data.$set.password !== 'password') {
-                                    throw new Error('setPasswordByEmail.updateOne.error - invalid data property "$set.password"');
-                                }
+                                expect(query).toHaveProperty('email', 'fake@email.com');
+                                expect(data).toHaveProperty('$set.password', 'fake.password');
 
                                 return new Promise(resolve => {
                                     resolve();
@@ -798,13 +690,13 @@ describe('Тестирование метода setPasswordByEmail', () => {
         });
 
         user(req, res, () => {
-            req.model.user.setPasswordByEmail('email', 'password').then(() => {
+            req.model.user.setPasswordByEmail('fake@email.com', 'fake.password').then(() => {
                 done();
             });
         });
     });
 
-    it('Выполнение метода setPasswordByEmail c ошибкой', (done) => {
+    it('Выполнение метода setPasswordByEmail c ошибкой', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -815,17 +707,9 @@ describe('Тестирование метода setPasswordByEmail', () => {
                 db: {
                     collection() {
                         return {
-                            updateOne(query, data) {
-                                if (query.email !== 'email') {
-                                    throw new Error('setPasswordByEmail.updateOne.error - invalid query property "email"');
-                                }
-
-                                if (!data.$set || data.$set.password !== 'password') {
-                                    throw new Error('setPasswordByEmail.updateOne.error - invalid data property "$set.password"');
-                                }
-
+                            updateOne() {
                                 return new Promise((resolve, reject) => {
-                                    reject(new Error('setPasswordByEmail.error'));
+                                    reject(Error('setPasswordByEmail.error'));
                                 });
                             },
                         };
@@ -835,8 +719,8 @@ describe('Тестирование метода setPasswordByEmail', () => {
         });
 
         user(req, res, () => {
-            req.model.user.setPasswordByEmail('email', 'password').catch(result => {
-                expect(result.message).toEqual('setPasswordByEmail.error');
+            req.model.user.setPasswordByEmail('fake@email.com', 'fake.password').catch(result => {
+                expect(result).toEqual(Error('setPasswordByEmail.error'));
                 done();
             });
         });
@@ -848,7 +732,7 @@ describe('Тестирование метода update', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода update', (done) => {
+    it('Успешное выполнение метода update', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -860,13 +744,8 @@ describe('Тестирование метода update', () => {
                     collection() {
                         return {
                             updateOne(query, data) {
-                                if (query._id !== '_id') {
-                                    throw new Error('update.updateOne.error - invalid query property "_id"');
-                                }
-
-                                if (data.$set !== 'data') {
-                                    throw new Error('update.updateOne.error - invalid data property "$set"');
-                                }
+                                expect(query).toHaveProperty('_id', 'fake._id');
+                                expect(data).toHaveProperty('$set.email', 'fake@user.com');
 
                                 return new Promise(resolve => {
                                     resolve();
@@ -879,13 +758,13 @@ describe('Тестирование метода update', () => {
         });
 
         user(req, res, () => {
-            req.model.user.update('_id', 'data').then(() => {
+            req.model.user.update('fake._id', { email: 'fake@user.com' }).then(() => {
                 done();
             });
         });
     });
 
-    it('Выполнение метода update c ошибкой', (done) => {
+    it('Выполнение метода update c ошибкой', done => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -896,17 +775,9 @@ describe('Тестирование метода update', () => {
                 db: {
                     collection() {
                         return {
-                            updateOne(query, data) {
-                                if (query._id !== '_id') {
-                                    throw new Error('update.updateOne.error - invalid query property "_id"');
-                                }
-
-                                if (data.$set !== 'data') {
-                                    throw new Error('update.updateOne.error - invalid data property "$set"');
-                                }
-
+                            updateOne() {
                                 return new Promise((resolve, reject) => {
-                                    reject(new Error('update.error'));
+                                    reject(Error('update.error'));
                                 });
                             },
                         };
@@ -916,8 +787,8 @@ describe('Тестирование метода update', () => {
         });
 
         user(req, res, () => {
-            req.model.user.update('_id', 'data').catch(result => {
-                expect(result.message).toEqual('update.error');
+            req.model.user.update('fake._id', { email: 'fake@user.com' }).catch(result => {
+                expect(result).toEqual(Error('update.error'));
                 done();
             });
         });
@@ -941,13 +812,8 @@ describe('Тестирование метода updatePeriod', () => {
                     collection() {
                         return {
                             updateOne(query, data) {
-                                if (query._id !== '_id') {
-                                    throw new Error('updatePeriod.updateOne.error invalid query property "_id"');
-                                }
-
-                                if (!data.$set || data.$set.period !== 'period') {
-                                    throw new Error('updatePeriod.updateOne.error invalid data property "$set.period"');
-                                }
+                                expect(query).toHaveProperty('_id', 'fake._id');
+                                expect(data).toHaveProperty('$set.period', 'fake.period');
 
                                 return new Promise(resolve => {
                                     resolve();
@@ -960,7 +826,7 @@ describe('Тестирование метода updatePeriod', () => {
         });
 
         user(req, res, () => {
-            req.model.user.updatePeriod('_id', 'period').then(() => {
+            req.model.user.updatePeriod('fake._id', 'fake.period').then(() => {
                 done();
             });
         });
@@ -977,17 +843,9 @@ describe('Тестирование метода updatePeriod', () => {
                 db: {
                     collection() {
                         return {
-                            updateOne(query, data) {
-                                if (query._id !== '_id') {
-                                    throw new Error('updatePeriod.updateOne.error invalid query property "_id"');
-                                }
-
-                                if (!data.$set || data.$set.period !== 'period') {
-                                    throw new Error('updatePeriod.updateOne.error invalid data property "$set.period"');
-                                }
-
+                            updateOne() {
                                 return new Promise((resolve, reject) => {
-                                    reject(new Error('updatePeriod.error'));
+                                    reject(Error('updatePeriod.error'));
                                 });
                             },
                         };
@@ -997,8 +855,8 @@ describe('Тестирование метода updatePeriod', () => {
         });
 
         user(req, res, () => {
-            req.model.user.updatePeriod('_id', 'period').catch(result => {
-                expect(result.message).toEqual('updatePeriod.error');
+            req.model.user.updatePeriod('fake._id', 'fake.period').catch(result => {
+                expect(result).toEqual(Error('updatePeriod.error'));
                 done();
             });
         });
