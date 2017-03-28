@@ -8,11 +8,9 @@
 
 // Объявление модулей
 import user from './user';
-import payment from './payment';
 import review from './review';
 
 export default {
     user,
-    payment,
     review,
 };
