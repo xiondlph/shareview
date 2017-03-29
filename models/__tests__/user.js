@@ -10,7 +10,7 @@ describe('Тестирование метода getUserById', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода getUserById', done => {
+    it('Успешное выполнение метода getUserById', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -46,15 +46,16 @@ describe('Тестирование метода getUserById', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.getUserById('fake._id').then(result => {
-                expect(result).toEqual({ email: 'fake@user.com' });
-                done();
+        return new Promise(resolve => {
+            user(req, res, () => {
+                resolve(req.model.user.getUserById('fake._id'));
             });
+        }).then(result => {
+            expect(result).toEqual({ email: 'fake@user.com' });
         });
     });
 
-    it('Успешное выполнение метода getUserById с пустым ответом', done => {
+    it('Успешное выполнение метода getUserById с пустым ответом', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -84,15 +85,16 @@ describe('Тестирование метода getUserById', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.getUserById('fake._id').then(result => {
-                expect(result).toEqual(null);
-                done();
+        return new Promise(resolve => {
+            user(req, res, () => {
+                resolve(req.model.user.getUserById('fake._id'));
             });
+        }).then(result => {
+            expect(result).toBeNull();
         });
     });
 
-    it('Выполнение метода getUserById с ошибкой', (done) => {
+    it('Выполнение метода getUserById с ошибкой', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -122,11 +124,14 @@ describe('Тестирование метода getUserById', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.getUserById('fake._id').catch(result => {
-                expect(result).toEqual(Error('getUserById.error'));
-                done();
+        return new Promise((resolve, reject) => {
+            user(req, res, () => {
+                req.model.user.getUserById('fake._id').catch(err => {
+                    reject(err);
+                });
             });
+        }).catch(err => {
+            expect(err).toEqual(Error('getUserById.error'));
         });
     });
 });
@@ -136,7 +141,7 @@ describe('Тестирование метода getUserBySession', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода getUserBySession', done => {
+    it('Успешное выполнение метода getUserBySession', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -172,15 +177,16 @@ describe('Тестирование метода getUserBySession', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.getUserBySession('fake.sid').then(result => {
-                expect(result).toEqual({ email: 'fake@user.com' });
-                done();
+        return new Promise(resolve => {
+            user(req, res, () => {
+                resolve(req.model.user.getUserBySession('fake.sid'));
             });
+        }).then(result => {
+            expect(result).toEqual({ email: 'fake@user.com' });
         });
     });
 
-    it('Успешное выполнение метода getUserBySession с пустым ответом', done => {
+    it('Успешное выполнение метода getUserBySession с пустым ответом', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -210,15 +216,16 @@ describe('Тестирование метода getUserBySession', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.getUserBySession('fake.sid').then(result => {
-                expect(result).toEqual(null);
-                done();
+        return new Promise(resolve => {
+            user(req, res, () => {
+                resolve(req.model.user.getUserBySession('fake.sid'));
             });
+        }).then(result => {
+            expect(result).toBeNull();
         });
     });
 
-    it('Выполнение метода getUserBySession с ошибкой', done => {
+    it('Выполнение метода getUserBySession с ошибкой', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -248,11 +255,14 @@ describe('Тестирование метода getUserBySession', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.getUserBySession('fake.sid').catch(result => {
-                expect(result).toEqual(Error('getUserBySession.error'));
-                done();
+        return new Promise((resolve, reject) => {
+            user(req, res, () => {
+                req.model.user.getUserBySession('fake.sid').catch(err => {
+                    reject(err);
+                })
             });
+        }).catch(err => {
+            expect(err).toEqual(Error('getUserBySession.error'));
         });
     });
 });
@@ -262,7 +272,7 @@ describe('Тестирование метода getUserByEmail', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода getUserByEmail', done => {
+    it('Успешное выполнение метода getUserByEmail', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -298,15 +308,16 @@ describe('Тестирование метода getUserByEmail', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.getUserByEmail('fake@email.com').then(result => {
-                expect(result).toEqual({ email: 'fake@user.com' });
-                done();
+        return new Promise(resolve => {
+            user(req, res, () => {
+                resolve(req.model.user.getUserByEmail('fake@email.com'));
             });
+        }).then(result => {
+            expect(result).toEqual({ email: 'fake@user.com' });
         });
     });
 
-    it('Успешное выполнение метода getUserByEmail с пустым ответом', done => {
+    it('Успешное выполнение метода getUserByEmail с пустым ответом', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -336,15 +347,16 @@ describe('Тестирование метода getUserByEmail', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.getUserByEmail('fake@email.com').then(result => {
-                expect(result).toEqual(null);
-                done();
+        return new Promise(resolve => {
+            user(req, res, () => {
+                resolve(req.model.user.getUserByEmail('fake@email.com'));
             });
+        }).then(result => {
+            expect(result).toBeNull();
         });
     });
 
-    it('Выполнение метода getUserByEmail с ошибкой', done => {
+    it('Выполнение метода getUserByEmail с ошибкой', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -374,11 +386,14 @@ describe('Тестирование метода getUserByEmail', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.getUserByEmail('fake@email.com').catch(result => {
-                expect(result).toEqual(Error('getUserByEmail.error'));
-                done();
+        return new Promise((resolve, reject) => {
+            user(req, res, () => {
+                req.model.user.getUserByEmail('fake@email.com').catch(err => {
+                    reject(err);
+                });
             });
+        }).catch(err => {
+            expect(err).toEqual(Error('getUserByEmail.error'));
         });
     });
 });
@@ -388,7 +403,7 @@ describe('Тестирование метода create', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода create', done => {
+    it('Успешное выполнение метода create', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -416,15 +431,16 @@ describe('Тестирование метода create', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.create({ email: 'fake@user.com' }).then(result => {
-                expect(result).toEqual({ insertedId: 'fake.inserted.id' });
-                done();
+        return new Promise(resolve => {
+            user(req, res, () => {
+                resolve(req.model.user.create({ email: 'fake@user.com' }));
             });
+        }).then(result => {
+            expect(result).toEqual({ insertedId: 'fake.inserted.id' });
         });
     });
 
-    it('Выполнение метода create c ошибкой', done => {
+    it('Выполнение метода create c ошибкой', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -446,11 +462,14 @@ describe('Тестирование метода create', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.create({ email: 'fake@user.com' }).catch(result => {
-                expect(result).toEqual(Error('create.error'));
-                done();
+        return new Promise((resolve, reject) => {
+            user(req, res, () => {
+                req.model.user.create({ email: 'fake@user.com' }).catch(err => {
+                    reject(err);
+                });
             });
+        }).catch(err => {
+            expect(err).toEqual(Error('create.error'));
         });
     });
 });
@@ -460,7 +479,7 @@ describe('Тестирование метода setSessionById', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода setSessionById', done => {
+    it('Успешное выполнение метода setSessionById', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -485,14 +504,14 @@ describe('Тестирование метода setSessionById', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.setSessionById('fake._id', 'fake.sid').then(() => {
-                done();
+        return new Promise(resolve => {
+            user(req, res, () => {
+                resolve(req.model.user.setSessionById('fake._id', 'fake.sid'));
             });
         });
     });
 
-    it('Выполнение метода setSessionById c ошибкой', done => {
+    it('Выполнение метода setSessionById c ошибкой', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -514,11 +533,14 @@ describe('Тестирование метода setSessionById', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.setSessionById('fake._id', 'fake.sid').catch(result => {
-                expect(result).toEqual(Error('setSessionById.error'));
-                done();
+        return new Promise((resolve, reject) => {
+            user(req, res, () => {
+                req.model.user.setSessionById('fake._id', 'fake.sid').catch(err => {
+                    reject(err);
+                });
             });
+        }).catch(err => {
+            expect(err).toEqual(Error('setSessionById.error'));
         });
     });
 });
@@ -528,7 +550,7 @@ describe('Тестирование метода unsetSessionById', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода unsetSessionById', done => {
+    it('Успешное выполнение метода unsetSessionById', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -553,14 +575,14 @@ describe('Тестирование метода unsetSessionById', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.unsetSessionById('fake._id').then(() => {
-                done();
+        return new Promise(resolve => {
+            user(req, res, () => {
+                resolve(req.model.user.unsetSessionById('fake._id'));
             });
         });
     });
 
-    it('Выполнение метода unsetSessionById c ошибкой', done => {
+    it('Выполнение метода unsetSessionById c ошибкой', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -582,12 +604,15 @@ describe('Тестирование метода unsetSessionById', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.unsetSessionById('fake._id').catch(result => {
-                expect(result).toEqual(Error('unsetSessionById.error'));
-                done();
+        return new Promise((resolve, reject) => {
+            user(req, res, () => {
+                req.model.user.unsetSessionById('fake._id').catch(err => {
+                    reject(err);
+                });
             });
-        });
+        }).catch(err => {
+            expect(err).toEqual(Error('unsetSessionById.error'));
+        })
     });
 });
 
@@ -596,7 +621,7 @@ describe('Тестирование метода setPasswordId', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода setPasswordId', done => {
+    it('Успешное выполнение метода setPasswordId', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -621,14 +646,15 @@ describe('Тестирование метода setPasswordId', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.setPasswordId('fake._id', 'fake.password').then(() => {
-                done();
+        return new Promise(resolve => {
+            user(req, res, () => {
+                resolve(req.model.user.setPasswordId('fake._id', 'fake.password'));
+
             });
         });
     });
 
-    it('Выполнение метода setPasswordId c ошибкой', done => {
+    it('Выполнение метода setPasswordId c ошибкой', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -650,11 +676,14 @@ describe('Тестирование метода setPasswordId', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.setPasswordId('fake._id', 'fake.password').catch(result => {
-                expect(result).toEqual(Error('setPasswordId.error'));
-                done();
+        return new Promise((resolve, reject) => {
+            user(req, res, () => {
+                req.model.user.setPasswordId('fake._id', 'fake.password').catch(err => {
+                    reject(err);
+                });
             });
+        }).catch(err => {
+            expect(err).toEqual(Error('setPasswordId.error'));
         });
     });
 });
@@ -664,7 +693,7 @@ describe('Тестирование метода setPasswordByEmail', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода setPasswordByEmail', done => {
+    it('Успешное выполнение метода setPasswordByEmail', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -689,14 +718,14 @@ describe('Тестирование метода setPasswordByEmail', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.setPasswordByEmail('fake@email.com', 'fake.password').then(() => {
-                done();
+        return new Promise(resolve => {
+            user(req, res, () => {
+                resolve(req.model.user.setPasswordByEmail('fake@email.com', 'fake.password'));
             });
         });
     });
 
-    it('Выполнение метода setPasswordByEmail c ошибкой', done => {
+    it('Выполнение метода setPasswordByEmail c ошибкой', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -718,11 +747,14 @@ describe('Тестирование метода setPasswordByEmail', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.setPasswordByEmail('fake@email.com', 'fake.password').catch(result => {
-                expect(result).toEqual(Error('setPasswordByEmail.error'));
-                done();
+        return new Promise((resolve, reject) => {
+            user(req, res, () => {
+                req.model.user.setPasswordByEmail('fake@email.com', 'fake.password').catch(err => {
+                    reject(err);
+                });
             });
+        }).catch(err => {
+            expect(err).toEqual(Error('setPasswordByEmail.error'));
         });
     });
 });
@@ -732,7 +764,7 @@ describe('Тестирование метода update', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода update', done => {
+    it('Успешное выполнение метода update', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -757,14 +789,14 @@ describe('Тестирование метода update', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.update('fake._id', { email: 'fake@user.com' }).then(() => {
-                done();
+        return new Promise(resolve => {
+            user(req, res, () => {
+                resolve(req.model.user.update('fake._id', { email: 'fake@user.com' }));
             });
         });
     });
 
-    it('Выполнение метода update c ошибкой', done => {
+    it('Выполнение метода update c ошибкой', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -786,11 +818,14 @@ describe('Тестирование метода update', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.update('fake._id', { email: 'fake@user.com' }).catch(result => {
-                expect(result).toEqual(Error('update.error'));
-                done();
+        return new Promise((resolve, reject) => {
+            user(req, res, () => {
+                req.model.user.update('fake._id', { email: 'fake@user.com' }).catch(err => {
+                    reject(err);
+                });
             });
+        }).catch(err => {
+            expect(err).toEqual(Error('update.error'));
         });
     });
 });
@@ -800,7 +835,7 @@ describe('Тестирование метода updatePeriod', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода updatePeriod', (done) => {
+    it('Успешное выполнение метода updatePeriod', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -825,14 +860,14 @@ describe('Тестирование метода updatePeriod', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.updatePeriod('fake._id', 'fake.period').then(() => {
-                done();
+        return new Promise(resolve => {
+            user(req, res, () => {
+                resolve(req.model.user.updatePeriod('fake._id', 'fake.period'));
             });
         });
     });
 
-    it('Выполнение метода updatePeriod c ошибкой', (done) => {
+    it('Выполнение метода updatePeriod c ошибкой', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -854,11 +889,14 @@ describe('Тестирование метода updatePeriod', () => {
             };
         });
 
-        user(req, res, () => {
-            req.model.user.updatePeriod('fake._id', 'fake.period').catch(result => {
-                expect(result).toEqual(Error('updatePeriod.error'));
-                done();
+        return new Promise((resolve, reject) => {
+            user(req, res, () => {
+                req.model.user.updatePeriod('fake._id', 'fake.period').catch(err => {
+                    reject(err);
+                });
             });
+        }).catch(err => {
+            expect(err).toEqual(Error('updatePeriod.error'));
         });
     });
 });
