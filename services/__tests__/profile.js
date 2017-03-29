@@ -94,8 +94,6 @@ describe('Тестирование метода set', () => {
             profile.set(req, res, err => {
                 reject(err);
             });
-        }).catch(err => {
-            throw err;
         });
     });
 
@@ -139,8 +137,6 @@ describe('Тестирование метода set', () => {
             profile.set(req, res, err => {
                 reject(err);
             });
-        }).catch(err => {
-            throw err;
         });
     });
 
@@ -208,8 +204,6 @@ describe('Тестирование метода set', () => {
             profile.set(req, res, err => {
                 reject(err);
             });
-        }).catch(err => {
-            throw err;
         });
     });
 
@@ -272,8 +266,6 @@ describe('Тестирование метода set', () => {
             profile.set(req, res, err => {
                 reject(err);
             });
-        }).catch(err => {
-            throw err;
         });
     });
 
@@ -396,8 +388,6 @@ describe('Тестирование метода password', () => {
             profile.password(req, res, err => {
                 reject(err);
             });
-        }).catch(err => {
-            throw err;
         });
     });
 

@@ -92,12 +92,6 @@ app.get('/api/profile', services.profile.get);
 app.put('/api/profile', services.profile.set);
 app.post('/api/password', services.profile.password);
 
-// Payment (api)...
-app.get('/api/payment', models.payment, services.payment.list);
-
-// Обработка запроса уведовления от ЯД
-app.post('/ym_notification', models.payment, services.payment.notification);
-
 // 404 (Not found)
 app.use((req, res) => {
     res.status(404).send({ errors: ['Not found'] });

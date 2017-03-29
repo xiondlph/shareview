@@ -7,7 +7,7 @@ import EventEmitter from 'events';
 
 /* eslint max-len: ["error", 130] */
 describe('Тестирование метода create', () => {
-    it('Успешное выполнение метода create', done => {
+    it('Успешное выполнение метода create', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -20,9 +20,9 @@ describe('Тестирование метода create', () => {
                 getUserByEmail(email) {
                     expect(email).toBe('fake@user.com');
 
-                    return {
-                        then(cb) { cb(); },
-                    };
+                    return new Promise(resolve => {
+                        resolve();
+                    });
                 },
 
                 create(data) {
@@ -33,11 +33,9 @@ describe('Тестирование метода create', () => {
                     expect(data).toHaveProperty('password');
                     expect(data).toHaveProperty('salt');
 
-                    return {
-                        then(cb) {
-                            cb({ insertedId: 'fake.inserted.id' });
-                        },
-                    };
+                    return new Promise(resolve => {
+                        resolve({ insertedId: 'fake.inserted.id' });
+                    });
                 },
             },
         };
@@ -47,9 +45,9 @@ describe('Тестирование метода create', () => {
             expect(opt).toHaveProperty('subject', 'Регистрация в сервисе SHAREVIEW');
             expect(opt).toHaveProperty('text', 'Simple text');
 
-            return {
-                then(cb) { cb(); },
-            };
+            return new Promise(resolve => {
+                resolve();
+            });
         };
 
         req.body = {
@@ -68,13 +66,17 @@ describe('Тестирование метода create', () => {
             res._getRenderData()(null, 'Simple text');
         });
 
-        res.on('send', () => {
-            expect(res._getData()).toEqual({ success: true });
-            done();
-        });
+        return new Promise((resolve, reject) => {
+            res.on('send', () => {
+                expect(res._getData()).toEqual({ success: true });
+                resolve();
+            });
 
-        // Вызов метода create
-        user.create(req, res);
+            // Вызов метода create
+            user.create(req, res, err => {
+                reject(err);
+            });
+        });
     });
 
     it('Выполнение метода create если пользователь авторизован', done => {
@@ -121,7 +123,7 @@ describe('Тестирование метода create', () => {
         });
     });
 
-    it('Выполнение метода create для существующего пользователя', done => {
+    it('Выполнение метода create для существующего пользователя', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -132,13 +134,11 @@ describe('Тестирование метода create', () => {
         req.model = {
             user: {
                 getUserByEmail() {
-                    return {
-                        then(cb) {
-                            cb({
-                                email: 'fake@user.com',
-                            });
-                        },
-                    };
+                    return new Promise(resolve => {
+                        resolve({
+                            email: 'fake@user.com',
+                        });
+                    });
                 },
             },
         };
@@ -149,16 +149,20 @@ describe('Тестирование метода create', () => {
 
         res.locals = {};
 
-        res.on('send', () => {
-            expect(res._getData()).toEqual({ success: false, exist: true });
-            done();
-        });
+        return new Promise((resolve, reject) => {
+            res.on('send', () => {
+                expect(res._getData()).toEqual({ success: false, exist: true });
+                resolve();
+            });
 
-        // Вызов метода create
-        user.create(req, res);
+            // Вызов метода create
+            user.create(req, res, err => {
+                reject(err);
+            });
+        });
     });
 
-    it('Выполнение метода create с ошибкой в вызове "req.model.user.getUserByEmail"', done => {
+    it('Выполнение метода create с ошибкой в вызове "req.model.user.getUserByEmail"', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -180,14 +184,17 @@ describe('Тестирование метода create', () => {
 
         res.locals = {};
 
-        // Вызов метода create
-        user.create(req, res, err => {
+        return new Promise((resolve, reject) => {
+            // Вызов метода create
+            user.create(req, res, err => {
+                reject(err);
+            });
+        }).catch(err => {
             expect(err).toEqual(Error('req.model.user.getUserByEmail.error'));
-            done();
         });
     });
 
-    it('Выполнение метода create с ошибкой в вызове "req.model.user.create"', done => {
+    it('Выполнение метода create с ошибкой в вызове "req.model.user.create"', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -215,14 +222,17 @@ describe('Тестирование метода create', () => {
 
         res.locals = {};
 
-        // Вызов метода create
-        user.create(req, res, err => {
+        return new Promise((resolve, reject) => {
+            // Вызов метода create
+            user.create(req, res, err => {
+                reject(err);
+            });
+        }).catch(err => {
             expect(err).toEqual(Error('req.model.user.create'));
-            done();
         });
     });
 
-    it('Выполнение метода create с ошибкой в вызове "res.render"', done => {
+    it('Выполнение метода create с ошибкой в вызове "res.render"', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -258,14 +268,17 @@ describe('Тестирование метода create', () => {
             res._getRenderData()(Error('res.render.error'));
         });
 
-        // Вызов метода create
-        user.create(req, res, err => {
+        return new Promise((resolve, reject) => {
+            // Вызов метода create
+            user.create(req, res, err => {
+                reject(err);
+            });
+        }).catch(err => {
             expect(err).toEqual(Error('res.render.error'));
-            done();
         });
     });
 
-    it('Выполнение метода create с ошибкой в вызове "res.email"', done => {
+    it('Выполнение метода create с ошибкой в вызове "reg.email"', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -307,16 +320,19 @@ describe('Тестирование метода create', () => {
             res._getRenderData()(null, 'Simple text');
         });
 
-        // Вызов метода create
-        user.create(req, res, err => {
+        return new Promise((resolve, reject) => {
+            // Вызов метода create
+            user.create(req, res, err => {
+                reject(err);
+            });
+        }).catch(err => {
             expect(err).toEqual(Error('req.email.error'));
-            done();
         });
     });
 });
 
 describe('Тестирование метода forgot', () => {
-    it('Успешное выполнение метода forgot', done => {
+    it('Успешное выполнение метода forgot', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -330,17 +346,15 @@ describe('Тестирование метода forgot', () => {
                     expect(email).toEqual('fake@user.com');
                     expect(pwd).toBeDefined();
 
-                    return {
-                        then(cb) {
-                            cb({
-                                mongoResult: {
-                                    result: {
-                                        nModified: 1,
-                                    },
+                    return new Promise(resolve => {
+                        resolve({
+                            mongoResult: {
+                                result: {
+                                    nModified: 1,
                                 },
-                            });
-                        },
-                    };
+                            },
+                        });
+                    });
                 },
             },
         };
@@ -350,9 +364,9 @@ describe('Тестирование метода forgot', () => {
             expect(opt).toHaveProperty('subject', 'Востановления доступа к сервису SHAREVIEW');
             expect(opt).toHaveProperty('text', 'Simple text');
 
-            return {
-                then(cb) { cb(); },
-            };
+            return new Promise(resolve => {
+                resolve();
+            });
         };
 
         req.body = {
@@ -368,13 +382,17 @@ describe('Тестирование метода forgot', () => {
             res._getRenderData()(null, 'Simple text');
         });
 
-        res.on('send', () => {
-            expect(res._getData()).toEqual({ success: true });
-            done();
-        });
+        return new Promise((resolve, reject) => {
+            res.on('send', () => {
+                expect(res._getData()).toEqual({ success: true });
+                resolve();
+            });
 
-        // Вызов метода forgot
-        user.forgot(req, res);
+            // Вызов метода forgot
+            user.forgot(req, res, err => {
+                reject(err);
+            });
+        });
     });
 
     it('Выполнение метода forgot если пользователь авторизован', done => {
@@ -421,7 +439,7 @@ describe('Тестирование метода forgot', () => {
         });
     });
 
-    it('Выполнение метода forgot с ошибкой в вызове "req.model.user.setPasswordByEmail"', done => {
+    it('Выполнение метода forgot с ошибкой в вызове "req.model.user.setPasswordByEmail"', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -445,14 +463,17 @@ describe('Тестирование метода forgot', () => {
 
         res.locals = {};
 
-        // Вызов метода forgot
-        user.forgot(req, res, err => {
+        return new Promise((resolve, reject) => {
+            // Вызов метода forgot
+            user.forgot(req, res, err => {
+                reject(err);
+            });
+        }).catch(err => {
             expect(err).toEqual(Error('req.model.user.setPasswordByEmail.error'));
-            done();
         });
     });
 
-    it('Выполнение метода forgot с ошибкой в вызове "res.render"', done => {
+    it('Выполнение метода forgot с ошибкой в вызове "res.render"', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -486,14 +507,17 @@ describe('Тестирование метода forgot', () => {
             res._getRenderData()(Error('res.render.error'));
         });
 
-        // Вызов метода forgot
-        user.forgot(req, res, err => {
+        return new Promise((resolve, reject) => {
+            // Вызов метода forgot
+            user.forgot(req, res, err => {
+                reject(err);
+            });
+        }).catch(err => {
             expect(err).toEqual(Error('res.render.error'));
-            done();
         });
     });
 
-    it('Выполнение метода forgot с ошибкой в вызове "res.email', done => {
+    it('Выполнение метода forgot с ошибкой в вызове "reg.email', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -533,15 +557,13 @@ describe('Тестирование метода forgot', () => {
             res._getRenderData()(null, 'Simple text');
         });
 
-        res.on('send', () => {
-            expect(res._getData()).toEqual({ success: true });
-            done();
-        });
-
-        // Вызов метода forgot
-        user.forgot(req, res, err => {
+        return new Promise((resolve, reject) => {
+            // Вызов метода forgot
+            user.forgot(req, res, err => {
+                reject(err);
+            });
+        }).catch(err => {
             expect(err).toEqual(Error('req.email.error'));
-            done();
         });
     });
 });

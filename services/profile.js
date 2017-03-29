@@ -71,7 +71,7 @@ const
 
         if (req.body.email) {
             if (!validator.isEmail(req.body.email)) {
-                next(Error('Validate error - mail is invalid'));
+                next(Error('Validate error - email is invalid'));
                 return;
             }
 

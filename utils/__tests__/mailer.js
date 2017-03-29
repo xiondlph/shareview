@@ -10,7 +10,7 @@ describe('Тестирование метода email', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода email', done => {
+    it('Успешное выполнение метода email', () => {
         const
             utils = require('../index').default,
             req = httpMocks.createRequest(),
@@ -40,21 +40,22 @@ describe('Тестирование метода email', () => {
             };
         });
 
-        utils.mailer.email(req, res, () => {
-            req.email({
-                to: 'fake@user.com',
-                subject: 'Simple subject',
-                text: 'Simple text',
-            }).then(() => {
-                done();
-            }).catch(err => {
-                expect(err).toBeNull();
-                done();
+        return new Promise((resolve, reject) => {
+            utils.mailer.email(req, res, () => {
+                req.email({
+                    to: 'fake@user.com',
+                    subject: 'Simple subject',
+                    text: 'Simple text',
+                }).then(() => {
+                    resolve();
+                }).catch(err => {
+                    reject(err);
+                });
             });
         });
     });
 
-    it('Выполнение метода email с ошибкой', done => {
+    it('Выполнение метода email с ошибкой', () => {
         const
             utils = require('../index').default,
             req = httpMocks.createRequest(),
@@ -73,15 +74,18 @@ describe('Тестирование метода email', () => {
             };
         });
 
-        utils.mailer.email(req, res, () => {
-            req.email({
-                to: 'fake@user.com',
-                subject: 'Simple subject',
-                text: 'Simple text',
-            }).catch(err => {
-                expect(err).toEqual(Error('email.error'));
-                done();
+        return new Promise((resolve, reject) => {
+            utils.mailer.email(req, res, () => {
+                req.email({
+                    to: 'fake@user.com',
+                    subject: 'Simple subject',
+                    text: 'Simple text',
+                }).catch(err => {
+                    reject(err);
+                });
             });
+        }).catch(err => {
+            expect(err).toEqual(Error('email.error'));
         });
     });
 });
