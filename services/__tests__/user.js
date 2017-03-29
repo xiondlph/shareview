@@ -160,7 +160,6 @@ describe('Тестирование метода create', () => {
                 reject(err);
             });
         });
-
     });
 
     it('Выполнение метода create с ошибкой в вызове "req.model.user.getUserByEmail"', () => {

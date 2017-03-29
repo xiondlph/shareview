@@ -259,7 +259,7 @@ describe('Тестирование метода getUserBySession', () => {
             user(req, res, () => {
                 req.model.user.getUserBySession('fake.sid').catch(err => {
                     reject(err);
-                })
+                });
             });
         }).catch(err => {
             expect(err).toEqual(Error('getUserBySession.error'));
@@ -612,7 +612,7 @@ describe('Тестирование метода unsetSessionById', () => {
             });
         }).catch(err => {
             expect(err).toEqual(Error('unsetSessionById.error'));
-        })
+        });
     });
 });
 
@@ -649,7 +649,6 @@ describe('Тестирование метода setPasswordId', () => {
         return new Promise(resolve => {
             user(req, res, () => {
                 resolve(req.model.user.setPasswordId('fake._id', 'fake.password'));
-
             });
         });
     });

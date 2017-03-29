@@ -19,7 +19,6 @@ describe('Тестирование метода user', () => {
                     expect(sessionId).toEqual('fake.session.id');
 
                     return new Promise(resolve => {
-
                         // Признак авторизированности пользователя
                         resolve({
                             email: 'fake@user.com',
@@ -189,8 +188,6 @@ describe('Тестирование метода signin', () => {
                 reject(err);
             });
         });
-
-
     });
 
     it('Выполнение метода signin если пользователь авторизован', done => {
