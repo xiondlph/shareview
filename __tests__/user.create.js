@@ -4,6 +4,7 @@
 
 jest.mock('../exception');
 
+/* eslint max-len: ["error", 130] */
 describe('Регистрация пользователя (/user/create) - ', () => {
     beforeEach(() => {
         jest.resetModules();
@@ -25,6 +26,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
 
                 db: {
                     collection: jest.fn()
+                        // Mock для req.model.user.getUserBySession
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -42,6 +44,8 @@ describe('Регистрация пользователя (/user/create) - ', ()
                                 },
                             };
                         })
+
+                        // Mock для req.model.user.getUserByEmail
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -59,6 +63,8 @@ describe('Регистрация пользователя (/user/create) - ', ()
                                 },
                             };
                         })
+
+                        // Mock для req.model.user.create
                         .mockImplementationOnce(() => {
                             return {
                                 insertOne() {
@@ -71,7 +77,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
                             };
                         }),
                 },
-            }
+            };
         });
 
         jest.mock('nodemailer', () => {
@@ -120,6 +126,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
 
                 db: {
                     collection: jest.fn()
+                        // Mock для req.model.user.getUserBySession
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -140,7 +147,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
                             };
                         }),
                 },
-            }
+            };
         });
 
         request.then(agent => {
@@ -177,6 +184,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
 
                 db: {
                     collection: jest.fn()
+                        // Mock для req.model.user.getUserBySession
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -195,7 +203,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
                             };
                         }),
                 },
-            }
+            };
         });
 
         request.then(agent => {
@@ -232,6 +240,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
 
                 db: {
                     collection: jest.fn()
+                        // Mock для req.model.user.getUserBySession
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -250,7 +259,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
                             };
                         }),
                 },
-            }
+            };
         });
 
         request.then(agent => {
@@ -287,6 +296,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
 
                 db: {
                     collection: jest.fn()
+                        // Mock для req.model.user.getUserBySession
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -304,6 +314,8 @@ describe('Регистрация пользователя (/user/create) - ', ()
                                 },
                             };
                         })
+
+                        // Mock для req.model.user.getUserByEmail
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -322,7 +334,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
                             };
                         }),
                 },
-            }
+            };
         });
 
         request.then(agent => {
@@ -359,6 +371,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
 
                 db: {
                     collection: jest.fn()
+                        // Mock для req.model.user.getUserBySession
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -376,6 +389,8 @@ describe('Регистрация пользователя (/user/create) - ', ()
                                 },
                             };
                         })
+
+                        // Mock для req.model.user.getUserByEmail
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -393,6 +408,8 @@ describe('Регистрация пользователя (/user/create) - ', ()
                                 },
                             };
                         })
+
+                        // Mock для req.model.user.create
                         .mockImplementationOnce(() => {
                             return {
                                 insertOne() {
@@ -403,7 +420,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
                             };
                         }),
                 },
-            }
+            };
         });
 
         request.then(agent => {
@@ -440,6 +457,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
 
                 db: {
                     collection: jest.fn()
+                        // Mock для req.model.user.getUserBySession
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -457,6 +475,8 @@ describe('Регистрация пользователя (/user/create) - ', ()
                                 },
                             };
                         })
+
+                        // Mock для req.model.user.getUserByEmail
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -474,6 +494,8 @@ describe('Регистрация пользователя (/user/create) - ', ()
                                 },
                             };
                         })
+
+                        // Mock для req.model.user.create
                         .mockImplementationOnce(() => {
                             return {
                                 insertOne() {
@@ -486,7 +508,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
                             };
                         }),
                 },
-            }
+            };
         });
 
         jest.mock('nodemailer', () => {

@@ -25,6 +25,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
 
                 db: {
                     collection: jest.fn()
+                        // Mock для req.model.user.getUserBySession
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -42,9 +43,11 @@ describe('Сброс пароля (/user/forgot) - ', () => {
                                 },
                             };
                         })
+
+                        // Mock для req.model.user.setPasswordByEmail
                         .mockImplementationOnce(() => {
                             return {
-                                updateOne(query, data) {
+                                updateOne() {
                                     return new Promise(resolve => {
                                         resolve({
                                             mongoResult: {
@@ -58,7 +61,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
                             };
                         }),
                 },
-            }
+            };
         });
 
         jest.mock('nodemailer', () => {
@@ -107,6 +110,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
 
                 db: {
                     collection: jest.fn()
+                        // Mock для req.model.user.getUserBySession
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -127,7 +131,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
                             };
                         }),
                 },
-            }
+            };
         });
 
         request.then(agent => {

@@ -3,4 +3,4 @@
  */
 
 // Установка количества элементов в стеке исключений
-Error.stackTraceLimit = 5;
+Error.stackTraceLimit = 0;
