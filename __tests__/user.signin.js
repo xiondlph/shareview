@@ -55,7 +55,7 @@ describe('Авторизация пользователя (/user/signin) - ', ()
                                                 toArray() {
                                                     return new Promise(resolve => {
                                                         resolve([{
-                                                            _id: 'fake_id',
+                                                            _id: 'fake._id',
 
                                                             // Захешеный "fake.password"
                                                             password: 'cf1a63230b18ca6299394958b885096d0fe86c85b3870364706d488e57788e4a',
@@ -77,7 +77,10 @@ describe('Авторизация пользователя (/user/signin) - ', ()
                         // Mock для req.model.user.setSessionById
                         .mockImplementationOnce(() => {
                             return {
-                                updateOne() {
+                                updateOne(query, data) {
+                                    expect(query).toHaveProperty('_id', 'fake._id');
+                                    expect(data).toHaveProperty('$set.sid', 'fake.session.id');
+
                                     return new Promise(resolve => {
                                         resolve();
                                     });
@@ -95,6 +98,7 @@ describe('Авторизация пользователя (/user/signin) - ', ()
                     email: 'fake@email.ru',
                     password: 'fake.password',
                 })
+                .set('Cookie', 'fake.session.id')
                 .expect(200)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -128,11 +132,13 @@ describe('Авторизация пользователя (/user/signin) - ', ()
                         // Mock для req.model.user.getUserBySession
                         .mockImplementationOnce(() => {
                             return {
-                                find() {
+                                find(query) {
                                     return {
                                         limit() {
                                             return {
                                                 toArray() {
+                                                    expect(query).toHaveProperty('sid', 'fake.session.id');
+
                                                     return new Promise(resolve => {
                                                         resolve([{
                                                             email: 'fake@user.com',
@@ -156,6 +162,7 @@ describe('Авторизация пользователя (/user/signin) - ', ()
                     email: 'fake@email.ru',
                     password: 'fake.password',
                 })
+                .set('Cookie', 'fake.session.id')
                 .expect(200)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -170,7 +177,7 @@ describe('Авторизация пользователя (/user/signin) - ', ()
         });
     });
 
-    it('req.model.user.getUserBySession', done => {
+    it('Ошибка в req.model.user.getUserBySession', done => {
         const
             supertest = require('supertest'),
             http = require('../server').default,
@@ -215,6 +222,7 @@ describe('Авторизация пользователя (/user/signin) - ', ()
                     email: 'fake@email.ru',
                     password: 'fake.password',
                 })
+                .set('Cookie', 'fake.session.id')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -274,6 +282,7 @@ describe('Авторизация пользователя (/user/signin) - ', ()
                     email: 'fake.invalid.email',
                     password: 'fake.password',
                 })
+                .set('Cookie', 'fake.session.id')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -304,7 +313,7 @@ describe('Авторизация пользователя (/user/signin) - ', ()
 
                 db: {
                     collection: jest.fn()
-                    // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserBySession
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -352,6 +361,7 @@ describe('Авторизация пользователя (/user/signin) - ', ()
                     email: 'fake@email.ru',
                     password: 'fake.password',
                 })
+                .set('Cookie', 'fake.session.id')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -382,7 +392,7 @@ describe('Авторизация пользователя (/user/signin) - ', ()
 
                 db: {
                     collection: jest.fn()
-                    // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserBySession
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -451,6 +461,7 @@ describe('Авторизация пользователя (/user/signin) - ', ()
                     email: 'fake@email.ru',
                     password: 'fake.password',
                 })
+                .set('Cookie', 'fake.session.id')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
