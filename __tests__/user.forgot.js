@@ -81,6 +81,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
             agent
                 .post('/user/forgot')
                 .send({ email: 'fake@user.ru' })
+                .set('Cookie', 'fake.session.id')
                 .expect(200)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -114,11 +115,13 @@ describe('Сброс пароля (/user/forgot) - ', () => {
                         // Mock для req.model.user.getUserBySession
                         .mockImplementationOnce(() => {
                             return {
-                                find() {
+                                find(query) {
                                     return {
                                         limit() {
                                             return {
                                                 toArray() {
+                                                    expect(query).toHaveProperty('sid', 'fake.session.id');
+
                                                     return new Promise(resolve => {
                                                         resolve([{
                                                             email: 'fake@user.com',
@@ -139,6 +142,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
             agent
                 .post('/user/forgot')
                 .send({ email: 'fake@user.ru' })
+                .set('Cookie', 'fake.session.id')
                 .expect(200)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -195,6 +199,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
             agent
                 .post('/user/forgot')
                 .send({ email: 'fake@user.ru' })
+                .set('Cookie', 'fake.session.id')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -225,7 +230,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
 
                 db: {
                     collection: jest.fn()
-                    // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserBySession
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -251,6 +256,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
             agent
                 .post('/user/forgot')
                 .send({ email: 'fake.invalid.email' })
+                .set('Cookie', 'fake.session.id')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -318,6 +324,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
             agent
                 .post('/user/forgot')
                 .send({ email: 'fake@user.ru' })
+                .set('Cookie', 'fake.session.id')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -403,6 +410,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
             agent
                 .post('/user/forgot')
                 .send({ email: 'fake@user.ru' })
+                .set('Cookie', 'fake.session.id')
                 .expect(200)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -488,6 +496,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
             agent
                 .post('/user/forgot')
                 .send({ email: 'fake@user.ru' })
+                .set('Cookie', 'fake.session.id')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
