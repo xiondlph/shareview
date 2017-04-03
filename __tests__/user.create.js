@@ -96,6 +96,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             agent
                 .post('/user/create')
                 .send({ email: 'fake@user.ru' })
+                .set('Cookie', 'fake.session.id')
                 .expect(200)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -154,6 +155,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             agent
                 .post('/user/create')
                 .send({ email: 'fake@user.ru' })
+                .set('Cookie', 'fake.session.id')
                 .expect(200)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -210,6 +212,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             agent
                 .post('/user/create')
                 .send({ email: 'fake@user.ru' })
+                .set('Cookie', 'fake.session.id')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -266,6 +269,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             agent
                 .post('/user/create')
                 .send({ email: 'fake.invalid.email' })
+                .set('Cookie', 'fake.session.id')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -341,6 +345,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             agent
                 .post('/user/create')
                 .send({ email: 'fake@user.ru' })
+                .set('Cookie', 'fake.session.id')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -427,6 +432,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             agent
                 .post('/user/create')
                 .send({ email: 'fake@user.ru' })
+                .set('Cookie', 'fake.session.id')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -527,6 +533,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             agent
                 .post('/user/create')
                 .send({ email: 'fake@user.ru' })
+                .set('Cookie', 'fake.session.id')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
