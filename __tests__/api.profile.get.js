@@ -1,5 +1,6 @@
 /**
  * Интеграционный тест для API метода /api/profile
+ * Метод GET
  */
 
 jest.mock('../exception');
