@@ -11,22 +11,18 @@
 import querystring from 'querystring';
 
 const
-
     /**
-     * TODO В дальнейшем нужно вывести в отдельный сервис по извлечению отзывов
+     * Получение отзывов
      *
-     * Метод загрузки отзывов Яндекс.Маркета
-     *
-     * @method grab
+     * @method get
      * @param {Object} req Объект запроса сервера
      * @param {Object} res Объект ответа сервера
      */
-    grabYMReview = (req, res) => {
-        const query = querystring.stringify(req.query);
-
-        let result,
+    get = (req, res) => {
+        var result,
             reviews,
             modelId,
+            query = querystring.stringify(req.query),
             page = 1;
 
         res.header('Access-Control-Allow-Origin', '*');
@@ -54,7 +50,6 @@ const
 
             result = JSON.parse(data);
 
-            /* eslint no-shadow: ["error", { "allow": ["err", "status", "data"] }] */
             if (result.searchResult.results.length > 0 && result.searchResult.results[0].model) {
                 modelId = result.searchResult.results[0].model.id;
                 req.api(
@@ -68,45 +63,13 @@ const
                         reviews = JSON.parse(data);
 
                         res.send(reviews);
-
-                        // Кеширование
-                        // req.cachingYMReview(
-                        //     result.searchResult.results[0].model,
-                        //     reviews
-                        // );
                     });
             } else {
                 res.send([]);
             }
         });
-    },
-
-    /**
-     * Получение отзывов
-     *
-     * @method get
-     * @param {Object} req Объект запроса сервера
-     * @param {Object} res Объект ответа сервера
-     * @param {Function} next Следующий слой обработки запроса
-     */
-    get = (req, res, next) => {
-        req.model.review.findModelByName(req.query.text).then(models => {
-            if (!models.length || models[0].score < 2) {
-                next();
-                return;
-            }
-
-            req.model.review.getReviewsByModelId(models[0]._id).then(reviews => {
-                res.send(reviews);
-            }).catch(err => {
-                next(err);
-            });
-        }).catch(err => {
-            next(err);
-        });
     };
 
 export default {
-    grabYMReview,
     get,
 };

@@ -76,13 +76,7 @@ app.post('/user/create', utils.mailer.email, services.user.create);
 app.post('/user/forgot', utils.mailer.email, services.user.forgot);
 
 // Review
-app.get('/review',
-    models.review,
-    utils.request.api,
-    utils.caching,
-    services.review.get,
-    services.review.grabYMReview
-);
+app.get('/review', utils.request.api, services.review.get);
 
 // API
 app.all('/api/*', services.secure.auth);
@@ -107,17 +101,12 @@ app.use((err, req, res, next) => {
     logError(err);
 });
 
-export default new Promise(resolve => {
+export default new Promise((resolve) => {
     // Запуск web сервера на порту 3001/4001
     db.then(() => {
         const server = app.listen(PORT, () => {
             log(`Listening on port ${PORT}`);
             resolve(server);
         });
-
-        //  database.ensureIndex('models', {
-        //     name: 'text',
-        // });
     });
 });
-
