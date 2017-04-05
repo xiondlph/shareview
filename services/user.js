@@ -43,13 +43,11 @@ const
             }
 
             const
-                currentDate = new Date(),
                 password = generatePassword(12, false),
                 data = {
                     email: req.body.email,
                     active: false,
                     address: req.ip,
-                    period: currentDate.setDate(currentDate.getDate() + 1),
                 };
 
             // Шифрование

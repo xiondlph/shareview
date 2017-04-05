@@ -94,7 +94,6 @@ const
                         email: result.email,
                         address: result.address,
                         key: result.salt,
-                        period: result.period,
                     },
                 });
             });

@@ -40,7 +40,6 @@ describe('Смена пароля (/api/password) - ', () => {
                                                             email: 'fake@email.com',
                                                             address: 'fake.address',
                                                             salt: 'fake.salt',
-                                                            period: 'fake.period',
                                                         }]);
                                                     });
                                                 },
@@ -234,7 +233,6 @@ describe('Смена пароля (/api/password) - ', () => {
                                                             email: 'fake@email.com',
                                                             address: 'fake.address',
                                                             salt: 'fake.salt',
-                                                            period: 'fake.period',
                                                         }]);
                                                     });
                                                 },
@@ -299,7 +297,6 @@ describe('Смена пароля (/api/password) - ', () => {
                                                             email: 'fake@email.com',
                                                             address: 'fake.address',
                                                             salt: 'fake.salt',
-                                                            period: 'fake.period',
                                                         }]);
                                                     });
                                                 },

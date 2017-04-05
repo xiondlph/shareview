@@ -41,7 +41,6 @@ describe('Обновление данных профиля (/api/profile) - ', (
                                                             email: 'fake@email.com',
                                                             address: 'fake.address',
                                                             salt: 'fake.salt',
-                                                            period: 'fake.period',
                                                         }]);
                                                     });
                                                 },
@@ -137,7 +136,6 @@ describe('Обновление данных профиля (/api/profile) - ', (
                                                             email: 'fake@email.com',
                                                             address: 'fake.address',
                                                             salt: 'fake.salt',
-                                                            period: 'fake.period',
                                                         }]);
                                                     });
                                                 },
@@ -345,7 +343,6 @@ describe('Обновление данных профиля (/api/profile) - ', (
                                                             email: 'fake@email.com',
                                                             address: 'fake.address',
                                                             salt: 'fake.salt',
-                                                            period: 'fake.period',
                                                         }]);
                                                     });
                                                 },
@@ -411,7 +408,6 @@ describe('Обновление данных профиля (/api/profile) - ', (
                                                             email: 'fake@email.com',
                                                             address: 'fake.address',
                                                             salt: 'fake.salt',
-                                                            period: 'fake.period',
                                                         }]);
                                                     });
                                                 },
@@ -477,7 +473,6 @@ describe('Обновление данных профиля (/api/profile) - ', (
                                                             email: 'fake@email.com',
                                                             address: 'fake.address',
                                                             salt: 'fake.salt',
-                                                            period: 'fake.period',
                                                         }]);
                                                     });
                                                 },
@@ -562,7 +557,6 @@ describe('Обновление данных профиля (/api/profile) - ', (
                                                             email: 'fake@email.com',
                                                             address: 'fake.address',
                                                             salt: 'fake.salt',
-                                                            period: 'fake.period',
                                                         }]);
                                                     });
                                                 },

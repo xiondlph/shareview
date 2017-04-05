@@ -41,7 +41,6 @@ describe('Запрос данных профиля (/api/profile) - ', () => {
                                                             email: 'fake@email.com',
                                                             address: 'fake.address',
                                                             salt: 'fake.salt',
-                                                            period: 'fake.period',
                                                         }]);
                                                     });
                                                 },
@@ -67,7 +66,6 @@ describe('Запрос данных профиля (/api/profile) - ', () => {
                         email: 'fake@email.com',
                         address: 'fake.address',
                         key: 'fake.salt',
-                        period: 'fake.period',
                     });
 
                     http.then(server => {

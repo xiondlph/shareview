@@ -29,7 +29,6 @@ describe('Тестирование метода create', () => {
                     expect(data).toHaveProperty('email', 'fake@user.com');
                     expect(data).toHaveProperty('active', false);
                     expect(data).toHaveProperty('address', '127.0.0.1');
-                    expect(data).toHaveProperty('period');
                     expect(data).toHaveProperty('password');
                     expect(data).toHaveProperty('salt');
 

@@ -141,7 +141,6 @@ describe('Тестирование метода signin', () => {
                             email: 'fake.email',
                             address: 'fake.address',
                             salt: 'fake.salt',
-                            period: 'fake.period',
                         });
                     });
                 },
@@ -176,7 +175,6 @@ describe('Тестирование метода signin', () => {
                         email: 'fake.email',
                         address: 'fake.address',
                         key: 'fake.salt',
-                        period: 'fake.period',
                     },
                 });
 
@@ -285,7 +283,6 @@ describe('Тестирование метода signin', () => {
                             email: 'fake.email',
                             address: 'fake.address',
                             salt: 'fake.salt',
-                            period: 'fake.period',
                         });
                     });
                 },

@@ -43,7 +43,6 @@ const
                 email: res.locals.user.email,
                 address: res.locals.user.address,
                 key: res.locals.user.salt,
-                period: res.locals.user.period,
             },
         });
     },
@@ -58,7 +57,7 @@ const
      * @param {Function} next
      */
     set = (req, res, next) => {
-        var data = {};
+        const data = {};
 
         if (req.body.address) {
             if (!validator.isIP(req.body.address)) {

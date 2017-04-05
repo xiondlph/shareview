@@ -19,7 +19,6 @@ describe('Тестирование метода get', () => {
                 email: 'fake.email',
                 address: 'fake.address',
                 salt: 'fake.key',
-                period: 'fake.period',
             },
         };
 
@@ -30,7 +29,6 @@ describe('Тестирование метода get', () => {
                     email: 'fake.email',
                     address: 'fake.address',
                     key: 'fake.key',
-                    period: 'fake.period',
                 },
             });
             done();

@@ -63,7 +63,6 @@ describe('Авторизация пользователя (/user/signin) - ', ()
                                                             email: 'fake.email',
                                                             address: 'fake.address',
                                                             salt: 'fake.salt',
-                                                            period: 'fake.period',
                                                         }]);
                                                     });
                                                 },
@@ -429,7 +428,6 @@ describe('Авторизация пользователя (/user/signin) - ', ()
                                                             email: 'fake.email',
                                                             address: 'fake.address',
                                                             salt: 'fake.salt',
-                                                            period: 'fake.period',
                                                         }]);
                                                     });
                                                 },
