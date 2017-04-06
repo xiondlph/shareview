@@ -96,7 +96,7 @@ describe('Тестирование метода auth', () => {
         });
     });
 
-    it('Выполнение метода auth для неавторизированного пользователя', (done) => {
+    it('Выполнение метода auth для неавторизированного пользователя', done => {
         const
             secure = require('../secure').default,
             req = httpMocks.createRequest(),
@@ -314,5 +314,114 @@ describe('Тестирование метода signin', () => {
         }).catch(err => {
             expect(err).toEqual(Error('req.model.user.setSessionById.error'));
         });
+    });
+});
+
+describe('Тестирование метода access', () => {
+    it('Успешное выполнение метода access', () => {
+        const
+            secure = require('../secure').default,
+            req = httpMocks.createRequest(),
+            res = httpMocks.createResponse();
+
+        req.model = {
+            user: {
+                getUserBySaltAndAddress(salt, address) {
+                    expect(salt).toBe('fake.salt');
+                    expect(address).toBe('fake.address');
+
+                    return new Promise(resolve => {
+                        resolve({
+                            email: 'fake@user.com',
+                        });
+                    });
+                },
+            },
+        };
+
+        req.connection = {
+            remoteAddress: '::ffff:127.0.0.1',
+        };
+        req.headers['x-ismax-key'] = 'fake.salt';
+        req.ip = 'fake.address';
+
+        res.locals = {};
+
+        return new Promise(resolve => {
+            // Вызов метода access
+            secure.access(req, res, () => {
+                resolve();
+            });
+        }).then(() => {
+            expect(res.locals).toEqual({ user: { email: 'fake@user.com' } });
+        });
+    });
+
+    it('Выполнение метода access с ошибкой в вызове "req.model.user.getUserBySaltAndAddress"', () => {
+        const
+            secure = require('../secure').default,
+            req = httpMocks.createRequest(),
+            res = httpMocks.createResponse();
+
+        req.model = {
+            user: {
+                getUserBySaltAndAddress() {
+                    return new Promise((resolve, reject) => {
+                        reject(Error('req.model.user.getUserBySaltAndAddress.error'));
+                    });
+                },
+            },
+        };
+
+        req.connection = {
+            remoteAddress: '::ffff:127.0.0.1',
+        };
+        req.headers['x-ismax-key'] = 'fake.salt';
+        req.ip = 'fake.address';
+
+        res.locals = {};
+
+        return new Promise((resolve, reject) => {
+            // Вызов метода access
+            secure.access(req, res, err => {
+                reject(err);
+            });
+        }).catch(err => {
+            expect(err).toEqual(Error('req.model.user.getUserBySaltAndAddress.error'));
+        });
+    });
+
+    it('Выполнение метода access с отсутствием доступа', done => {
+        const
+            secure = require('../secure').default,
+            req = httpMocks.createRequest(),
+            res = httpMocks.createResponse({
+                eventEmitter: EventEmitter,
+            });
+
+        req.model = {
+            user: {
+                getUserBySaltAndAddress() {
+                    return new Promise(resolve => {
+                        resolve(null);
+                    });
+                },
+            },
+        };
+
+        req.connection = {
+            remoteAddress: '::ffff:127.0.0.1',
+        };
+        req.headers['x-ismax-key'] = 'fake.salt';
+        req.ip = 'fake.address';
+
+        res.on('send', () => {
+            expect(res._getData()).toEqual({ errors: ['Access denied. Client ip: fake.address'] });
+            expect(res.statusCode).toBe(403);
+            done();
+        });
+
+        // Вызов метода access
+        secure.access(req, res);
     });
 });
