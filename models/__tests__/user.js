@@ -398,6 +398,137 @@ describe('Тестирование метода getUserByEmail', () => {
     });
 });
 
+describe('Тестирование метода getUserBySaltAndAddress', () => {
+    beforeEach(() => {
+        jest.resetModules();
+    });
+
+    it('Успешное выполнение метода getUserBySaltAndAddress', () => {
+        const
+            user = require('../user').default,
+            req = httpMocks.createRequest(),
+            res = httpMocks.createResponse();
+
+        jest.mock('../../db', () => {
+            return {
+                db: {
+                    collection() {
+                        return {
+                            find(query) {
+                                expect(query).toEqual({ salt: 'fake.salt', address: 'fake.address' });
+
+                                return {
+                                    limit(count) {
+                                        expect(count).toBe(1);
+
+                                        return {
+                                            toArray() {
+                                                return new Promise(resolve => {
+                                                    resolve([{
+                                                        email: 'fake@user.com',
+                                                    }]);
+                                                });
+                                            },
+                                        };
+                                    },
+                                };
+                            },
+                        };
+                    },
+                },
+            };
+        });
+
+        return new Promise(resolve => {
+            user(req, res, () => {
+                resolve(req.model.user.getUserBySaltAndAddress('fake.salt', 'fake.address'));
+            });
+        }).then(result => {
+            expect(result).toEqual({ email: 'fake@user.com' });
+        });
+    });
+
+    it('Успешное выполнение метода getUserBySaltAndAddress с пустым ответом', () => {
+        const
+            user = require('../user').default,
+            req = httpMocks.createRequest(),
+            res = httpMocks.createResponse();
+
+        jest.mock('../../db', () => {
+            return {
+                db: {
+                    collection() {
+                        return {
+                            find() {
+                                return {
+                                    limit() {
+                                        return {
+                                            toArray() {
+                                                return new Promise(resolve => {
+                                                    resolve([]);
+                                                });
+                                            },
+                                        };
+                                    },
+                                };
+                            },
+                        };
+                    },
+                },
+            };
+        });
+
+        return new Promise(resolve => {
+            user(req, res, () => {
+                resolve(req.model.user.getUserBySaltAndAddress('fake.salt', 'fake.address'));
+            });
+        }).then(result => {
+            expect(result).toBeNull();
+        });
+    });
+
+    it('Выполнение метода getUserBySaltAndAddress с ошибкой', () => {
+        const
+            user = require('../user').default,
+            req = httpMocks.createRequest(),
+            res = httpMocks.createResponse();
+
+        jest.mock('../../db', () => {
+            return {
+                db: {
+                    collection() {
+                        return {
+                            find() {
+                                return {
+                                    limit() {
+                                        return {
+                                            toArray() {
+                                                return new Promise((resolve, reject) => {
+                                                    reject(Error('getUserBySaltAndAddress.error'));
+                                                });
+                                            },
+                                        };
+                                    },
+                                };
+                            },
+                        };
+                    },
+                },
+            };
+        });
+
+        return new Promise((resolve, reject) => {
+            user(req, res, () => {
+                req.model.user.getUserBySaltAndAddress('fake.salt', 'fake.address').catch(err => {
+                    reject(err);
+                });
+            });
+        }).catch(err => {
+            expect(err).toEqual(Error('getUserBySaltAndAddress.error'));
+        });
+    });
+});
+
 describe('Тестирование метода create', () => {
     beforeEach(() => {
         jest.resetModules();
@@ -825,77 +956,6 @@ describe('Тестирование метода update', () => {
             });
         }).catch(err => {
             expect(err).toEqual(Error('update.error'));
-        });
-    });
-});
-
-describe('Тестирование метода updatePeriod', () => {
-    beforeEach(() => {
-        jest.resetModules();
-    });
-
-    it('Успешное выполнение метода updatePeriod', () => {
-        const
-            user = require('../user').default,
-            req = httpMocks.createRequest(),
-            res = httpMocks.createResponse();
-
-        jest.mock('../../db', () => {
-            return {
-                db: {
-                    collection() {
-                        return {
-                            updateOne(query, data) {
-                                expect(query).toHaveProperty('_id', 'fake._id');
-                                expect(data).toHaveProperty('$set.period', 'fake.period');
-
-                                return new Promise(resolve => {
-                                    resolve();
-                                });
-                            },
-                        };
-                    },
-                },
-            };
-        });
-
-        return new Promise(resolve => {
-            user(req, res, () => {
-                resolve(req.model.user.updatePeriod('fake._id', 'fake.period'));
-            });
-        });
-    });
-
-    it('Выполнение метода updatePeriod c ошибкой', () => {
-        const
-            user = require('../user').default,
-            req = httpMocks.createRequest(),
-            res = httpMocks.createResponse();
-
-        jest.mock('../../db', () => {
-            return {
-                db: {
-                    collection() {
-                        return {
-                            updateOne() {
-                                return new Promise((resolve, reject) => {
-                                    reject(Error('updatePeriod.error'));
-                                });
-                            },
-                        };
-                    },
-                },
-            };
-        });
-
-        return new Promise((resolve, reject) => {
-            user(req, res, () => {
-                req.model.user.updatePeriod('fake._id', 'fake.period').catch(err => {
-                    reject(err);
-                });
-            });
-        }).catch(err => {
-            expect(err).toEqual(Error('updatePeriod.error'));
         });
     });
 });
