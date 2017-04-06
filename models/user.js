@@ -80,6 +80,22 @@ const
             },
 
             /**
+             * Получения пользователя по ключу и ip
+             *
+             * @method getUserBySaltAndIp
+             * @param {String} salt
+             * @param {String} address
+             * @return {Promise}
+             */
+            getUserBySaltAndAddress(salt, address) {
+                return db.collection('users')
+                    .find({ salt, address })
+                    .limit(1)
+                    .toArray()
+                    .then(users => { return users.length ? users[0] : null; });
+            },
+
+            /**
              * Создание нового пользователя
              *
              * @method create
