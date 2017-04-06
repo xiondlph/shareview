@@ -339,9 +339,6 @@ describe('Тестирование метода access', () => {
             },
         };
 
-        req.connection = {
-            remoteAddress: '::ffff:127.0.0.1',
-        };
         req.headers['x-ismax-key'] = 'fake.salt';
         req.ip = 'fake.address';
 
@@ -373,9 +370,6 @@ describe('Тестирование метода access', () => {
             },
         };
 
-        req.connection = {
-            remoteAddress: '::ffff:127.0.0.1',
-        };
         req.headers['x-ismax-key'] = 'fake.salt';
         req.ip = 'fake.address';
 
@@ -409,9 +403,6 @@ describe('Тестирование метода access', () => {
             },
         };
 
-        req.connection = {
-            remoteAddress: '::ffff:127.0.0.1',
-        };
         req.headers['x-ismax-key'] = 'fake.salt';
         req.ip = 'fake.address';
 

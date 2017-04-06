@@ -76,7 +76,7 @@ app.post('/user/create', utils.mailer.email, services.user.create);
 app.post('/user/forgot', utils.mailer.email, services.user.forgot);
 
 // Review
-app.get('/review', utils.request.api, services.review.get);
+app.get('/review', utils.request.api, services.secure.access, services.review.get);
 
 // API
 app.all('/api/*', services.secure.auth);

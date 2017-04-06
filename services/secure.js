@@ -142,13 +142,13 @@ const
             address = req.ip;
 
         req.model.user.getUserBySaltAndAddress(salt, address).then(result => {
-            if (result && req.connection.remoteAddress === '::ffff:127.0.0.1') {
+            if (result) {
                 res.locals.user = result;
                 next();
             } else {
                 res.status(403).send({
                     errors:
-                        [`Access denied. Client ip: ${req.ip.replace('::ffff:', '')}`],
+                        [`Access denied. Client ip: ${req.ip}`],
                 });
             }
         }).catch(
