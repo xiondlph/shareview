@@ -126,6 +126,38 @@ const
                 }
             }
         );
+    },
+
+    /**
+     * Выход из сессии
+     *
+     * @method access
+     * @param {Object} req Объект запроса сервера
+     * @param {Object} res Объект ответа сервера
+     * @param {Function} next
+     */
+    access = (req, res, next) => {
+        const
+            salt = req.headers['x-ismax-key'],
+            address = req.ip;
+
+        req.model.user.getUserBySaltAndAddress(salt, address).then(result => {
+            if (result && req.connection.remoteAddress === '::ffff:127.0.0.1') {
+                res.locals.user = result;
+                next();
+            } else {
+                res.status(403).send({
+                    errors:
+                        [`Access denied. Client ip: ${req.ip.replace('::ffff:', '')}`],
+                });
+            }
+        }).catch(
+            err => {
+                if (err) {
+                    next(err);
+                }
+            }
+        );
     };
 
 export default {
@@ -133,4 +165,5 @@ export default {
     auth,
     signin,
     signout,
+    access,
 };
