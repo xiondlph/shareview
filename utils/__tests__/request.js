@@ -10,7 +10,7 @@ describe('Тестирование метода api', () => {
         jest.resetModules();
     });
 
-    it('Успешное выполнение метода api', done => {
+    it('Успешное выполнение метода api', () => {
         const
             utils = require('../index').default,
             req = httpMocks.createRequest(),
@@ -62,17 +62,19 @@ describe('Тестирование метода api', () => {
 
         req.headers['x-forwarded-for'] = '127.0.0.1';
 
-        utils.request.api(req, res, () => {
-            req.api('url', (err, status, data) => {
-                expect(err).toBeNull();
-                expect(status).toBe(200);
-                expect(data).toBe('Simple response');
-                done();
+        return new Promise((resolve, reject) => {
+            utils.request.api(req, res, () => {
+                req.api('url').then(response => {
+                    expect(response).toEqual({ statusCode: 200, data: 'Simple response' });
+                    resolve();
+                }).catch(err => {
+                    reject(err);
+                });
             });
         });
     });
 
-    it('Выполнение метода api с ошибкой', done => {
+    it('Выполнение метода api с ошибкой', () => {
         const
             utils = require('../index').default,
             req = httpMocks.createRequest(),
@@ -110,13 +112,14 @@ describe('Тестирование метода api', () => {
 
         req.headers['x-forwarded-for'] = '127.0.0.1';
 
-        utils.request.api(req, res, () => {
-            req.api('url', (err, status, data) => {
-                expect(err).toEqual(Error('api.error'));
-                expect(status).toBeUndefined();
-                expect(data).toBeUndefined();
-                done();
+        return new Promise((resolve, reject) => {
+            utils.request.api(req, res, () => {
+                req.api('url').catch(err => {
+                    reject(err);
+                });
             });
+        }).catch(err => {
+            expect(err).toEqual(Error('api.error'));
         });
     });
 });
