@@ -65,7 +65,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.all('/^(?!review).*', models.user, services.secure.user);
+app.all(/^\/(?!review).*/, models.user, services.secure.user);
 
 // Secure
 app.post('/user/signin', services.secure.signin);
