@@ -29,40 +29,43 @@ const
          *
          * @method api
          * @param {String} url
-         * @param {Function} accept
          */
-        req.api = (url, accept) => {
-            var request;
+        req.api = (url) => {
+            return new Promise((resolve, reject) => {
+                const
+                    request = http.request({
+                        // host: '92.53.124.125',
+                        host: '127.0.0.1',
+                        port: 3000,
+                        path: url,
+                        method: 'GET',
+                        headers: {
+                            Host: 'market.icsystem.ru',
+                            'X-Ismax-Key': '08e212273409793c3199f9cf1a02e2261f78dfd5bb4e5c8776a48299cab0041f',
+                            'X-Forwarded-Proto': 'http',
+                            'X-Forwarded-for': req.headers['x-forwarded-for'],
+                        },
+                    }, (response) => {
+                        let data = '';
 
-            request = http.request({
-                // host: '92.53.124.125',
-                host: '127.0.0.1',
-                port: 3000,
-                path: url,
-                method: 'GET',
-                headers: {
-                    Host: 'market.icsystem.ru',
-                    'X-Ismax-Key': '08e212273409793c3199f9cf1a02e2261f78dfd5bb4e5c8776a48299cab0041f',
-                    'X-Forwarded-Proto': 'http',
-                    'X-Forwarded-for': req.headers['x-forwarded-for'],
-                },
-            }, (response) => {
-                var data = '';
+                        response.on('data', (chunk) => {
+                            data += chunk.toString();
+                        });
 
-                response.on('data', (chunk) => {
-                    data += chunk.toString();
+                        response.on('end', () => {
+                            resolve({
+                                statusCode: response.statusCode,
+                                data,
+                            });
+                        });
+                    });
+
+                request.on('error', (err) => {
+                    reject(err);
                 });
 
-                response.on('end', () => {
-                    accept(null, response.statusCode, data);
-                });
+                request.end();
             });
-
-            request.on('error', (err) => {
-                accept(err);
-            });
-
-            request.end();
         };
 
         next();
