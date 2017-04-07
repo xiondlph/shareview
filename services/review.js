@@ -42,28 +42,28 @@ const
         }
 
         req.query.count = 1;
-        req.api(`/v1/search.json?${query}`, (err, status, data) => {
-            if (err || status !== 200) {
+        req.api(`/v1/search.json?${query}`).then(modelRes => {
+            if (modelRes.statusCode !== 200) {
                 res.send([]);
                 return;
             }
 
-            result = JSON.parse(data);
+            result = JSON.parse(modelRes.data);
 
             if (result.searchResult.results.length > 0 && result.searchResult.results[0].model) {
                 modelId = result.searchResult.results[0].model.id;
                 req.api(
-                    `/v1/model/${modelId}/opinion.json?page=${page}`,
-                    (err, status, data) => {
-                        if (err || status !== 200) {
-                            res.send([]);
-                            return;
-                        }
+                    `/v1/model/${modelId}/opinion.json?page=${page}`
+                ).then(reviewRes => {
+                    if (reviewRes.statusCode !== 200) {
+                        res.send([]);
+                        return;
+                    }
 
-                        reviews = JSON.parse(data);
+                    reviews = JSON.parse(reviewRes.data);
 
-                        res.send(reviews);
-                    });
+                    res.send(reviews);
+                });
             } else {
                 res.send([]);
             }
