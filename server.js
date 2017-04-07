@@ -65,7 +65,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.all('*', models.user, services.secure.user);
+app.all('/^(?!review).*', models.user, services.secure.user);
 
 // Secure
 app.post('/user/signin', services.secure.signin);
@@ -76,7 +76,13 @@ app.post('/user/create', utils.mailer.email, services.user.create);
 app.post('/user/forgot', utils.mailer.email, services.user.forgot);
 
 // Review
-app.get('/review', utils.request.api, services.secure.access, services.review.get);
+app.get(
+    '/review',
+    models.user,
+    utils.request.api,
+    services.secure.access,
+    services.review.get
+);
 
 // API
 app.all('/api/*', services.secure.auth);
