@@ -17,8 +17,9 @@ const
      * @method get
      * @param {Object} req Объект запроса сервера
      * @param {Object} res Объект ответа сервера
+     * @param {Function} next
      */
-    get = (req, res) => {
+    get = (req, res, next) => {
         var result,
             reviews,
             modelId,
@@ -67,6 +68,8 @@ const
             } else {
                 res.send([]);
             }
+        }).catch(err => {
+            next(err);
         });
     };
 

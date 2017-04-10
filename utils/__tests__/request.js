@@ -43,8 +43,8 @@ describe('Тестирование метода api', () => {
                         };
                     };
 
-                    expect(opt).toHaveProperty('host', '127.0.0.1');
-                    expect(opt).toHaveProperty('port', 3000);
+                    expect(opt).toHaveProperty('host', '92.53.124.125');
+                    expect(opt).toHaveProperty('port', 80);
                     expect(opt).toHaveProperty('path', 'url');
                     expect(opt).toHaveProperty('method', 'GET');
                     expect(opt).toHaveProperty('headers.Host', 'market.icsystem.ru');

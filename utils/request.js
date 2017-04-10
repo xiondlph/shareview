@@ -34,9 +34,8 @@ const
             return new Promise((resolve, reject) => {
                 const
                     request = http.request({
-                        // host: '92.53.124.125',
-                        host: '127.0.0.1',
-                        port: 3000,
+                        host: process.env.NODE_ENV !== 'prodaction' ? '92.53.124.125' : '127.0.0.1',
+                        port: process.env.NODE_ENV !== 'prodaction' ? 80 : 3000,
                         path: url,
                         method: 'GET',
                         headers: {
