@@ -20,7 +20,8 @@ import utils from './utils';
 
 const
     app = express(),
-    log = debug('shareview:server'),
+    logSrv = debug('shareview:server'),
+    logHttp = debug('shareview:http'),
     PORT = +process.env.PORT || 3001,
 
     // TODO: Перенести в ./exception
@@ -38,7 +39,7 @@ const
         });
 
         // Вывод стека ошибок в stdout
-        log(err.stack);
+        logHttp(err.stack);
     };
 
 // Настройка шаблонизатора
@@ -111,7 +112,7 @@ export default new Promise((resolve) => {
     // Запуск web сервера на порту 3001/4001
     db.then(() => {
         const server = app.listen(PORT, () => {
-            log(`Listening on port ${PORT}`);
+            logSrv('%s - Listening on port %s', (new Date()).toUTCString(), PORT);
             resolve(server);
         });
     });
