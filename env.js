@@ -13,4 +13,8 @@ module.exports = {
     DB_HOST: 'ds040888.mlab.com',
     DB_PORT: 40888,
     DB_AUTH: 1,
+    DEBUG: [
+        'shareview:cluster',
+        'shareview:server',
+    ],
 };
