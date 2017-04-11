@@ -16,5 +16,6 @@ module.exports = {
     DEBUG: [
         'shareview:cluster',
         'shareview:server',
+        'shareview:mongodb',
     ],
 };
