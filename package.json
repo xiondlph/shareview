@@ -51,7 +51,7 @@
       }
     },
     "compile": {
-      "command": "node ./node_modules/babel-cli/bin/babel.js . --ignore compile,node_modules,__tests__,store,app.js,babel.js,env.js --out-dir compile"
+      "command": "node ./node_modules/babel-cli/bin/babel.js . --ignore compile,node_modules,__tests__,__mocks__,app.js,babel.js,env.js --out-dir compile"
     },
     "jsdoc": {
       "command": "node ./node_modules/jsdoc/jsdoc.js -c .jsdoc"
