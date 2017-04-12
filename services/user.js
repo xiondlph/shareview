@@ -111,7 +111,7 @@ const
 
         /* eslint no-shadow: ["error", { "allow": ["err"] }] */
         req.model.user.setPasswordByEmail(req.body.email, pwd).then(result => {
-            if (!result.mongoResult.result.nModified) {
+            if (!result.modifiedCount) {
                 res.send({ success: false });
                 return;
             }

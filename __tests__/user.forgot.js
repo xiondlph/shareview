@@ -51,11 +51,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
                                 updateOne() {
                                     return new Promise(resolve => {
                                         resolve({
-                                            mongoResult: {
-                                                result: {
-                                                    nModified: 1,
-                                                },
-                                            },
+                                            modifiedCount: 1,
                                         });
                                     });
                                 },
@@ -380,11 +376,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
                                 updateOne() {
                                     return new Promise(resolve => {
                                         resolve({
-                                            mongoResult: {
-                                                result: {
-                                                    nModified: 0,
-                                                },
-                                            },
+                                            modifiedCount: 0,
                                         });
                                     });
                                 },
@@ -466,11 +458,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
                                 updateOne() {
                                     return new Promise(resolve => {
                                         resolve({
-                                            mongoResult: {
-                                                result: {
-                                                    nModified: 1,
-                                                },
-                                            },
+                                            modifiedCount: 1,
                                         });
                                     });
                                 },

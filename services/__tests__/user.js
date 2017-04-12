@@ -347,11 +347,7 @@ describe('Тестирование метода forgot', () => {
 
                     return new Promise(resolve => {
                         resolve({
-                            mongoResult: {
-                                result: {
-                                    nModified: 1,
-                                },
-                            },
+                            modifiedCount: 1,
                         });
                     });
                 },
@@ -485,11 +481,7 @@ describe('Тестирование метода forgot', () => {
                 setPasswordByEmail() {
                     return new Promise(resolve => {
                         resolve({
-                            mongoResult: {
-                                result: {
-                                    nModified: 1,
-                                },
-                            },
+                            modifiedCount: 1,
                         });
                     });
                 },
@@ -529,11 +521,7 @@ describe('Тестирование метода forgot', () => {
                 setPasswordByEmail() {
                     return new Promise(resolve => {
                         resolve({
-                            mongoResult: {
-                                result: {
-                                    nModified: 1,
-                                },
-                            },
+                            modifiedCount: 1,
                         });
                     });
                 },
