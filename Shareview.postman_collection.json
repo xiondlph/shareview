@@ -1,0 +1,200 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Shareview",
+		"_postman_id": "019ef2ab-9a42-ece2-bc44-9dc3c4300838",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "www.shareview.ru/user/create",
+			"request": {
+				"url": "www.shareview.ru/user/create",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "shukhrat@ismax.ru",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": "Регистрация пользователя"
+			},
+			"response": []
+		},
+		{
+			"name": "www.shareview.ru/user/signin",
+			"request": {
+				"url": "www.shareview.ru/user/signin",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "shukhrat@ismax.ru",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "password",
+							"value": "1qfFGQhyJIgU",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": "Авторизация пользователя"
+			},
+			"response": []
+		},
+		{
+			"name": "www.shareview.ru/api/profile",
+			"request": {
+				"url": "www.shareview.ru/api/profile",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "shukhrat@ismax.ru",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "password",
+							"value": "1qfFGQhyJIgU",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": "Получение данных профиля"
+			},
+			"response": []
+		},
+		{
+			"name": "www.shareview.ru/api/profile",
+			"request": {
+				"url": "www.shareview.ru/api/profile",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "address",
+							"value": "127.0.0.1",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": "Обновление данных профиля"
+			},
+			"response": []
+		},
+		{
+			"name": "www.shareview.ru/api/password",
+			"request": {
+				"url": "www.shareview.ru/api/password",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "password",
+							"value": "123",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": "Смена пароля"
+			},
+			"response": []
+		},
+		{
+			"name": "www.shareview.ru/user/signout",
+			"request": {
+				"url": "www.shareview.ru/user/signout",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "password",
+							"value": "123",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": "Выход из сессии"
+			},
+			"response": []
+		},
+		{
+			"name": "www.shareview.ru/user/forgot",
+			"request": {
+				"url": "www.shareview.ru/user/forgot",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "shukhrat@ismax.ru",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": "Сброс пароля"
+			},
+			"response": []
+		}
+	]
+}
