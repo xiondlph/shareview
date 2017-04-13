@@ -69,14 +69,22 @@ const
                         return;
                     }
 
-                    req.email({
-                        to: data.email,
-                        subject: 'Регистрация в сервисе SHAREVIEW',
-                        text,
-                    }).then(() => {
-                        res.send({ success: true });
-                    }).catch(err => {
-                        next(err);
+                    res.render('mail/register.html', (err, html) => {
+                        if (err) {
+                            next(err);
+                            return;
+                        }
+
+                        req.email({
+                            to: data.email,
+                            subject: 'Регистрация в сервисе SHAREVIEW',
+                            text,
+                            html,
+                        }).then(() => {
+                            res.send({ success: true });
+                        }).catch(err => {
+                            next(err);
+                        });
                     });
                 });
             });
@@ -111,7 +119,7 @@ const
 
         /* eslint no-shadow: ["error", { "allow": ["err"] }] */
         req.model.user.setPasswordByEmail(req.body.email, pwd).then(result => {
-            if (!result.modifiedCount) {
+            if (!result.mongoResult.result.nModified) {
                 res.send({ success: false });
                 return;
             }
@@ -124,14 +132,22 @@ const
                     return;
                 }
 
-                req.email({
-                    to: req.body.email,
-                    subject: 'Востановления доступа к сервису SHAREVIEW',
-                    text,
-                }).then(() => {
-                    res.send({ success: true });
-                }).catch(err => {
-                    next(err);
+                res.render('mail/forgot.html', (err, html) => {
+                    if (err) {
+                        next(err);
+                        return;
+                    }
+
+                    req.email({
+                        to: req.body.email,
+                        subject: 'Востановления доступа к сервису SHAREVIEW',
+                        text,
+                        html,
+                    }).then(() => {
+                        res.send({ success: true });
+                    }).catch(err => {
+                        next(err);
+                    });
                 });
             });
         }).catch(err => {
