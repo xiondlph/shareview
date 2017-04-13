@@ -67,7 +67,7 @@ describe('Тестирование метода create', () => {
                 res._getRenderData()(null, 'Simple text');
             })
             .mockImplementationOnce(() => {
-                expect(res._getRenderView()).toBe('mail/register.html');
+                expect(res._getRenderView()).toBe('mail/register-html');
 
                 res._getRenderData()(null, 'Simple html');
             })
@@ -239,7 +239,7 @@ describe('Тестирование метода create', () => {
         });
     });
 
-    it('Выполнение метода create с ошибкой в вызове "res.render"', () => {
+    it('Выполнение метода create с ошибкой в вызове "res.render[1]"', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -271,9 +271,62 @@ describe('Тестирование метода create', () => {
 
         res.locals = {};
 
-        res.on('render', () => {
-            res._getRenderData()(Error('res.render.error'));
+        res.on('render', jest.fn()
+            .mockImplementationOnce(() => {
+                res._getRenderData()(Error('res.render.error'));
+            })
+        );
+
+        return new Promise((resolve, reject) => {
+            // Вызов метода create
+            user.create(req, res, err => {
+                reject(err);
+            });
+        }).catch(err => {
+            expect(err).toEqual(Error('res.render.error'));
         });
+    });
+
+    it('Выполнение метода create с ошибкой в вызове "res.render[2]"', () => {
+        const
+            user = require('../user').default,
+            req = httpMocks.createRequest(),
+            res = httpMocks.createResponse({
+                eventEmitter: EventEmitter,
+            });
+
+        req.model = {
+            user: {
+                getUserByEmail() {
+                    return new Promise(resolve => {
+                        resolve();
+                    });
+                },
+
+                create() {
+                    return new Promise(resolve => {
+                        resolve({
+                            insertedId: 'fake.inserted.id',
+                        });
+                    });
+                },
+            },
+        };
+
+        req.body = {
+            email: 'fake@user.com',
+        };
+
+        res.locals = {};
+
+        res.on('render', jest.fn()
+            .mockImplementationOnce(() => {
+                res._getRenderData()(null, 'Simple text');
+            })
+            .mockImplementationOnce(() => {
+                res._getRenderData()(Error('res.render.error'));
+            })
+        );
 
         return new Promise((resolve, reject) => {
             // Вызов метода create
@@ -323,9 +376,14 @@ describe('Тестирование метода create', () => {
 
         res.locals = {};
 
-        res.on('render', () => {
-            res._getRenderData()(null, 'Simple text');
-        });
+        res.on('render', jest.fn()
+            .mockImplementationOnce(() => {
+                res._getRenderData()(null, 'Simple text');
+            })
+            .mockImplementationOnce(() => {
+                res._getRenderData()(null, 'Simple html');
+            })
+        );
 
         return new Promise((resolve, reject) => {
             // Вызов метода create
@@ -364,7 +422,7 @@ describe('Тестирование метода forgot', () => {
 
         req.email = (opt) => {
             expect(opt).toHaveProperty('to', 'fake@user.com');
-            expect(opt).toHaveProperty('subject', 'Востановления доступа к сервису SHAREVIEW');
+            expect(opt).toHaveProperty('subject', 'Восстановления доступа к сервису SHAREVIEW');
             expect(opt).toHaveProperty('text', 'Simple text');
             expect(opt).toHaveProperty('html', 'Simple html');
 
@@ -387,7 +445,7 @@ describe('Тестирование метода forgot', () => {
                 res._getRenderData()(null, 'Simple text');
             })
             .mockImplementationOnce(() => {
-                expect(res._getRenderView()).toBe('mail/forgot.html');
+                expect(res._getRenderView()).toBe('mail/forgot-html');
 
                 res._getRenderData()(null, 'Simple html');
             })
@@ -484,7 +542,7 @@ describe('Тестирование метода forgot', () => {
         });
     });
 
-    it('Выполнение метода forgot с ошибкой в вызове "res.render"', () => {
+    it('Выполнение метода forgot с ошибкой в вызове "res.render[1]"', () => {
         const
             user = require('../user').default,
             req = httpMocks.createRequest(),
@@ -510,9 +568,56 @@ describe('Тестирование метода forgot', () => {
 
         res.locals = {};
 
-        res.on('render', () => {
-            res._getRenderData()(Error('res.render.error'));
+        res.on('render', jest.fn()
+            .mockImplementationOnce(() => {
+                res._getRenderData()(Error('res.render.error'));
+            })
+        );
+
+        return new Promise((resolve, reject) => {
+            // Вызов метода forgot
+            user.forgot(req, res, err => {
+                reject(err);
+            });
+        }).catch(err => {
+            expect(err).toEqual(Error('res.render.error'));
         });
+    });
+
+    it('Выполнение метода forgot с ошибкой в вызове "res.render[2]"', () => {
+        const
+            user = require('../user').default,
+            req = httpMocks.createRequest(),
+            res = httpMocks.createResponse({
+                eventEmitter: EventEmitter,
+            });
+
+        req.model = {
+            user: {
+                setPasswordByEmail() {
+                    return new Promise(resolve => {
+                        resolve({
+                            modifiedCount: 1,
+                        });
+                    });
+                },
+            },
+        };
+
+        req.body = {
+            email: 'fake@user.com',
+        };
+
+        res.locals = {};
+
+        res.on('render', jest.fn()
+            .mockImplementationOnce(() => {
+                res._getRenderData()(null, 'Simple text');
+            })
+            .mockImplementationOnce(() => {
+                res._getRenderData()(Error('res.render.error'));
+            })
+        );
 
         return new Promise((resolve, reject) => {
             // Вызов метода forgot
@@ -556,9 +661,14 @@ describe('Тестирование метода forgot', () => {
 
         res.locals = {};
 
-        res.on('render', () => {
-            res._getRenderData()(null, 'Simple text');
-        });
+        res.on('render', jest.fn()
+            .mockImplementationOnce(() => {
+                res._getRenderData()(null, 'Simple text');
+            })
+            .mockImplementationOnce(() => {
+                res._getRenderData()(null, 'Simple html');
+            })
+        );
 
         return new Promise((resolve, reject) => {
             // Вызов метода forgot

@@ -36,6 +36,7 @@ const
          * @param {String} to
          * @param {String} subject
          * @param {String} text
+         * @param {String} html
          * @returns {Promise}
          */
         req.email = ({
@@ -43,6 +44,7 @@ const
             to,
             subject,
             text,
+            html,
             }) => {
             return new Promise((resolve, reject) => {
                 transporter.sendMail({
@@ -50,10 +52,15 @@ const
                     to,
                     subject,
                     text,
+                    html,
                     headers: {
                         'X-Mailer': 'SHAREVIEW',
                     },
-                    localAddress: '194.87.197.55',
+                    attachments: [{
+                        filename: 'logo.png',
+                        path: `${process.env.APPPATH}/resources/images/logo.png`,
+                        cid: 'shareview.logo',
+                    }],
                 }, (err) => {
                     if (err) {
                         reject(err);

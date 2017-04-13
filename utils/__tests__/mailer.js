@@ -31,7 +31,6 @@ describe('Тестирование метода email', () => {
                             expect(opt).toHaveProperty('subject', 'Simple subject');
                             expect(opt).toHaveProperty('text', 'Simple text');
                             expect(opt).toHaveProperty('headers.X-Mailer', 'SHAREVIEW');
-                            expect(opt).toHaveProperty('localAddress', '194.87.197.55');
 
                             cb();
                         },

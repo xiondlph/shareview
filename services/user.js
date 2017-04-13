@@ -69,7 +69,7 @@ const
                         return;
                     }
 
-                    res.render('mail/register.html', (err, html) => {
+                    res.render('mail/register-html', (err, html) => {
                         if (err) {
                             next(err);
                             return;
@@ -132,7 +132,7 @@ const
                     return;
                 }
 
-                res.render('mail/forgot.html', (err, html) => {
+                res.render('mail/forgot-html', (err, html) => {
                     if (err) {
                         next(err);
                         return;
@@ -140,7 +140,7 @@ const
 
                     req.email({
                         to: req.body.email,
-                        subject: 'Востановления доступа к сервису SHAREVIEW',
+                        subject: 'Восстановления доступа к сервису SHAREVIEW',
                         text,
                         html,
                     }).then(() => {
