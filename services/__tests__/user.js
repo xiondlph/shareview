@@ -43,6 +43,7 @@ describe('Тестирование метода create', () => {
             expect(opt).toHaveProperty('to', 'fake@user.com');
             expect(opt).toHaveProperty('subject', 'Регистрация в сервисе SHAREVIEW');
             expect(opt).toHaveProperty('text', 'Simple text');
+            expect(opt).toHaveProperty('html', 'Simple html');
 
             return new Promise(resolve => {
                 resolve();
@@ -56,14 +57,21 @@ describe('Тестирование метода create', () => {
         req.ip = '127.0.0.1';
         res.locals = {};
 
-        res.on('render', () => {
-            expect(res._getRenderView()).toBe('mail/register');
-            expect(res).toHaveProperty('locals._id', 'fake.inserted.id');
-            expect(res).toHaveProperty('locals.email', 'fake@user.com');
-            expect(res).toHaveProperty('locals.password');
+        res.on('render', jest.fn()
+            .mockImplementationOnce(() => {
+                expect(res._getRenderView()).toBe('mail/register');
+                expect(res).toHaveProperty('locals._id', 'fake.inserted.id');
+                expect(res).toHaveProperty('locals.email', 'fake@user.com');
+                expect(res).toHaveProperty('locals.password');
 
-            res._getRenderData()(null, 'Simple text');
-        });
+                res._getRenderData()(null, 'Simple text');
+            })
+            .mockImplementationOnce(() => {
+                expect(res._getRenderView()).toBe('mail/register.html');
+
+                res._getRenderData()(null, 'Simple html');
+            })
+        );
 
         return new Promise((resolve, reject) => {
             res.on('send', () => {
@@ -358,6 +366,7 @@ describe('Тестирование метода forgot', () => {
             expect(opt).toHaveProperty('to', 'fake@user.com');
             expect(opt).toHaveProperty('subject', 'Востановления доступа к сервису SHAREVIEW');
             expect(opt).toHaveProperty('text', 'Simple text');
+            expect(opt).toHaveProperty('html', 'Simple html');
 
             return new Promise(resolve => {
                 resolve();
@@ -370,12 +379,19 @@ describe('Тестирование метода forgot', () => {
 
         res.locals = {};
 
-        res.on('render', () => {
-            expect(res._getRenderView()).toBe('mail/forgot');
-            expect(res).toHaveProperty('locals.password');
+        res.on('render', jest.fn()
+            .mockImplementationOnce(() => {
+                expect(res._getRenderView()).toBe('mail/forgot');
+                expect(res).toHaveProperty('locals.password');
 
-            res._getRenderData()(null, 'Simple text');
-        });
+                res._getRenderData()(null, 'Simple text');
+            })
+            .mockImplementationOnce(() => {
+                expect(res._getRenderView()).toBe('mail/forgot.html');
+
+                res._getRenderData()(null, 'Simple html');
+            })
+        );
 
         return new Promise((resolve, reject) => {
             res.on('send', () => {
