@@ -171,6 +171,7 @@ describe('Тестирование метода signin', () => {
             res.on('send', () => {
                 expect(res._getData()).toEqual({
                     success: true,
+                    token: 'fake.token',
                     profile: {
                         email: 'fake.email',
                         address: 'fake.address',

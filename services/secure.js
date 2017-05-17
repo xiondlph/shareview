@@ -10,6 +10,7 @@
 // Объявление модулей
 import crypto from 'crypto';
 import validator from 'validator';
+import jwt from 'jsonwebtoken';
 
 const
 
@@ -22,9 +23,19 @@ const
      * @param {Function} next
      */
     user = (req, res, next) => {
+        const token = req.body.token || req.query || req.headers['x-access-token'];
+
         req.model.user.getUserBySession(req.session.id).then(result => {
             if (result) {
                 res.locals.user = result;
+            } else {
+                // TODO: Почему то при тесте не бросает ошибку
+                jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+                    // TODO: Реализовать логирования ошибок
+                    if (!err) {
+                        res.locals.user = decoded;
+                    }
+                });
             }
 
             next();
@@ -88,6 +99,11 @@ const
             return req.model.user.setSessionById(result._id, req.session.id).then(() => {
                 res.send({
                     success: true,
+
+                    // Создаем токен
+                    token: jwt.sign(result, process.env.JWT_SECRET, {
+                        expiresIn: 86400, // Время жизни токена 24ч
+                    }),
 
                     // Данные пользователя при авторизации
                     profile: {
