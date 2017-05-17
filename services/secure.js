@@ -23,11 +23,12 @@ const
      * @param {Function} next
      */
     user = (req, res, next) => {
-        const token = req.body.token || req.query || req.headers['x-access-token'];
+        const token = req.body.token || req.query.token || req.headers['x-access-token'];
 
         req.model.user.getUserBySession(req.session.id).then(result => {
             if (result) {
                 res.locals.user = result;
+                next();
             } else {
                 // TODO: Почему то при тесте не бросает ошибку
                 jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
@@ -35,10 +36,10 @@ const
                     if (!err) {
                         res.locals.user = decoded;
                     }
+
+                    next();
                 });
             }
-
-            next();
         }).catch(err => {
             next(err);
         });
