@@ -26,12 +26,6 @@ const
             query = querystring.stringify(req.query),
             page = 1;
 
-        res.header('Access-Control-Allow-Origin', '*');
-        res.header(
-            'Access-Control-Allow-Headers',
-            'Origin, X-Requested-With, Content-Type, Accept'
-        );
-
         if (!req.query.text) {
             res.send([]);
             return;

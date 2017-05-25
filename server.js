@@ -63,6 +63,14 @@ app.use(session({
 app.use((req, res, next) => {
     res.set('Server', 'Shareview');
     res.set('X-Powered-By', 'ISMAX');
+
+    // TODO: Временное решение для CORS
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header(
+        'Access-Control-Allow-Headers',
+        'Origin, X-Requested-With, Content-Type, Accept'
+    );
+
     next();
 });
 
