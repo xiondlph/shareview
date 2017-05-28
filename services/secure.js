@@ -107,7 +107,7 @@ const
                 success: true,
 
                 // Создание JSON токена
-                token: jwt.sign(result._id, process.env.JWT_SECRET, {
+                token: jwt.sign({ _id: result._id }, process.env.JWT_SECRET, {
                     expiresIn: 86400, // Время жизни токена 24ч
                 }),
 
