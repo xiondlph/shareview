@@ -27,7 +27,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -91,7 +91,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
                     email: 'fake@mail.ru',
                     address: '127.0.0.1',
                 })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(200)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -122,7 +122,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
 
                 db: {
                     collection: jest.fn()
-                    // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -177,7 +177,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
                     email: 'fake@mail.ru',
                     address: '127.0.0.1',
                 })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(200)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -193,7 +193,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
         });
     });
 
-    it('Ошибка в req.model.user.getUserBySession', done => {
+    it('Ошибка в req.model.user.getUserById', done => {
         const
             supertest = require('supertest'),
             http = require('../server').default,
@@ -209,7 +209,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -238,11 +238,41 @@ describe('Обновление данных профиля (/api/profile) - ', (
                     email: 'fake@mail.ru',
                     address: '127.0.0.1',
                 })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
                     expect(res.body.errors).toEqual(['Internal server error']);
+
+                    http.then(server => {
+                        server.close(() => {
+                            done();
+                        });
+                    });
+                });
+        });
+    });
+
+    it('Не авторизированный пользователь по токену', done => {
+        const
+            supertest = require('supertest'),
+            http = require('../server').default,
+            request = http.then(server => {
+                return supertest.agent(server);
+            });
+
+        request.then(agent => {
+            agent
+                .put('/api/profile')
+                .send({
+                    email: 'fake@mail.ru',
+                    address: '127.0.0.1',
+                })
+                .set('x-access-token', 'fake.token.invalid')
+                .expect(403)
+                .end((err, res) => {
+                    expect(err).toBeNull();
+                    expect(res.body.errors).toEqual(['Forbidden resource']);
 
                     http.then(server => {
                         server.close(() => {
@@ -269,7 +299,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -298,7 +328,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
                     email: 'fake@mail.ru',
                     address: '127.0.0.1',
                 })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(403)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -329,7 +359,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -363,7 +393,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
                     email: 'fake.invalid.mail',
                     address: '127.0.0.1',
                 })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -394,7 +424,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -428,7 +458,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
                     email: 'fake@mail.com',
                     address: 'fake.invalid.ip',
                 })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -459,7 +489,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -512,7 +542,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
                     email: 'fake@mail.ru',
                     address: '127.0.0.1',
                 })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -543,7 +573,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -607,7 +637,7 @@ describe('Обновление данных профиля (/api/profile) - ', (
                     email: 'fake@mail.ru',
                     address: '127.0.0.1',
                 })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();

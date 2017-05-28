@@ -5,6 +5,8 @@
 import httpMocks from 'node-mocks-http';
 import EventEmitter from 'events';
 
+jest.mock('jsonwebtoken');
+
 /* eslint max-len: ["error", 130] */
 describe('Тестирование метода user', () => {
     it('Успешное выполнение метода user', () => {
@@ -15,8 +17,8 @@ describe('Тестирование метода user', () => {
 
         req.model = {
             user: {
-                getUserBySession(sessionId) {
-                    expect(sessionId).toEqual('fake.session.id');
+                getUserById(objectID) {
+                    expect(objectID).toEqual({ objectid: 'fake._id' });
 
                     return new Promise(resolve => {
                         // Признак авторизированности пользователя
@@ -28,9 +30,7 @@ describe('Тестирование метода user', () => {
             },
         };
 
-        req.session = {
-            id: 'fake.session.id',
-        };
+        req.body.token = 'fake.token.success';
 
         res.locals = {};
 
@@ -44,7 +44,7 @@ describe('Тестирование метода user', () => {
         });
     });
 
-    it('Выполнение метода user с ошибкой в вызове "req.model.user.getUserBySession"', () => {
+    it('Выполнение метода user с ошибкой в вызове "req.model.user.getUserById"', () => {
         const
             secure = require('../secure').default,
             req = httpMocks.createRequest(),
@@ -52,17 +52,15 @@ describe('Тестирование метода user', () => {
 
         req.model = {
             user: {
-                getUserBySession() {
+                getUserById() {
                     return new Promise((resolve, reject) => {
-                        reject(Error('req.model.user.getUserBySession.error'));
+                        reject(Error('req.model.user.getUserById.error'));
                     });
                 },
             },
         };
 
-        req.session = {
-            id: 'fake.session.id',
-        };
+        req.body.token = 'fake.token.success';
 
         return new Promise((resolve, reject) => {
             // Вызов метода user
@@ -70,7 +68,7 @@ describe('Тестирование метода user', () => {
                 reject(err);
             });
         }).catch(err => {
-            expect(err).toEqual(Error('req.model.user.getUserBySession.error'));
+            expect(err).toEqual(Error('req.model.user.getUserById.error'));
         });
     });
 });
@@ -144,20 +142,7 @@ describe('Тестирование метода signin', () => {
                         });
                     });
                 },
-
-                setSessionById(_id, sessionId) {
-                    expect(_id).toEqual('fake_id');
-                    expect(sessionId).toEqual('fake.session.id');
-
-                    return new Promise(resolve => {
-                        resolve();
-                    });
-                },
             },
-        };
-
-        req.session = {
-            id: 'fake.session.id',
         };
 
         req.body = {
@@ -171,7 +156,7 @@ describe('Тестирование метода signin', () => {
             res.on('send', () => {
                 expect(res._getData()).toEqual({
                     success: true,
-                    token: 'fake.token',
+                    token: 'fake.token.success',
                     profile: {
                         email: 'fake.email',
                         address: 'fake.address',
@@ -262,58 +247,6 @@ describe('Тестирование метода signin', () => {
             });
         }).catch(err => {
             expect(err).toEqual(Error('req.model.user.getUserByEmail.error'));
-        });
-    });
-
-    it('Выполнение метода signin с ошибкой в вызове "req.model.user.setSessionById"', () => {
-        const
-            secure = require('../secure').default,
-            req = httpMocks.createRequest(),
-            res = httpMocks.createResponse();
-
-        req.model = {
-            user: {
-                getUserByEmail() {
-                    return new Promise(resolve => {
-                        resolve({
-                            _id: 'fake_id',
-
-                            // Захешеный "fake.password"
-                            password: 'cf1a63230b18ca6299394958b885096d0fe86c85b3870364706d488e57788e4a',
-
-                            email: 'fake.email',
-                            address: 'fake.address',
-                            salt: 'fake.salt',
-                        });
-                    });
-                },
-
-                setSessionById() {
-                    return new Promise((resolve, reject) => {
-                        reject(Error('req.model.user.setSessionById.error'));
-                    });
-                },
-            },
-        };
-
-        req.session = {
-            id: 'fake.session.id',
-        };
-
-        req.body = {
-            email: 'fake@user.com',
-            password: 'fake.password',
-        };
-
-        res.locals = {};
-
-        return new Promise((resolve, reject) => {
-            // Вызов метода signin
-            secure.signin(req, res, err => {
-                reject(err);
-            });
-        }).catch(err => {
-            expect(err).toEqual(Error('req.model.user.setSessionById.error'));
         });
     });
 });

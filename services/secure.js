@@ -11,6 +11,7 @@
 import crypto from 'crypto';
 import validator from 'validator';
 import jwt from 'jsonwebtoken';
+import { ObjectID } from 'mongodb';
 
 const
 
@@ -25,23 +26,28 @@ const
     user = (req, res, next) => {
         const token = req.body.token || req.query.token || req.headers['x-access-token'];
 
-        req.model.user.getUserBySession(req.session.id).then(result => {
-            if (result) {
-                res.locals.user = result;
-                next();
+        if (!token) {
+            next();
+
+            return;
+        }
+
+        // TODO: Почему то при тесте не бросает ошибку
+        /* eslint no-shadow: ["error", { "allow": ["db", "err"] }] */
+        jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+            if (err) {
+                next(); // TODO: Реализовать логирования ошибок
             } else {
-                // TODO: Почему то при тесте не бросает ошибку
-                jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-                    // TODO: Реализовать логирования ошибок
-                    if (!err) {
-                        res.locals.user = decoded;
-                    }
+                const objectID = new ObjectID(decoded._id);
+
+                req.model.user.getUserById(objectID).then(result => {
+                    res.locals.user = result;
 
                     next();
+                }).catch(err => {
+                    next(err);
                 });
             }
-        }).catch(err => {
-            next(err);
         });
     },
 
@@ -97,22 +103,20 @@ const
                 return;
             }
 
-            return req.model.user.setSessionById(result._id, req.session.id).then(() => {
-                res.send({
-                    success: true,
+            res.send({
+                success: true,
 
-                    // Создаем токен
-                    token: jwt.sign(result, process.env.JWT_SECRET, {
-                        expiresIn: 86400, // Время жизни токена 24ч
-                    }),
+                // Создание JSON токена
+                token: jwt.sign(result._id, process.env.JWT_SECRET, {
+                    expiresIn: 86400, // Время жизни токена 24ч
+                }),
 
-                    // Данные пользователя при авторизации
-                    profile: {
-                        email: result.email,
-                        address: result.address,
-                        key: result.salt,
-                    },
-                });
+                // Данные пользователя при авторизации
+                profile: {
+                    email: result.email,
+                    address: result.address,
+                    key: result.salt,
+                },
             });
         }).catch(err => {
             next(err);
@@ -121,32 +125,7 @@ const
 
 
     /**
-     * Выход из сессии
-     *
-     * @method signout
-     * @param {Object} req Объект запроса сервера
-     * @param {Object} res Объект ответа сервера
-     * @param {Function} next
-     */
-    signout = (req, res, next) => {
-        if (!res.locals.user) {
-            res.send({ success: true });
-            return;
-        }
-
-        req.model.user.unsetSessionById(res.locals.user._id).then(() => {
-            res.send({ success: true });
-        }).catch(
-            err => {
-                if (err) {
-                    next(err);
-                }
-            }
-        );
-    },
-
-    /**
-     * Выход из сессии
+     * Проверка доступа для получения отзывов
      *
      * @method access
      * @param {Object} req Объект запроса сервера
@@ -181,6 +160,5 @@ export default {
     user,
     auth,
     signin,
-    signout,
     access,
 };

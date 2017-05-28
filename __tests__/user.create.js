@@ -26,7 +26,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -96,7 +96,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             agent
                 .post('/user/create')
                 .send({ email: 'fake@user.ru' })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(200)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -127,7 +127,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -155,7 +155,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             agent
                 .post('/user/create')
                 .send({ email: 'fake@user.ru' })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(200)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -170,7 +170,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
         });
     });
 
-    it('Ошибка в req.model.user.getUserBySession', done => {
+    it('Ошибка в req.model.user.getUserById', done => {
         const
             supertest = require('supertest'),
             http = require('../server').default,
@@ -186,7 +186,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -195,7 +195,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
                                             return {
                                                 toArray() {
                                                     return new Promise((resolve, reject) => {
-                                                        reject(Error('req.model.user.getUserBySession.error'));
+                                                        reject(Error('req.model.user.getUserById.error'));
                                                     });
                                                 },
                                             };
@@ -212,7 +212,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             agent
                 .post('/user/create')
                 .send({ email: 'fake@user.ru' })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -243,7 +243,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -269,7 +269,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             agent
                 .post('/user/create')
                 .send({ email: 'fake.invalid.email' })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -300,7 +300,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -345,7 +345,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             agent
                 .post('/user/create')
                 .send({ email: 'fake@user.ru' })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -376,7 +376,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -432,7 +432,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             agent
                 .post('/user/create')
                 .send({ email: 'fake@user.ru' })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -463,7 +463,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -533,7 +533,7 @@ describe('Регистрация пользователя (/user/create) - ', ()
             agent
                 .post('/user/create')
                 .send({ email: 'fake@user.ru' })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();

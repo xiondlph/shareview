@@ -24,6 +24,10 @@ const
     logHttp = debug('shareview:http'),
     PORT = +process.env.PORT || 3001,
 
+    /* eslint new-cap: ["error", { "capIsNewExceptions": ["Router"] }] */
+    apiRoutes = express.Router(),
+    userRoutes = express.Router(),
+
     // TODO: Перенести в ./exception
     logError = err => {
         // err.stack.message = `httpException: ${err.stack.message}`;
@@ -74,15 +78,18 @@ app.use((req, res, next) => {
     next();
 });
 
-app.all(/^\/(?!review).*/, models.user, services.secure.user);
+// USER
+userRoutes.use(
+    models.user,
+    services.secure.user
+);
 
 // Secure
-app.post('/user/signin', services.secure.signin);
-app.get('/user/signout', services.secure.signout);
+userRoutes.post('/signin', services.secure.signin);
 
 // User
-app.post('/user/create', utils.mailer.email, services.user.create);
-app.post('/user/forgot', utils.mailer.email, services.user.forgot);
+userRoutes.post('/create', utils.mailer.email, services.user.create);
+userRoutes.post('/forgot', utils.mailer.email, services.user.forgot);
 
 // Review
 app.get(
@@ -94,12 +101,20 @@ app.get(
 );
 
 // API
-app.all('/api/*', services.secure.auth);
+apiRoutes.use(
+    models.user,
+    services.secure.user,
+    services.secure.auth
+);
 
 // Profile (api)...
-app.get('/api/profile', services.profile.get);
-app.put('/api/profile', services.profile.set);
-app.post('/api/password', services.profile.password);
+apiRoutes.get('/profile', services.profile.get);
+apiRoutes.put('/profile', services.profile.set);
+apiRoutes.post('/password', services.profile.password);
+
+// применение групп маршрутов
+app.use('/user', userRoutes);
+app.use('/api', apiRoutes);
 
 // 404 (Not found)
 app.use((req, res) => {

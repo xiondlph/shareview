@@ -26,7 +26,7 @@ describe('Смена пароля (/api/password) - ', () => {
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -70,7 +70,7 @@ describe('Смена пароля (/api/password) - ', () => {
                 .send({
                     password: 'fake.password',
                 })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(200)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -85,7 +85,7 @@ describe('Смена пароля (/api/password) - ', () => {
         });
     });
 
-    it('Ошибка в req.model.user.getUserBySession', done => {
+    it('Ошибка в req.model.user.getUserById', done => {
         const
             supertest = require('supertest'),
             http = require('../server').default,
@@ -101,7 +101,7 @@ describe('Смена пароля (/api/password) - ', () => {
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -110,7 +110,7 @@ describe('Смена пароля (/api/password) - ', () => {
                                             return {
                                                 toArray() {
                                                     return new Promise((resolve, reject) => {
-                                                        reject(Error('req.model.user.getUserBySession.error'));
+                                                        reject(Error('req.model.user.getUserById.error'));
                                                     });
                                                 },
                                             };
@@ -129,11 +129,40 @@ describe('Смена пароля (/api/password) - ', () => {
                 .send({
                     password: 'fake.password',
                 })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
                     expect(res.body.errors).toEqual(['Internal server error']);
+
+                    http.then(server => {
+                        server.close(() => {
+                            done();
+                        });
+                    });
+                });
+        });
+    });
+
+    it('Не авторизированный пользователь по токену', done => {
+        const
+            supertest = require('supertest'),
+            http = require('../server').default,
+            request = http.then(server => {
+                return supertest.agent(server);
+            });
+
+        request.then(agent => {
+            agent
+                .post('/api/password')
+                .send({
+                    password: 'fake.password',
+                })
+                .set('x-access-token', 'fake.token.invalid')
+                .expect(403)
+                .end((err, res) => {
+                    expect(err).toBeNull();
+                    expect(res.body.errors).toEqual(['Forbidden resource']);
 
                     http.then(server => {
                         server.close(() => {
@@ -160,7 +189,7 @@ describe('Смена пароля (/api/password) - ', () => {
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -188,7 +217,7 @@ describe('Смена пароля (/api/password) - ', () => {
                 .send({
                     password: 'fake.password',
                 })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(403)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -219,7 +248,7 @@ describe('Смена пароля (/api/password) - ', () => {
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -252,7 +281,7 @@ describe('Смена пароля (/api/password) - ', () => {
                 .send({
                     password: '',
                 })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -283,7 +312,7 @@ describe('Смена пароля (/api/password) - ', () => {
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -312,7 +341,7 @@ describe('Смена пароля (/api/password) - ', () => {
                             return {
                                 updateOne() {
                                     return new Promise((resolve, reject) => {
-                                        reject(Error('req.model.user.getUserBySession.error'));
+                                        reject(Error('req.model.user.setPasswordId.error'));
                                     });
                                 },
                             };
@@ -327,7 +356,7 @@ describe('Смена пароля (/api/password) - ', () => {
                 .send({
                     password: 'fake.password',
                 })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();

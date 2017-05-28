@@ -26,7 +26,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -77,7 +77,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
             agent
                 .post('/user/forgot')
                 .send({ email: 'fake@user.ru' })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(200)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -108,7 +108,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find(query) {
@@ -116,7 +116,11 @@ describe('Сброс пароля (/user/forgot) - ', () => {
                                         limit() {
                                             return {
                                                 toArray() {
-                                                    expect(query).toHaveProperty('sid', 'fake.session.id');
+                                                    expect(query).toEqual({
+                                                        _id: {
+                                                            objectid: 'fake._id',
+                                                        },
+                                                    });
 
                                                     return new Promise(resolve => {
                                                         resolve([{
@@ -138,7 +142,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
             agent
                 .post('/user/forgot')
                 .send({ email: 'fake@user.ru' })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(200)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -153,7 +157,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
         });
     });
 
-    it('Ошибка в req.model.user.getUserBySession', done => {
+    it('Ошибка в req.model.user.getUserById', done => {
         const
             supertest = require('supertest'),
             http = require('../server').default,
@@ -169,7 +173,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -178,7 +182,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
                                             return {
                                                 toArray() {
                                                     return new Promise((resolve, reject) => {
-                                                        reject(Error('req.model.user.getUserBySession.error'));
+                                                        reject(Error('req.model.user.getUserById.error'));
                                                     });
                                                 },
                                             };
@@ -195,7 +199,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
             agent
                 .post('/user/forgot')
                 .send({ email: 'fake@user.ru' })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -226,7 +230,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -252,7 +256,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
             agent
                 .post('/user/forgot')
                 .send({ email: 'fake.invalid.email' })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -267,7 +271,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
         });
     });
 
-    it('Ошибка в req.model.user.getUserBySession', done => {
+    it('Ошибка в req.model.user.setPasswordByEmail', done => {
         const
             supertest = require('supertest'),
             http = require('../server').default,
@@ -283,7 +287,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -320,7 +324,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
             agent
                 .post('/user/forgot')
                 .send({ email: 'fake@user.ru' })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -351,7 +355,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -402,7 +406,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
             agent
                 .post('/user/forgot')
                 .send({ email: 'fake@user.ru' })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(200)
                 .end((err, res) => {
                     expect(err).toBeNull();
@@ -433,7 +437,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
 
                 db: {
                     collection: jest.fn()
-                        // Mock для req.model.user.getUserBySession
+                        // Mock для req.model.user.getUserById
                         .mockImplementationOnce(() => {
                             return {
                                 find() {
@@ -484,7 +488,7 @@ describe('Сброс пароля (/user/forgot) - ', () => {
             agent
                 .post('/user/forgot')
                 .send({ email: 'fake@user.ru' })
-                .set('Cookie', 'fake.session.id')
+                .set('x-access-token', 'fake.token.success')
                 .expect(500)
                 .end((err, res) => {
                     expect(err).toBeNull();
